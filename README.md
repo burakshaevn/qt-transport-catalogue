@@ -1,2 +1,2 @@
-# cpp-qt-transport-catalogue
+# qt-transport-catalogue
 Визуализация проекта «Транспортный справочник»
