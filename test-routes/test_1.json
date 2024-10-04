@@ -1,0 +1,213 @@
+{
+    "base_requests": [
+        {
+            "is_roundtrip": true,
+            "name": "297",
+            "stops": [
+                "Biryulyovo Zapadnoye",
+                "Biryulyovo Tovarnaya",
+                "Universam",
+                "Biryulyovo Zapadnoye"
+            ],
+            "color_index": 1,
+            "type": "Bus"
+        },
+        {
+            "is_roundtrip": false,
+            "name": "635",
+            "stops": [
+                "Biryulyovo Tovarnaya",
+                "Universam",
+                "Prazhskaya"
+            ],
+            "color_index": 2,
+            "type": "Bus"
+        },
+        {
+            "is_roundtrip": true,
+            "name": "750",
+            "stops": [
+                "Marino",
+                "Prazhskaya",
+                "Ochakovo",
+                "Marino"
+            ],
+            "color_index": 3,
+            "type": "Bus"
+        },
+        {
+            "is_roundtrip": false,
+            "name": "850",
+            "stops": [
+                "Universam",
+                "Kuntsevo",
+                "Ochakovo"
+            ],
+            "color_index": 4,
+            "type": "Bus"
+        },
+        {
+            "latitude": 55.574371,
+            "longitude": 37.6517,
+            "name": "Biryulyovo Zapadnoye",
+            "road_distances": {
+                "Biryulyovo Tovarnaya": 2600
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.587655,
+            "longitude": 37.645687,
+            "name": "Universam",
+            "road_distances": {
+                "Biryulyovo Tovarnaya": 1380,
+                "Biryulyovo Zapadnoye": 2500,
+                "Prazhskaya": 4650
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.592028,
+            "longitude": 37.653656,
+            "name": "Biryulyovo Tovarnaya",
+            "road_distances": {
+                "Universam": 890
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.611717,
+            "longitude": 37.603938,
+            "name": "Prazhskaya",
+            "road_distances": {
+                "Universam": 4650,
+                "Ochakovo": 3000
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.614000,
+            "longitude": 37.651000,
+            "name": "Kuntsevo",
+            "road_distances": {
+                "Universam": 2000,
+                "Ochakovo": 1800
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.610000,
+            "longitude": 37.659000,
+            "name": "Ochakovo",
+            "road_distances": {
+                "Marino": 2000,
+                "Prazhskaya": 3000
+            },
+            "type": "Stop"
+        },
+        {
+            "latitude": 55.607000,
+            "longitude": 37.640000,
+            "name": "Marino",
+            "road_distances": {
+                "Ochakovo": 2000
+            },
+            "type": "Stop"
+        }
+    ],
+    "render_settings": {
+        "bus_label_font_size": 20,
+        "bus_label_offset": [
+            7,
+            15
+        ],
+        "color_palette": [
+            [
+                237,
+                237,
+                237
+            ],
+            [
+                252, 
+                174, 
+                203
+            ],
+            [
+                214, 
+                197, 
+                247
+            ],
+            "red",
+            [
+                173,
+                216,
+                230
+            ],
+            [
+                255,
+                182,
+                193
+            ]
+        ],
+        "height": 576,
+        "line_width": 14,
+        "padding": 30,
+        "stop_label_font_size": 20,
+        "stop_label_offset": [
+            7,
+            -3
+        ],
+        "stop_radius": 5,
+        "underlayer_color": [
+            255,
+            255,
+            255,
+            0.85
+        ],
+        "underlayer_width": 3,
+        "width": 1251
+    },
+    "routing_settings": {
+        "bus_velocity": 40,
+        "bus_wait_time": 6
+    },
+    "stat_requests": [
+        {
+            "id": 1,
+            "name": "297",
+            "type": "Bus"
+        },
+        {
+            "id": 2,
+            "name": "635",
+            "type": "Bus"
+        },
+        {
+            "id": 3,
+            "name": "Universam",
+            "type": "Stop"
+        },
+        {
+            "from": "Biryulyovo Zapadnoye",
+            "id": 4,
+            "to": "Universam",
+            "type": "Route"
+        },
+        {
+            "from": "Biryulyovo Zapadnoye",
+            "id": 5,
+            "to": "Prazhskaya",
+            "type": "Route"
+        },
+        {
+            "id": 6,
+            "name": "750",
+            "type": "Bus"
+        },
+        {
+            "id": 7,
+            "name": "850",
+            "type": "Bus"
+        }
+    ]
+}
