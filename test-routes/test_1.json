@@ -1,118 +1,537 @@
 {
     "base_requests": [
         {
+            "name": "Biryulyovo Zapadnoye",
+            "latitude": 55.580999,
+            "longitude": 37.651700,
+            "type": "Stop",
+            "road_distances": {
+                "Biryulyovo Tovarnaya": 2600,
+                "Universam": 1800
+            }
+        },
+        {
+            "name": "Biryulyovo Tovarnaya",
+            "latitude": 55.582500,
+            "longitude": 37.680000,
+            "type": "Stop",
+            "road_distances": {
+                "Biryulyovo Zapadnoye": 2600,
+                "Universam": 2000
+            }
+        },
+        {
+            "name": "Universam",
+            "latitude": 55.584500,
+            "longitude": 37.700000,
+            "type": "Stop",
+            "road_distances": {
+                "Biryulyovo Tovarnaya": 2000,
+                "Prazhskaya": 3500
+            }
+        },
+        {
+            "name": "Prazhskaya",
+            "latitude": 55.620000,
+            "longitude": 37.603124,
+            "type": "Stop",
+            "road_distances": {
+                "Universam": 3500,
+                "Marino": 1500
+            }
+        },
+        {
+            "name": "Marino",
+            "latitude": 55.660000,
+            "longitude": 37.733439,
+            "type": "Stop",
+            "road_distances": {
+                "Prazhskaya": 1500,
+                "Ochakovo": 2500
+            }
+        },
+        {
+            "name": "Ochakovo",
+            "latitude": 55.680000,
+            "longitude": 37.512817,
+            "type": "Stop",
+            "road_distances": {
+                "Marino": 2500,
+                "Kuntsevo": 3200
+            }
+        },
+        {
+            "name": "Kuntsevo",
+            "latitude": 55.729611,
+            "longitude": 37.540000,
+            "type": "Stop",
+            "road_distances": {
+                "Ochakovo": 3200,
+                "Sakura Park": 5000
+            }
+        },
+        {
+            "name": "Sakura Park",
+            "latitude": 55.753328,
+            "longitude": 37.680000,
+            "type": "Stop",
+            "road_distances": {
+                "Kuntsevo": 5000,
+                "Rose Garden": 2500
+            }
+        },
+        {
+            "name": "Rose Garden",
+            "latitude": 55.760000,
+            "longitude": 37.620000,
+            "type": "Stop",
+            "road_distances": {
+                "Sakura Park": 2500,
+                "Tulip Square": 1500
+            }
+        },
+        {
+            "name": "Tulip Square",
+            "latitude": 55.770000,
+            "longitude": 37.600000,
+            "type": "Stop",
+            "road_distances": {
+                "Rose Garden": 1500,
+                "South Gate": 3000
+            }
+        },
+        {
+            "name": "South Gate",
+            "latitude": 55.785000,
+            "longitude": 37.750000,
+            "type": "Stop",
+            "road_distances": {
+                "Tulip Square": 3000,
+                "City Mall": 2000
+            }
+        },
+        {
+            "name": "City Mall",
+            "latitude": 55.795000,
+            "longitude": 37.740000,
+            "type": "Stop",
+            "road_distances": {
+                "South Gate": 2000,
+                "MKAD": 1500
+            }
+        },
+        {
+            "name": "MKAD",
+            "latitude": 55.800000,
+            "longitude": 37.760000,
+            "type": "Stop",
+            "road_distances": {
+                "City Mall": 1500,
+                "Sadovod": 800
+            }
+        },
+        {
+            "name": "Sadovod",
+            "latitude": 55.815000,
+            "longitude": 37.780000,
+            "type": "Stop",
+            "road_distances": {
+                "MKAD": 800,
+                "Ryazan Avenue": 2700
+            }
+        },
+        {
+            "name": "Ryazan Avenue",
+            "latitude": 55.830000,
+            "longitude": 37.790000,
+            "type": "Stop",
+            "road_distances": {
+                "Sadovod": 2700,
+                "Northern Station": 2000
+            }
+        },
+        {
+            "name": "Northern Station",
+            "latitude": 55.850000,
+            "longitude": 37.800000,
+            "type": "Stop",
+            "road_distances": {
+                "Ryazan Avenue": 2000,
+                "Green Park": 2500
+            }
+        },
+        {
+            "name": "Green Park",
+            "latitude": 55.860000,
+            "longitude": 37.590000,
+            "type": "Stop",
+            "road_distances": {
+                "Northern Station": 2500,
+                "Silver Park": 1500
+            }
+        },
+        {
+            "name": "Silver Park",
+            "latitude": 55.870000,
+            "longitude": 37.620000,
+            "type": "Stop",
+            "road_distances": {
+                "Green Park": 1500,
+                "Mountain Square": 3000
+            }
+        },
+        {
+            "name": "Mountain Square",
+            "latitude": 55.880000,
+            "longitude": 37.530000,
+            "type": "Stop",
+            "road_distances": {
+                "Silver Park": 3000,
+                "Waterfall Park": 4000
+            }
+        },
+        {
+            "name": "Waterfall Park",
+            "latitude": 55.890000,
+            "longitude": 37.560000,
+            "type": "Stop",
+            "road_distances": {
+                "Mountain Square": 4000,
+                "West Gate": 3500
+            }
+        },
+        {
+            "name": "West Gate",
+            "latitude": 55.900000,
+            "longitude": 37.610000,
+            "type": "Stop",
+            "road_distances": {
+                "Waterfall Park": 3500,
+                "Sunny Hill": 2000
+            }
+        },
+        {
+            "name": "Sunny Hill",
+            "latitude": 55.910000,
+            "longitude": 37.620000,
+            "type": "Stop",
+            "road_distances": {
+                "West Gate": 2000,
+                "Maple Street": 2500
+            }
+        },
+        {
+            "name": "Maple Street",
+            "latitude": 55.920000,
+            "longitude": 37.630000,
+            "type": "Stop",
+            "road_distances": {
+                "Sunny Hill": 2500,
+                "Riverside": 1800
+            }
+        },
+        {
+            "name": "Riverside",
+            "latitude": 55.930000,
+            "longitude": 37.640000,
+            "type": "Stop",
+            "road_distances": {
+                "Maple Street": 1800,
+                "City Center": 3000
+            }
+        },
+        {
+            "name": "City Center",
+            "latitude": 55.940000,
+            "longitude": 37.650000,
+            "type": "Stop",
+            "road_distances": {
+                "Riverside": 3000,
+                "Downtown": 1500
+            }
+        },
+        {
+            "name": "Downtown",
+            "latitude": 55.950000,
+            "longitude": 37.660000,
+            "type": "Stop",
+            "road_distances": {
+                "City Center": 1500,
+                "Central Park": 1000
+            }
+        },
+        {
+            "name": "Central Park",
+            "latitude": 55.960000,
+            "longitude": 37.670000,
+            "type": "Stop",
+            "road_distances": {
+                "Downtown": 1000
+            }
+        },        
+        {
+            "name": "Central Hub",
+            "latitude": 55.800000,
+            "longitude": 37.700000,
+            "type": "Stop",
+            "road_distances": {
+                "Biryulyovo Zapadnoye": 5000,
+                "Prazhskaya": 3000,
+                "Universam": 4000,
+                "Ochakovo": 2500,
+                "Marino": 4500
+            }
+        },        
+        {
             "is_roundtrip": true,
             "name": "297",
             "stops": [
                 "Biryulyovo Zapadnoye",
                 "Biryulyovo Tovarnaya",
+                "Central Hub",
                 "Universam",
                 "Biryulyovo Zapadnoye"
             ],
             "color_index": 1,
-            "type": "Bus"
+            "type": "Bus",
+            "type_of_drive": "autobus",
+            "capacity": 50,
+            "there_is_wifi": false,
+            "there_are_sockets": false,
+            "is_night": false,
+            "price": 50,
+            "is_available": true
         },
         {
             "is_roundtrip": false,
             "name": "635",
             "stops": [
                 "Biryulyovo Tovarnaya",
+                "Central Hub",
                 "Universam",
                 "Prazhskaya"
             ],
             "color_index": 2,
-            "type": "Bus"
+            "type": "Bus",
+            "type_of_drive": "electrobus",
+            "capacity": 40,
+            "there_is_wifi": true,
+            "there_are_sockets": true,
+            "is_night": true,
+            "price": 70,
+            "is_available": true
         },
         {
             "is_roundtrip": true,
             "name": "750",
             "stops": [
                 "Marino",
+                "Central Hub",
                 "Prazhskaya",
                 "Ochakovo",
-                "Marino"
+                "Marino",
+                "Central Hub"
             ],
             "color_index": 3,
-            "type": "Bus"
+            "type": "Bus",
+            "type_of_drive": "trolleybus",
+            "capacity": 60,
+            "there_is_wifi": false,
+            "there_are_sockets": true,
+            "is_night": false,
+            "price": 60,
+            "is_available": false
         },
         {
             "is_roundtrip": false,
             "name": "850",
             "stops": [
                 "Universam",
+                "Central Hub",
                 "Kuntsevo",
                 "Ochakovo"
             ],
             "color_index": 4,
-            "type": "Bus"
+            "type": "Bus",
+            "type_of_drive": "autobus",
+            "capacity": 45,
+            "there_is_wifi": false,
+            "there_are_sockets": false,
+            "is_night": true,
+            "price": 55,
+            "is_available": true
         },
         {
-            "latitude": 55.574371,
-            "longitude": 37.6517,
-            "name": "Biryulyovo Zapadnoye",
-            "road_distances": {
-                "Biryulyovo Tovarnaya": 2600
-            },
-            "type": "Stop"
+            "is_roundtrip": false,
+            "name": "123",
+            "stops": [
+                "Sakura Park",
+                "Rose Garden",
+                "Tulip Square",
+                "Central Hub"
+            ],
+            "color_index": 5,
+            "type": "Bus",
+            "type_of_drive": "electrobus",
+            "capacity": 30,
+            "there_is_wifi": true,
+            "there_are_sockets": true,
+            "is_night": false,
+            "price": 40,
+            "is_available": true
         },
         {
-            "latitude": 55.587655,
-            "longitude": 37.645687,
-            "name": "Universam",
-            "road_distances": {
-                "Biryulyovo Tovarnaya": 1380,
-                "Biryulyovo Zapadnoye": 2500,
-                "Prazhskaya": 4650
-            },
-            "type": "Stop"
+            "is_roundtrip": false,
+            "name": "55",
+            "stops": [
+                "South Gate",
+                "City Mall",
+                "MKAD",
+                "Sadovod",
+                "Ryazan Avenue",
+                "Biryulyovo Zapadnoye",
+                "Central Hub"
+            ],
+            "color_index": 7,
+            "type": "Bus",
+            "type_of_drive": "autobus",
+            "capacity": 70,
+            "there_is_wifi": false,
+            "there_are_sockets": false,
+            "is_night": false,
+            "price": 65,
+            "is_available": false
         },
         {
-            "latitude": 55.592028,
-            "longitude": 37.653656,
-            "name": "Biryulyovo Tovarnaya",
-            "road_distances": {
-                "Universam": 890
-            },
-            "type": "Stop"
+            "is_roundtrip": true,
+            "name": "114",
+            "stops": [
+                "Northern Station",
+                "Green Park",
+                "Rose Garden",
+                "Sakura Park",
+                "Northern Station"
+            ],
+            "color_index": 8,
+            "type": "Bus",
+            "type_of_drive": "trolleybus",
+            "capacity": 65,
+            "there_is_wifi": false,
+            "there_are_sockets": true,
+            "is_night": true,
+            "price": 45,
+            "is_available": true
         },
         {
-            "latitude": 55.611717,
-            "longitude": 37.603938,
-            "name": "Prazhskaya",
-            "road_distances": {
-                "Universam": 4650,
-                "Ochakovo": 3000
-            },
-            "type": "Stop"
+            "is_roundtrip": false,
+            "name": "400",
+            "stops": [
+                "City Center",
+                "Downtown",
+                "Central Park",
+                "City Center"
+            ],
+            "color_index": 9,
+            "type": "Bus",
+            "type_of_drive": "electrobus",
+            "capacity": 80,
+            "there_is_wifi": true,
+            "there_are_sockets": true,
+            "is_night": false,
+            "price": 75,
+            "is_available": true
         },
         {
-            "latitude": 55.614000,
-            "longitude": 37.651000,
-            "name": "Kuntsevo",
-            "road_distances": {
-                "Universam": 2000,
-                "Ochakovo": 1800
-            },
-            "type": "Stop"
+            "is_roundtrip": true,
+            "name": "98",
+            "stops": [
+                "Silver Park",
+                "Mountain Square",
+                "Waterfall Park",
+                "Silver Park"
+            ],
+            "color_index": 6,
+            "type": "Bus",
+            "type_of_drive": "autobus",
+            "capacity": 55,
+            "there_is_wifi": false,
+            "there_are_sockets": true,
+            "is_night": true,
+            "price": 60,
+            "is_available": true
         },
         {
-            "latitude": 55.610000,
-            "longitude": 37.659000,
-            "name": "Ochakovo",
-            "road_distances": {
-                "Marino": 2000,
-                "Prazhskaya": 3000
-            },
-            "type": "Stop"
+            "is_roundtrip": false,
+            "name": "306",
+            "stops": [
+                "West Gate",
+                "Sunny Hill",
+                "Maple Street"
+            ],
+            "color_index": 2,
+            "type": "Bus",
+            "type_of_drive": "trolleybus",
+            "capacity": 50,
+            "there_is_wifi": false,
+            "there_are_sockets": true,
+            "is_night": false,
+            "price": 55,
+            "is_available": true
         },
         {
-            "latitude": 55.607000,
-            "longitude": 37.640000,
-            "name": "Marino",
-            "road_distances": {
-                "Ochakovo": 2000
-            },
-            "type": "Stop"
+            "is_roundtrip": true,
+            "name": "812",
+            "stops": [
+                "Northern Station",
+                "Riverside",
+                "Mountain Square",
+                "Northern Station"
+            ],
+            "color_index": 5,
+            "type": "Bus",
+            "type_of_drive": "autobus",
+            "capacity": 60,
+            "there_is_wifi": true,
+            "there_are_sockets": false,
+            "is_night": false,
+            "price": 70,
+            "is_available": true
+        },
+        {
+            "is_roundtrip": false,
+            "name": "204",
+            "stops": [
+                "Sunny Hill",
+                "Riverside",
+                "West Gate"
+            ],
+            "color_index": 4,
+            "type": "Bus",
+            "type_of_drive": "electrobus",
+            "capacity": 50,
+            "there_is_wifi": true,
+            "there_are_sockets": true,
+            "is_night": false,
+            "price": 50,
+            "is_available": true
+        },
+        {
+            "is_roundtrip": false,
+            "name": "508",
+            "stops": [
+                "Mountain Square",
+                "Waterfall Park",
+                "Silver Park"
+            ],
+            "color_index": 7,
+            "type": "Bus",
+            "type_of_drive": "trolleybus",
+            "capacity": 45,
+            "there_is_wifi": false,
+            "there_are_sockets": true,
+            "is_night": true,
+            "price": 65,
+            "is_available": false
         }
     ],
     "render_settings": {
@@ -128,28 +547,142 @@
                 237
             ],
             [
-                252, 
-                174, 
-                203
+                255,
+                197,
+                251
             ],
             [
-                214, 
-                197, 
+                214,
+                197,
                 247
             ],
-            "red",
             [
-                173,
-                216,
-                230
+                198,
+                247,
+                197
+            ], 
+            [
+                247,
+                238,
+                197
+            ],
+            [
+                158,
+                182,
+                255
+            ],
+            [
+                224,
+                255,
+                255
+            ],
+            [
+                255, 
+                46, 
+                46
+            ],
+            [
+                175,
+                255, 
+                195
+            ],
+            [
+                250,
+                235,
+                215
+            ],
+            [
+                240,
+                230,
+                140
+            ],
+            [
+                255,
+                228,
+                225
+            ],
+            [
+                245,
+                222,
+                179
+            ],
+            [
+                250,
+                250,
+                210
+            ],
+            [
+                221,
+                160,
+                221
             ],
             [
                 255,
                 182,
                 193
+            ],
+            [
+                255,
+                240,
+                245
+            ],
+            [
+                230,
+                230,
+                250
+            ],
+            [
+                255,
+                239,
+                213
+            ],
+            [
+                255,
+                250,
+                205
+            ],
+            [
+                245,
+                245,
+                220
+            ],
+            [
+                240,
+                248,
+                255
+            ],
+            [
+                255,
+                235,
+                205
+            ],
+            [
+                240,
+                255,
+                240
+            ],
+            [
+                245,
+                245,
+                245
+            ],
+            [
+                255,
+                248,
+                220
+            ],
+            [
+                248,
+                248,
+                255
+            ],
+            [
+                255,
+                228,
+                196
             ]
         ],
-        "height": 576,
+        "height": 8000,
         "line_width": 14,
         "padding": 30,
         "stop_label_font_size": 20,
@@ -165,7 +698,7 @@
             0.85
         ],
         "underlayer_width": 3,
-        "width": 1251
+        "width": 1000
     },
     "routing_settings": {
         "bus_velocity": 40,
@@ -198,16 +731,6 @@
             "id": 5,
             "to": "Prazhskaya",
             "type": "Route"
-        },
-        {
-            "id": 6,
-            "name": "750",
-            "type": "Bus"
-        },
-        {
-            "id": 7,
-            "name": "850",
-            "type": "Bus"
         }
     ]
 }
