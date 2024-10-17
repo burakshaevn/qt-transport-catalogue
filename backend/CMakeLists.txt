@@ -1,4 +1,3 @@
-# backend/CMakeLists.txt
 cmake_minimum_required(VERSION 3.5)
 
 project(backend)
@@ -6,7 +5,6 @@ project(backend)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Указываем директорию с заголовочными файлами
 include_directories(include)
 
 add_library(backend STATIC
@@ -32,6 +30,4 @@ add_library(backend STATIC
     src/json_builder.cpp 
     src/json.cpp
 )
-
-# Подключаем библиотеку PostgreSQL
 target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL)
