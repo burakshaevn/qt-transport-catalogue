@@ -17,9 +17,9 @@ public:
         , transport_router_(transport_router)
     {}
 
-    std::optional<BusInfo> GetBusStat(const std::string_view& bus_number) const;
+    std::optional<BusInfo> GetBusStat(const std::string_view bus_number) const;
 
-    svg::Document RenderMap([[maybe_unused]] const std::string& bus_name) const;
+    svg::Document RenderMap([[maybe_unused]] const std::string_view bus_name) const;
 
     const TransportCatalogue& GetCatalogue() const;
 

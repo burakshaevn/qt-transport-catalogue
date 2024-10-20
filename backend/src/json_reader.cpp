@@ -116,7 +116,8 @@ void JsonReader::PullStopDistances(TransportCatalogue& catalogue) const {
             for (auto& [to_name, dist] : stop_distances) {
                 auto from = catalogue.FindStop(stop_name);
                 auto to = catalogue.FindStop(to_name);
-                catalogue.SetDistance(from, to, dist);
+                //catalogue.SetDistance(from, to, dist);
+                catalogue.SetDistance(&(*from), &(*to), dist);
             }
         }
     }
@@ -127,7 +128,17 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
     std::string_view bus_number = request_map.at("name").AsString();
     std::vector<const Stop*> stops;
     for (const auto& stop : request_map.at("stops").AsArray()) {
-        stops.push_back(catalogue.FindStop(stop.AsString()));
+        //stops.push_back(catalogue.FindStop(stop.AsString()));
+        //stops.push_back(&(*catalogue.FindStop(std::string_view(stop.AsString()))));
+        auto stop_opt = catalogue.FindStop(std::string_view(stop.AsString()));
+        if (stop_opt.has_value()) {
+            stops.push_back(&(*stop_opt));  // “еперь можно безопасно вз€ть адрес
+        }
+        else {
+            // ќбработка случа€, когда остановка не найдена
+            std::cerr << "Stop not found: " << stop.AsString() << std::endl;
+        }
+
     }
     bool circular_route = request_map.at("is_roundtrip").AsBool();
 
