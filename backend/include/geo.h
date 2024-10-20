@@ -6,6 +6,7 @@
 
 namespace detail {
     struct Coordinates {
+        Coordinates() = default;
         double lat;
         double lng;
         bool operator==(const Coordinates& other) const {

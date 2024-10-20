@@ -6,6 +6,7 @@
 #include <array>
 
 struct Stop {
+    Stop() = default;
     std::string name;
     detail::Coordinates coords;
 };

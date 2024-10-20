@@ -51,10 +51,10 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const std::string_view bus_num
 
 svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view bus_name) const {
     // Преобразование карты автобусов в карту указателей на автобусы
-    auto convertToPointerMap = [](const std::map<std::string_view, Bus>& buses) {
-        std::map<std::string_view, const Bus*> pointer_map;
+    auto convertToPointerMap = [](const std::map<std::string, Bus>& buses) -> std::map<std::string, Bus> {
+        std::map<std::string, Bus> pointer_map;
         for (const auto& [bus_name, bus] : buses) {
-            pointer_map[bus_name] = &bus;  // Преобразование в указатель
+            pointer_map[bus_name] = bus;  // Преобразование в указатель
         }
         return pointer_map;
         };
@@ -64,11 +64,11 @@ svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view 
         const auto buses = catalogue_.GetSortedBuses();
         return renderer_.GetSVG(convertToPointerMap(buses));
     }
-    else {
-        // Получаем отсортированный автобус по имени и преобразуем в карту указателей
-        const auto buses = catalogue_.GetSortedBuses(bus_name);
-        return renderer_.GetSVG(convertToPointerMap(buses));
-    }
+    //else {
+    //    // Получаем отсортированный автобус по имени и преобразуем в карту указателей
+    //    const auto buses = catalogue_.GetSortedBuses(bus_name);
+    //    return renderer_.GetSVG(convertToPointerMap(buses));
+    //}
 }
 
 

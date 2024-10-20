@@ -147,7 +147,7 @@ public:
     std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> GetDistances();
 
     // Получение отсортированных данных
-    std::map<std::string_view, Bus> GetSortedBuses() const;
+    std::map<std::string/*_view*/, Bus> GetSortedBuses() const;
     std::map<std::string_view, Bus> GetSortedBuses(const std::string_view bus_name) const;
     std::map<std::string_view, Stop> GetSortedStops() const;
 
@@ -157,4 +157,6 @@ public:
 
 private:
     DatabaseManager& db_manager_;  // Ссылка на менеджер базы данных
+    
+
 };
