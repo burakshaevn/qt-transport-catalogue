@@ -19,8 +19,9 @@ class RequestHandler;
 
 class JsonReader {
 public:
+    JsonReader() = default;
     JsonReader(std::istream& input)
-        : input_(json::Load(input))
+        : input_(json::Load(input)) 
     {}
 
     const json::Node& GetBaseRequests() const;
@@ -54,7 +55,7 @@ public:
     svg::Color PullColor(const json::Node& color_node) const;
 
 private:
-    json::Document input_; 
+    json::Document input_;  
 
     std::tuple<std::string_view, detail::Coordinates, std::map<std::string_view, int>> PullStop(const json::Dict& request_map) const;
     

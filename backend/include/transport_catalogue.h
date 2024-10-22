@@ -148,15 +148,14 @@ public:
 
     // Получение отсортированных данных
     std::map<std::string/*_view*/, Bus> GetSortedBuses() const;
-    std::map<std::string_view, Bus> GetSortedBuses(const std::string_view bus_name) const;
-    std::map<std::string_view, Stop> GetSortedStops() const;
+    std::map<std::string, Bus> GetSortedBuses(const std::string_view bus_name) const;
+    std::map<std::string, Stop> GetSortedStops() const;
 
     size_t ComputeUniqueStopsCount(const std::string_view bus_number) const;
 
     std::set<const Bus*> GetBusesForStop(const std::string_view stop_name) const;
 
 private:
-    DatabaseManager& db_manager_;  // Ссылка на менеджер базы данных
+    DatabaseManager& db_manager_;
     
-
 };

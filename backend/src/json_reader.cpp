@@ -203,11 +203,12 @@ renderer::MapRenderer JsonReader::PullRenderSettings(const json::Dict& request_m
     render_settings.underlayer_color = PullColor(request_map.at("underlayer_color"));
     render_settings.underlayer_width = request_map.at("underlayer_width").AsDouble();
     const json::Array& color_palette = request_map.at("color_palette").AsArray();
-
+    
     for (const auto& color_element : color_palette) {
         if (color_element.IsString()) {
             render_settings.color_palette.emplace_back(color_element.AsString());
         }
+        
         else if (color_element.IsArray()) {
             const json::Array& color_type = color_element.AsArray();
             if (color_type.size() == 3) {
@@ -225,12 +226,14 @@ renderer::MapRenderer JsonReader::PullRenderSettings(const json::Dict& request_m
         }
     }
 
+    std::cout << render_settings.color_palette.size() << std::endl;
+
     return render_settings;
 } 
 
 TransportRouter JsonReader::PullRoutingSettings(const json::Node& settings_map, const TransportCatalogue& catalogue) const {
     return TransportRouter{ settings_map.AsDict().at("bus_wait_time").AsInt(), settings_map.AsDict().at("bus_velocity").AsDouble(), catalogue };
-}
+} 
 
 const json::Node JsonReader::PrintBus(const json::Dict& request_map, RequestHandler& rh) const {
     json::Dict result;

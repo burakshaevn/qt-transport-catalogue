@@ -38,16 +38,7 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const std::string_view bus_num
     bus_stat.curvature = route_length / geographic_length;
 
     return bus_stat;
-}
-
-//svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string& bus_name) const {
-//    if (bus_name.empty()) {
-//        return renderer_.GetSVG(catalogue_.GetSortedBuses());
-//    }
-//    else {
-//        return renderer_.GetSVG(catalogue_.GetSortedBuses(bus_name));
-//    }
-//}
+} 
 
 svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view bus_name) const {
     // Преобразование карты автобусов в карту указателей на автобусы
@@ -60,17 +51,14 @@ svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view 
         };
 
     if (bus_name.empty()) {
-        // Получаем отсортированные автобусы и преобразуем их в карту указателей
-        const auto buses = catalogue_.GetSortedBuses();
-        return renderer_.GetSVG(convertToPointerMap(buses));
+        // Если название автобуса пустое, значит, нам нужно отрисовать все маршруты на карте
+        return renderer_.GetSVG(convertToPointerMap(catalogue_.GetSortedBuses()));
     }
-    //else {
-    //    // Получаем отсортированный автобус по имени и преобразуем в карту указателей
-    //    const auto buses = catalogue_.GetSortedBuses(bus_name);
-    //    return renderer_.GetSVG(convertToPointerMap(buses));
-    //}
+    else { 
+        // Если название автобуса указано, значит, нам нужно отрисовать только конкретный маршрут
+        return renderer_.GetSVG(convertToPointerMap(catalogue_.GetSortedBuses(bus_name)));
+    }
 }
-
 
 const TransportCatalogue& RequestHandler::GetCatalogue() const {
     return catalogue_;

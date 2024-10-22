@@ -334,25 +334,14 @@ int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
     if (query.next()) {
         return query.value("distance").toInt();
     }
-
-    query = db_manager_.executeSelectQuery(
-        QString("SELECT distance FROM distances WHERE from_stop = '%1' AND to_stop = '%2'")
-        .arg(QString::fromStdString(to->name))
-        .arg(QString::fromStdString(from->name))
-    );
-
-    if (query.next()) {
-        return query.value("distance").toInt();
-    }
-
+    
     return 0;
 }
 
-std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> TransportCatalogue::GetDistances()
-{
+std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> TransportCatalogue::GetDistances() {
     std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> distances;
 
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT from_stop, to_stop, distance FROM distances");
+    QSqlQuery query = db_manager_.executeSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
     while (query.next()) {
         std::string from_stop_name = query.value("from_stop").toString().toStdString();
         std::string to_stop_name = query.value("to_stop").toString().toStdString();
@@ -368,41 +357,20 @@ std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> Transpo
             distances[{from_stop, to_stop}] = distance;
         }
     }
-
     return distances;
 }
 
-// Получение всех автобусов, отсортированных по имени
-//std::map<std::string_view, Bus> TransportCatalogue::GetSortedBuses() const {
-//    std::map<std::string_view, Bus> result;
-//
-//    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM buses;");
-//    
-//    if (!db_manager_.open()) {
-//        qDebug() << "Не удалось подключиться к базе данных.";
-//        return result;
-//    }
-//     
-//    while (query.next()) {
-//        auto bus_opt = FindBus(query.value("name").toString().toStdString());
-//        if (bus_opt) {
-//            result[bus_opt->name] = *bus_opt;
-//        }
-//    }
-//
-//    return result;
-//}
-
+// Получение всех автобусов, отсортированных по имени 
 std::map<std::string, Bus> TransportCatalogue::GetSortedBuses() const {
     std::map<std::string, Bus> result; 
-    static std::vector<std::unique_ptr<Stop>> stops_storage; 
-
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM buses;");
+    static std::vector<std::unique_ptr<Stop>> temp_storage; 
 
     if (!db_manager_.Open()) {
         qDebug() << "Не удалось подключиться к базе данных.";
         return result;
     }
+
+    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM buses;");
 
     while (query.next()) {
         Bus bus;
@@ -435,17 +403,16 @@ std::map<std::string, Bus> TransportCatalogue::GetSortedBuses() const {
 
             // Добавляем указатель на этот объект в вектор bus.stops
             bus.stops.emplace_back(stop_ptr.get());
-            stops_storage.emplace_back(std::move(stop_ptr));  
+            temp_storage.emplace_back(std::move(stop_ptr));
         }
-
-        //bus_names_storage.emplace_back(std::move(bus.name));
+         
         result[bus.name] = std::move(bus); 
     } 
     return result;
 }
  
-std::map<std::string_view, Bus> TransportCatalogue::GetSortedBuses(const std::string_view bus_name) const {
-    std::map<std::string_view, Bus> result;
+std::map<std::string, Bus> TransportCatalogue::GetSortedBuses(const std::string_view bus_name) const {
+    std::map<std::string, Bus> result;
      
     QSqlQuery query;
     query.prepare("SELECT * FROM buses WHERE name = :bus_name");
@@ -467,10 +434,10 @@ std::map<std::string_view, Bus> TransportCatalogue::GetSortedBuses(const std::st
 }
 
 // Получение всех остановок, отсортированных по имени
-std::map<std::string_view, Stop> TransportCatalogue::GetSortedStops() const {
-    std::map<std::string_view, Stop> result;
+std::map<std::string, Stop> TransportCatalogue::GetSortedStops() const {
+    std::map<std::string, Stop> result;
 
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM stops ORDER BY name ASC");
+    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM stops;");
     while (query.next()) {
         Stop stop;
         stop.name = query.value("name").toString().toStdString();
@@ -496,9 +463,7 @@ size_t TransportCatalogue::ComputeUniqueStopsCount(const std::string_view bus_nu
     return unique_stops.size();
 }
 
-std::set<const Bus*> TransportCatalogue::GetBusesForStop(const std::string_view stop_name) const
-{
-    //return std::set<const Bus*>();
+std::set<const Bus*> TransportCatalogue::GetBusesForStop(const std::string_view stop_name) const {
     std::set<const Bus*> buses_for_stop;
 
     QSqlQuery query;
