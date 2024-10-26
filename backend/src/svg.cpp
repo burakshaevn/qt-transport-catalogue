@@ -1,4 +1,4 @@
-#include "svg.h"
+ï»¿#include "svg.h"
 
 namespace svg {
 
@@ -58,7 +58,7 @@ namespace svg {
         auto& out = context.out;
         out << "<circle cx=\""sv << center_.x << "\" cy=\""sv << center_.y << "\" "sv;
         out << "r=\""sv << radius_ << "\" "sv;
-        // Âûâîäèì àòðèáóòû, óíàñëåäîâàííûå îò PathProps
+        // Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ð¼ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, ÑƒÐ½Ð°ÑÐ»ÐµÐ´Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð¾Ñ‚ PathProps
         RenderAttrs(context.out);
         out << "/>"sv;
     }
@@ -97,7 +97,7 @@ namespace svg {
         auto& out = context.out;
         out << "<text";
         
-        // Âûâîäèì àòðèáóòû, óíàñëåäîâàííûå îò PathProps
+        // Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ð¼ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, ÑƒÐ½Ð°ÑÐ»ÐµÐ´Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð¾Ñ‚ PathProps
         RenderAttrs(context.out);
         out << " x=\""sv << pos_.x + offset_.x << "\" y=\""sv << pos_.y + offset_.y << "\" "sv;
         //out << "dx=\""sv << offset_.x << "\" dy=\""sv << offset_.y << "\" "sv;
@@ -126,7 +126,7 @@ namespace svg {
             }
         }
         out << "\"";
-        // Âûâîäèì àòðèáóòû, óíàñëåäîâàííûå îò PathProps
+        // Ð’Ñ‹Ð²Ð¾Ð´Ð¸Ð¼ Ð°Ñ‚Ñ€Ð¸Ð±ÑƒÑ‚Ñ‹, ÑƒÐ½Ð°ÑÐ»ÐµÐ´Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð¾Ñ‚ PathProps
         RenderAttrs(context.out);
         out << "/>";
     }

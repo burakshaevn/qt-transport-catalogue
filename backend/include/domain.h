@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <vector> 
@@ -8,7 +8,11 @@
 struct Stop {
     Stop() = default;
     std::string name;
-    detail::Coordinates coords;
+    detail::Coordinates coords; 
+
+    bool operator<(const Stop& other) const {
+        return name < other.name;
+    }
 };
 
 enum class BusType {

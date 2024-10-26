@@ -1,5 +1,5 @@
-/*
- * Код обработки запросов к базе и формирование массива ответов в формате JSON
+п»ї/*
+ * РљРѕРґ РѕР±СЂР°Р±РѕС‚РєРё Р·Р°РїСЂРѕСЃРѕРІ Рє Р±Р°Р·Рµ Рё С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ РјР°СЃСЃРёРІР° РѕС‚РІРµС‚РѕРІ РІ С„РѕСЂРјР°С‚Рµ JSON
  */
 
 #include "json_reader.h" 
@@ -132,10 +132,10 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
         //stops.push_back(&(*catalogue.FindStop(std::string_view(stop.AsString()))));
         auto stop_opt = catalogue.FindStop(std::string_view(stop.AsString()));
         if (stop_opt.has_value()) {
-            stops.push_back(&(*stop_opt));  // Теперь можно безопасно взять адрес
+            stops.push_back(&(*stop_opt));  // РўРµРїРµСЂСЊ РјРѕР¶РЅРѕ Р±РµР·РѕРїР°СЃРЅРѕ РІР·СЏС‚СЊ Р°РґСЂРµСЃ
         }
         else {
-            // Обработка случая, когда остановка не найдена
+            // РћР±СЂР°Р±РѕС‚РєР° СЃР»СѓС‡Р°СЏ, РєРѕРіРґР° РѕСЃС‚Р°РЅРѕРІРєР° РЅРµ РЅР°Р№РґРµРЅР°
             std::cerr << "Stop not found: " << stop.AsString() << std::endl;
         }
 

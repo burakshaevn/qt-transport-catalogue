@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.5)
 
 project(backend)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Указываем директорию с заголовочными файлами
+# РЈРєР°Р·С‹РІР°РµРј РґРёСЂРµРєС‚РѕСЂРёСЋ СЃ Р·Р°РіРѕР»РѕРІРѕС‡РЅС‹РјРё С„Р°Р№Р»Р°РјРё
 include_directories(include)
 
-# Подключаем файлы database_manager.cpp и .h
+# РџРѕРґРєР»СЋС‡Р°РµРј С„Р°Р№Р»С‹ database_manager.cpp Рё .h
 set(BACKEND_SOURCES
     include/domain.h 
     include/geo.h 
@@ -37,12 +37,9 @@ set(BACKEND_SOURCES
 
 add_library(backend STATIC ${BACKEND_SOURCES})
 
-# Подключаем библиотеки Qt и PostgreSQL для работы с database_manager
+# РџРѕРґРєР»СЋС‡Р°РµРј Р±РёР±Р»РёРѕС‚РµРєРё Qt Рё PostgreSQL РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ database_manager
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 target_link_libraries(backend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql)
-target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL)
-
-# Подключаем библиотеку PostgreSQL (если требуется)
-target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL)
+target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL) 

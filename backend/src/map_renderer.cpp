@@ -1,5 +1,5 @@
-/*
-* Визуализация карты маршрутов в формате SVG. 
+п»ї/*
+* Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ РєР°СЂС‚С‹ РјР°СЂС€СЂСѓС‚РѕРІ РІ С„РѕСЂРјР°С‚Рµ SVG. 
 */
 
 #include "map_renderer.h"
@@ -139,7 +139,7 @@ namespace renderer {
         std::vector<detail::Coordinates> route_stops_coord;
         std::map<std::string_view, const Stop*> all_stops;
 
-        // Преобразуем std::map<std::string, Bus> в std::map<std::string_view, const Bus*>
+        // РџСЂРµРѕР±СЂР°Р·СѓРµРј std::map<std::string, Bus> РІ std::map<std::string_view, const Bus*>
         std::map<std::string_view, const Bus*> buses_view;
         for (const auto& [bus_number, bus] : buses) {
             buses_view[bus_number] = &bus;
@@ -157,7 +157,7 @@ namespace renderer {
 
         SphereProjector sp(route_stops_coord.begin(), route_stops_coord.end(), render_settings_.width, render_settings_.height, render_settings_.padding);
 
-        // Вызываем методы с преобразованной картой
+        // Р’С‹Р·С‹РІР°РµРј РјРµС‚РѕРґС‹ СЃ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРЅРѕР№ РєР°СЂС‚РѕР№
         DrawRouteLines(buses_view, sp, result);
         DrawBusLabel(buses_view, sp, result);
         DrawStopsSymbols(all_stops, sp, result);

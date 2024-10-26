@@ -1,6 +1,6 @@
-//#include "transport_catalogue.h" 
+﻿//#include "transport_catalogue.h" 
 //
-//// добавление маршрута в базу,
+//// РґРѕР±Р°РІР»РµРЅРёРµ РјР°СЂС€СЂСѓС‚Р° РІ Р±Р°Р·Сѓ,
 //void TransportCatalogue::AddBus(const std::string_view busname,
 //                                std::vector<const Stop*>& stops,
 //                                const bool is_roundtrip,
@@ -21,13 +21,13 @@
 //	} 
 //}
 //
-//// добавление остановки в базу,
+//// РґРѕР±Р°РІР»РµРЅРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РІ Р±Р°Р·Сѓ,
 //void TransportCatalogue::AddStop(const std::string_view stopname, const detail::Coordinates& coordinates) {
 //	stops_.push_back({ std::string(stopname), coordinates });
 //	stopname_to_stop_[stops_.back().name] = &stops_.back();
 //} 
 //
-//// поиск маршрута по имени,
+//// РїРѕРёСЃРє РјР°СЂС€СЂСѓС‚Р° РїРѕ РёРјРµРЅРё,
 //const Bus* TransportCatalogue::FindBus(const std::string_view busname) const {
 //	auto iter = busname_to_bus_.find(busname);
 //	if (iter != busname_to_bus_.end()) {
@@ -38,7 +38,7 @@
 //	}
 //}
 //
-//// поиск остановки по имени,
+//// РїРѕРёСЃРє РѕСЃС‚Р°РЅРѕРІРєРё РїРѕ РёРјРµРЅРё,
 //const Stop* TransportCatalogue::FindStop(const std::string_view stopname) const {
 //	auto iter = stopname_to_stop_.find(stopname);
 //	if (iter != stopname_to_stop_.end()) {
@@ -52,17 +52,17 @@
 //const BusInfo TransportCatalogue::GetBusInfo(const Bus* current_bus) const {
 //	BusInfo bus_info;
 //    bus_info.name = current_bus->name;
-//	// Подсчёт количества оставновок stop_size
+//	// РџРѕРґСЃС‡С‘С‚ РєРѕР»РёС‡РµСЃС‚РІР° РѕСЃС‚Р°РІРЅРѕРІРѕРє stop_size
 //	bus_info.count_stops = current_bus->stops.size();
 //
-//	// Подсчёт уникальных остановок 
+//	// РџРѕРґСЃС‡С‘С‚ СѓРЅРёРєР°Р»СЊРЅС‹С… РѕСЃС‚Р°РЅРѕРІРѕРє 
 //	std::unordered_set<std::string> unique_stops;
 //	for (const auto& stop : current_bus->stops) {
 //		unique_stops.insert(stop->name);
 //	}
 //	bus_info.unique_count_stops = unique_stops.size();
 //
-//	// Длина маршрута в метрах
+//	// Р”Р»РёРЅР° РјР°СЂС€СЂСѓС‚Р° РІ РјРµС‚СЂР°С…
 //	int route_length = 0;
 //	double geographic_length = 0.0;
 //
@@ -105,7 +105,7 @@
 //	if (auto it = distances_.find({ from, to }); it != distances_.end()) {
 //		return it->second;
 //	}
-//	// Проверка на обратное направление, если расстояние не найдено в прямом направлении
+//	// РџСЂРѕРІРµСЂРєР° РЅР° РѕР±СЂР°С‚РЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ, РµСЃР»Рё СЂР°СЃСЃС‚РѕСЏРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ РІ РїСЂСЏРјРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё
 //	if (auto it = distances_.find({ to, from }); it != distances_.end()) {
 //		return it->second;
 //	}
@@ -151,7 +151,7 @@
 //}
 #include "transport_catalogue.h"
 
-// Преобразование типа автобуса в строку
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїР° Р°РІС‚РѕР±СѓСЃР° РІ СЃС‚СЂРѕРєСѓ
 std::string TransportCatalogue::BusTypeToString(BusType bus_type) {
     switch (bus_type) {
     case BusType::Autobus:
@@ -165,15 +165,15 @@ std::string TransportCatalogue::BusTypeToString(BusType bus_type) {
     }
 }
 
-// Преобразование строки в тип автобуса
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё РІ С‚РёРї Р°РІС‚РѕР±СѓСЃР°
 BusType TransportCatalogue::StringToBusType(const std::string& bus_type) const {
-    if (bus_type == "Autobus") {
+    if (bus_type == "autobus") {
         return BusType::Autobus;
     }
-    else if (bus_type == "Electrobus") {
+    else if (bus_type == "electrobus") {
         return BusType::Electrobus;
     }
-    else if (bus_type == "Trolleybus") {
+    else if (bus_type == "trolleybus") {
         return BusType::Trolleybus;
     }
     else {
@@ -181,7 +181,7 @@ BusType TransportCatalogue::StringToBusType(const std::string& bus_type) const {
     }
 }
 
-// Добавление автобуса в базу данных
+// Р”РѕР±Р°РІР»РµРЅРёРµ Р°РІС‚РѕР±СѓСЃР° РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
 void TransportCatalogue::AddBus(const std::string_view name, std::vector<const Stop*>& stops, const bool is_roundtrip,
     const size_t color_index, const std::array<uint8_t, 3> rgb, const BusType bus_type,
     const uint8_t capacity, const bool has_wifi, const bool has_sockets,
@@ -209,19 +209,19 @@ void TransportCatalogue::AddBus(const std::string_view name, std::vector<const S
     );
 }
 
-// Добавление остановки в базу данных
+// Р”РѕР±Р°РІР»РµРЅРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
 void TransportCatalogue::AddStop(const std::string_view name, const detail::Coordinates& coordinates) {
     db_manager_.AddStop(QString::fromStdString(std::string(name)), coordinates.lat, coordinates.lng);
 }
 
-// Установка расстояния между остановками
+// РЈСЃС‚Р°РЅРѕРІРєР° СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ РѕСЃС‚Р°РЅРѕРІРєР°РјРё
 void TransportCatalogue::SetDistance(const Stop* from, const Stop* to, int distance) {
     db_manager_.AddDistance(QString::fromStdString(from->name), QString::fromStdString(to->name), distance);
 }
 
-// Поиск автобуса по имени
+// РџРѕРёСЃРє Р°РІС‚РѕР±СѓСЃР° РїРѕ РёРјРµРЅРё
 std::optional<Bus> TransportCatalogue::FindBus(const std::string_view name) const {
-    QSqlQuery query = db_manager_.executeSelectQuery(
+    QSqlQuery query = db_manager_.ExecuteSelectQuery(
         QString("SELECT * FROM buses WHERE name = '%1';").arg(QString::fromStdString(std::string(name)))
     );
 
@@ -238,19 +238,19 @@ std::optional<Bus> TransportCatalogue::FindBus(const std::string_view name) cons
         bus.is_available = query.value("is_available").toBool();
         bus.price = query.value("price").toUInt();
 
-        QSqlQuery stops_query = db_manager_.executeSelectQuery(
+        QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
             QString("SELECT s.name, s.latitude, s.longitude FROM bus_stops bs JOIN stops s ON bs.stop_id = s.id WHERE bs.bus_id = %1;").arg(query.value("id").toInt())
         );
 
         static std::vector<std::unique_ptr<Stop>> stops_storage;
         while (stops_query.next()) {
-            // Создаем объект Stop в динамической памяти
+            // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ Stop РІ РґРёРЅР°РјРёС‡РµСЃРєРѕР№ РїР°РјСЏС‚Рё
             auto stop_ptr = std::make_unique<Stop>();
             stop_ptr->name = stops_query.value("name").toString().toStdString();
             stop_ptr->coords.lat = stops_query.value("latitude").toDouble();
             stop_ptr->coords.lng = stops_query.value("longitude").toDouble();
 
-            // Добавляем указатель на этот объект в вектор bus.stops
+            // Р”РѕР±Р°РІР»СЏРµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЌС‚РѕС‚ РѕР±СЉРµРєС‚ РІ РІРµРєС‚РѕСЂ bus.stops
             bus.stops.emplace_back(stop_ptr.get());
             stops_storage.emplace_back(std::move(stop_ptr));
         }
@@ -259,9 +259,9 @@ std::optional<Bus> TransportCatalogue::FindBus(const std::string_view name) cons
     return std::nullopt;
 }
 
-// Поиск остановки по имени
+// РџРѕРёСЃРє РѕСЃС‚Р°РЅРѕРІРєРё РїРѕ РёРјРµРЅРё
 std::optional<Stop> TransportCatalogue::FindStop(const std::string_view name) const {
-    QSqlQuery query = db_manager_.executeSelectQuery(
+    QSqlQuery query = db_manager_.ExecuteSelectQuery(
         QString("SELECT * FROM stops WHERE name = '%1'").arg(QString::fromStdString(std::string(name)))
     );
 
@@ -276,7 +276,7 @@ std::optional<Stop> TransportCatalogue::FindStop(const std::string_view name) co
     return std::nullopt;
 }
 
-// Получение информации о маршруте автобуса
+// РџРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РјР°СЂС€СЂСѓС‚Рµ Р°РІС‚РѕР±СѓСЃР°
 BusInfo TransportCatalogue::GetBusInfo(const std::string_view bus_name) const {
     auto bus_opt = FindBus(bus_name);
     if (!bus_opt) {
@@ -288,14 +288,14 @@ BusInfo TransportCatalogue::GetBusInfo(const std::string_view bus_name) const {
     bus_info.name = bus.name;
     bus_info.count_stops = bus.stops.size();
 
-    // Подсчёт уникальных остановок
+    // РџРѕРґСЃС‡С‘С‚ СѓРЅРёРєР°Р»СЊРЅС‹С… РѕСЃС‚Р°РЅРѕРІРѕРє
     std::unordered_set<std::string> unique_stops;
     for (const auto& stop : bus.stops) {
         unique_stops.insert(stop->name);
     }
     bus_info.unique_count_stops = unique_stops.size();
 
-    // Подсчёт длины маршрута
+    // РџРѕРґСЃС‡С‘С‚ РґР»РёРЅС‹ РјР°СЂС€СЂСѓС‚Р°
     int route_length = 0;
     double geographic_length = 0.0;
 
@@ -323,9 +323,9 @@ BusInfo TransportCatalogue::GetBusInfo(const std::string_view bus_name) const {
     return bus_info;
 }
 
-// Получение расстояния между двумя остановками
+// РџРѕР»СѓС‡РµРЅРёРµ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ РґРІСѓРјСЏ РѕСЃС‚Р°РЅРѕРІРєР°РјРё
 int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
-    QSqlQuery query = db_manager_.executeSelectQuery(
+    QSqlQuery query = db_manager_.ExecuteSelectQuery(
         QString("SELECT distance FROM distances WHERE from_stop = '%1' AND to_stop = '%2'")
         .arg(QString::fromStdString(from->name))
         .arg(QString::fromStdString(to->name))
@@ -341,13 +341,13 @@ int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
 std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> TransportCatalogue::GetDistances() {
     std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> distances;
 
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
+    QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
     while (query.next()) {
         std::string from_stop_name = query.value("from_stop").toString().toStdString();
         std::string to_stop_name = query.value("to_stop").toString().toStdString();
         int distance = query.value("distance").toInt();
 
-        // Находим указатели на остановки
+        // РќР°С…РѕРґРёРј СѓРєР°Р·Р°С‚РµР»Рё РЅР° РѕСЃС‚Р°РЅРѕРІРєРё
         auto from_stop_opt = FindStop(from_stop_name);
         auto to_stop_opt = FindStop(to_stop_name);
 
@@ -360,17 +360,17 @@ std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> Transpo
     return distances;
 }
 
-// Получение всех автобусов, отсортированных по имени 
+// РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… Р°РІС‚РѕР±СѓСЃРѕРІ, РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹С… РїРѕ РёРјРµРЅРё 
 std::map<std::string, Bus> TransportCatalogue::GetSortedBuses() const {
     std::map<std::string, Bus> result; 
     static std::vector<std::unique_ptr<Stop>> temp_storage; 
 
     if (!db_manager_.Open()) {
-        qDebug() << "Не удалось подключиться к базе данных.";
+        qDebug() << "РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С….";
         return result;
     }
 
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM buses;");
+    QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT * FROM buses;");
 
     while (query.next()) {
         Bus bus;
@@ -390,18 +390,18 @@ std::map<std::string, Bus> TransportCatalogue::GetSortedBuses() const {
         bus.is_available = query.value("is_available").toBool();
         bus.price = static_cast<uint8_t>(query.value("price").toInt());
          
-        QSqlQuery stops_query = db_manager_.executeSelectQuery(
+        QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
             QString("SELECT s.name, s.latitude, s.longitude FROM bus_stops bs JOIN stops s ON bs.stop_id = s.id WHERE bs.bus_id = %1;").arg(query.value("id").toInt())
         ); 
 
         while (stops_query.next()) {
-            // Создаем объект Stop в динамической памяти
+            // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ Stop РІ РґРёРЅР°РјРёС‡РµСЃРєРѕР№ РїР°РјСЏС‚Рё
             auto stop_ptr = std::make_unique<Stop>();
             stop_ptr->name = stops_query.value("name").toString().toStdString();
             stop_ptr->coords.lat = stops_query.value("latitude").toDouble();
             stop_ptr->coords.lng = stops_query.value("longitude").toDouble();
 
-            // Добавляем указатель на этот объект в вектор bus.stops
+            // Р”РѕР±Р°РІР»СЏРµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЌС‚РѕС‚ РѕР±СЉРµРєС‚ РІ РІРµРєС‚РѕСЂ bus.stops
             bus.stops.emplace_back(stop_ptr.get());
             temp_storage.emplace_back(std::move(stop_ptr));
         }
@@ -427,17 +427,17 @@ std::map<std::string, Bus> TransportCatalogue::GetSortedBuses(const std::string_
         }
     }
     else {
-        qDebug() << "Ошибка выполнения запроса: " << query.lastError().text();
+        qDebug() << "РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°: " << query.lastError().text();
     }
 
     return result;
 }
 
-// Получение всех остановок, отсортированных по имени
+// РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… РѕСЃС‚Р°РЅРѕРІРѕРє, РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹С… РїРѕ РёРјРµРЅРё
 std::map<std::string, Stop> TransportCatalogue::GetSortedStops() const {
     std::map<std::string, Stop> result;
 
-    QSqlQuery query = db_manager_.executeSelectQuery("SELECT * FROM stops;");
+    QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT * FROM stops;");
     while (query.next()) {
         Stop stop;
         stop.name = query.value("name").toString().toStdString();
