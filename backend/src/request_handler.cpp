@@ -45,7 +45,7 @@ svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view 
     auto convertToPointerMap = [](const std::map<std::string, Bus>& buses) -> std::map<std::string, Bus> {
         std::map<std::string, Bus> pointer_map;
         for (const auto& [bus_name, bus] : buses) {
-            pointer_map[bus_name] = bus;  // Преобразование в указатель
+            pointer_map[bus_name] = bus;   
         }
         return pointer_map;
         };

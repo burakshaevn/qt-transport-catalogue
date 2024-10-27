@@ -1,29 +1,29 @@
-﻿//#pragma once
-//
-//#include "domain.h"
-//#include <deque>
-//#include <iostream>
-//#include <set> 
-//#include <map> 
-//#include <unordered_map>
-//#include <unordered_set>
-//#include <vector>
-//#include "domain.h"
-//#include "geo.h"
-//#include <algorithm>
-//
-//using namespace std::string_literals;
-//using namespace std::string_view_literals;
-//
-//// РєР»Р°СЃСЃ С‚СЂР°РЅСЃРїРѕСЂС‚РЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР° 
-//
-//struct StopHasher {
-//	size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
-//		size_t hash_first = std::hash<const void*>{}(points.first);
-//		size_t hash_second = std::hash<const void*>{}(points.second);
-//		return hash_first + hash_second * 37;
-//	}
-//};
+﻿#pragma once
+
+#include "domain.h"
+#include <deque>
+#include <iostream>
+#include <set> 
+#include <map> 
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "domain.h"
+#include "geo.h"
+#include <algorithm>
+
+using namespace std::string_literals;
+using namespace std::string_view_literals;
+
+// РєР»Р°СЃСЃ С‚СЂР°РЅСЃРїРѕСЂС‚РЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР° 
+
+struct StopHasher {
+	size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
+		size_t hash_first = std::hash<const void*>{}(points.first);
+		size_t hash_second = std::hash<const void*>{}(points.second);
+		return hash_first + hash_second * 37;
+	}
+};
 //
 //class TransportCatalogue {
 //public:
@@ -88,30 +88,12 @@
 //	std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> distances_;
 //};
 
-#pragma once
-
-#include "domain.h"
-#include "geo.h"
-#include <map>
-#include <set>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
 #include <optional>
 
 #include "../../database_manager.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QSqlError> 
-
-struct StopHasher {
-	size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
-		size_t hash_first = std::hash<const void*>{}(points.first);
-		size_t hash_second = std::hash<const void*>{}(points.second);
-		return hash_first + hash_second * 37;
-	}
-};
+#include <QSqlError>  
 
 class TransportCatalogue {
 public:

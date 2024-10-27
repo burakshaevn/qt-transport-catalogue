@@ -2,14 +2,15 @@
 
 #include <QMainWindow>
 #include "ui_bus_editor.h" 
-#include "database_manager.h" 
+#include "database_manager.h"  
+#include "mainwindow.h"
 
 class BusEditor : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	BusEditor(QWidget *parent = nullptr, DatabaseManager* db_ = nullptr);
+	BusEditor(QWidget *parent, DatabaseManager* db_, const std::shared_ptr<Bus>& bus_);
 	~BusEditor();
 
 private slots:
@@ -24,4 +25,8 @@ private slots:
 private:
 	Ui::BusEditorClass ui;
 	DatabaseManager* db_manager;  
+	std::shared_ptr<Bus> current_bus;
+
+	void DisplayCurrentBusToEditPage();
+	void DisplayCurrentBusToAppendPage(); 
 };

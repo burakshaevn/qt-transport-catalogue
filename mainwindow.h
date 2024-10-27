@@ -44,7 +44,7 @@ private slots:
 
     void on_connect_to_db_default_clicked();
 
-    void OpenEditBusDialog(const Bus* bus);
+    void OpenEditBusDialog(const std::shared_ptr<Bus>& bus);
 
 private:
     Ui::MainWindow *ui;
@@ -74,7 +74,7 @@ private:
                         const std::optional<bool> = std::nullopt,
                         const uint8_t price = 0);
 
-    void DrawBus(const Bus* bus, QVBoxLayout* layout);
+    void DrawBus(Bus* bus, QVBoxLayout* layout);
 
     void DrawStop(const Stop& stop, QVBoxLayout* layout);
 

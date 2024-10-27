@@ -661,7 +661,7 @@
      <widget class="QComboBox" name="comboBox_is_sockets_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>429</x>
         <y>256</y>
         <width>201</width>
         <height>17</height>
@@ -678,7 +678,7 @@
      <widget class="QComboBox" name="comboBox_bustype_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>430</x>
         <y>114</y>
         <width>201</width>
         <height>17</height>
@@ -695,7 +695,7 @@
      <widget class="QComboBox" name="comboBox_is_roundtrip_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>429</x>
         <y>171</y>
         <width>201</width>
         <height>17</height>
@@ -712,7 +712,7 @@
      <widget class="QComboBox" name="comboBox_is_available_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>429</x>
         <y>342</y>
         <width>201</width>
         <height>17</height>
@@ -729,7 +729,7 @@
      <widget class="QComboBox" name="comboBox_is_day_bus_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>429</x>
         <y>285</y>
         <width>201</width>
         <height>17</height>
@@ -746,7 +746,7 @@
      <widget class="QComboBox" name="comboBox_is_night_bus_2">
       <property name="geometry">
        <rect>
-        <x>428</x>
+        <x>429</x>
         <y>314</y>
         <width>201</width>
         <height>17</height>
@@ -763,7 +763,7 @@
      <widget class="QComboBox" name="comboBox_is_wifi_2">
       <property name="geometry">
        <rect>
-        <x>429</x>
+        <x>430</x>
         <y>228</y>
         <width>201</width>
         <height>17</height>

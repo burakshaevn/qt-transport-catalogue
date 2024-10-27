@@ -531,30 +531,33 @@ void MainWindow::GetRelevantBuses(
 
     auto buses = transport_catalogue_.GetSortedBuses();
 
-    std::multimap<double, const Bus*, std::greater<double>> relevant_buses;
+    std::multimap<double, Bus*, std::greater<double>> relevant_buses;
 
-    for (const auto& [bus_name, bus] : buses) {
+    for (auto& [bus_name, bus] : buses) {
         double tf_idf = compute_tf_idf_for_bus(bus);
         if (tf_idf > 0.0) {
             relevant_buses.emplace(tf_idf, &bus);
         }
     }
 
-    for (const auto& [tf_idf, bus] : relevant_buses) {
+    for (auto& [tf_idf, bus] : relevant_buses) {
         DrawBus(bus, layout);
     }
 
     ui->scrollAreaWidgetContents->setLayout(layout);
 }
 
-void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
+void MainWindow::DrawBus(Bus* bus, QVBoxLayout* layout) {
+    // Создаем общий указатель на Bus, передавая raw-показатель
+    std::shared_ptr<Bus> bus_ptr(bus);//std::shared_ptr<Bus>(bus);
+
     // Лейбл, на котором будут располагаться блоки с информацией о маршруте
     QLabel* backgroundLabel = new QLabel(ui->scrollAreaWidgetContents);
     backgroundLabel->setStyleSheet("background-color: #FFFFFF;");
     backgroundLabel->setFixedSize(631, 100);
 
     // Номер автобуса
-    QLabel* numberLabel = new QLabel(QString::fromStdString(bus->name), backgroundLabel);
+    QLabel* numberLabel = new QLabel(QString::fromStdString(bus_ptr->name), backgroundLabel);
     numberLabel->setStyleSheet("color: #2E1C0C; font: 500 20pt 'JetBrains Mono';");
     numberLabel->setFixedSize(70, 31);
     numberLabel->setAlignment(Qt::AlignLeft);
@@ -562,7 +565,7 @@ void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
 
     // информация о маршруте: тип автобуса, количество мест и остановок
     QString infoText;
-    switch (bus->bus_type) {
+    switch (bus_ptr->bus_type) {
     case BusType::Autobus:
         infoText += "Автобус\n";
         break;
@@ -576,8 +579,8 @@ void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
         infoText += "Неопределён\n";
         break;
     }
-    infoText += (QString::number(bus->capacity) + " мест\n");
-    infoText += (QString::number(bus->stops.size()) + " остановок");
+    infoText += (QString::number(bus_ptr->capacity) + " мест\n");
+    infoText += (QString::number(bus_ptr->stops.size()) + " остановок");
 
     QLabel* infoLabel = new QLabel(infoText, backgroundLabel);
     infoLabel->setStyleSheet("color: #2E1C0C; font: 500 10pt 'JetBrains Mono';");
@@ -586,9 +589,9 @@ void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
     infoLabel->move(84, 22);
 
     // кольцевой/некольцевой, длина и кривизна маршрута
-    BusInfo bus_info = transport_catalogue_.GetBusInfo(bus->name);
+    BusInfo bus_info = transport_catalogue_.GetBusInfo(bus_ptr->name);
     QString infoText2;
-    infoText2 += (bus->is_roundtrip ? "Кольцевой\n" : "Некольцевой\n");
+    infoText2 += (bus_ptr->is_roundtrip ? "Кольцевой\n" : "Некольцевой\n");
     infoText2 += ("Длина " + QString::number(bus_info.len) + " м\n");
     infoText2 += ("Кривизна " + QString::number(bus_info.curvature));
 
@@ -600,9 +603,9 @@ void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
 
     // наличие wi-fi,  розеток и ночной ли маршрут
     QString infoText3;
-    infoText3 += (bus->has_wifi ? "Есть Wi-Fi\n" : "Нет Wi-Fi\n");
-    infoText3 += (bus->has_sockets ? "Есть розетка\n" : "Нет розетки\n");
-    infoText3 += (bus->is_night ? "Ночной маршрут" : "Дневной маршрут");
+    infoText3 += (bus_ptr->has_wifi ? "Есть Wi-Fi\n" : "Нет Wi-Fi\n");
+    infoText3 += (bus_ptr->has_sockets ? "Есть розетка\n" : "Нет розетки\n");
+    infoText3 += (bus_ptr->is_night ? "Ночной маршрут" : "Дневной маршрут");
 
     QLabel* infoLabel3 = new QLabel(infoText3, backgroundLabel);
     infoLabel3->setStyleSheet("color: #2E1C0C; font: 500 10pt 'JetBrains Mono';");
@@ -611,32 +614,126 @@ void MainWindow::DrawBus(const Bus* bus, QVBoxLayout* layout) {
     infoLabel3->move(370, 22);
 
     // цена
-    QLabel* priceLabel = new QLabel(QString::number(bus->price) + " руб.", backgroundLabel);
+    QLabel* priceLabel = new QLabel(QString::number(bus_ptr->price) + " руб.", backgroundLabel);
     priceLabel->setStyleSheet("color: #2E1C0C; font: 500 15pt 'JetBrains Mono';");
     priceLabel->setFixedSize(125, 23);
     priceLabel->setAlignment(Qt::AlignRight);
     priceLabel->move(493, 63);
 
     // доступность
-    QLabel* availableLabel = new QLabel(bus->is_available ? "Доступен" : "Недоступен", backgroundLabel);
-    availableLabel->setStyleSheet(bus->is_available ? "color: #00BF63; font: 500 10pt 'JetBrains Mono';" : "color: #FF3131; font: 500 10pt 'JetBrains Mono';");
+    QLabel* availableLabel = new QLabel(bus_ptr->is_available ? "Доступен" : "Недоступен", backgroundLabel);
+    availableLabel->setStyleSheet(bus_ptr->is_available ? "color: #00BF63; font: 500 10pt 'JetBrains Mono';" : "color: #FF3131; font: 500 10pt 'JetBrains Mono';");
     availableLabel->setFixedSize(102, 17);
     availableLabel->setAlignment(Qt::AlignRight);
     availableLabel->move(514, 15);
 
-    QPushButton* select_ = new QPushButton(backgroundLabel); 
-    select_->setIcon(QIcon(":/resources/edit_20x20.png"));   
-    select_->setIconSize(QSize(20, 20));                    
-    select_->setFixedSize(20, 20);                           
-    select_->move(8, 3);                                     
-    select_->setStyleSheet("border-radius: 0px;");           
+    QPushButton* select_ = new QPushButton(backgroundLabel);
+    select_->setIcon(QIcon(":/resources/edit_20x20.png"));
+    select_->setIconSize(QSize(20, 20));
+    select_->setFixedSize(20, 20);
+    select_->move(8, 3);
+    select_->setStyleSheet("border-radius: 0px;");
 
-    connect(select_, &QPushButton::clicked, [this, bus]() {
-        OpenEditBusDialog(bus);
+    // Используем shared_ptr в лямбде, чтобы избежать проблем с инвалидированием
+    connect(select_, &QPushButton::clicked, [this, bus_ptr]() {
+        OpenEditBusDialog(bus_ptr);
         });
 
     layout->addWidget(backgroundLabel);
 }
+
+//void MainWindow::DrawBus(Bus* bus, QVBoxLayout* layout) {
+//    // Лейбл, на котором будут располагаться блоки с информацией о маршруте
+//    QLabel* backgroundLabel = new QLabel(ui->scrollAreaWidgetContents);
+//    backgroundLabel->setStyleSheet("background-color: #FFFFFF;");
+//    backgroundLabel->setFixedSize(631, 100);
+//
+//    // Номер автобуса
+//    QLabel* numberLabel = new QLabel(QString::fromStdString(bus->name), backgroundLabel);
+//    numberLabel->setStyleSheet("color: #2E1C0C; font: 500 20pt 'JetBrains Mono';");
+//    numberLabel->setFixedSize(70, 31);
+//    numberLabel->setAlignment(Qt::AlignLeft);
+//    numberLabel->move(12, 34);
+//
+//    // информация о маршруте: тип автобуса, количество мест и остановок
+//    QString infoText;
+//    switch (bus->bus_type) {
+//    case BusType::Autobus:
+//        infoText += "Автобус\n";
+//        break;
+//    case BusType::Electrobus:
+//        infoText += "Электробус\n";
+//        break;
+//    case BusType::Trolleybus:
+//        infoText += "Троллейбус\n";
+//        break;
+//    default:
+//        infoText += "Неопределён\n";
+//        break;
+//    }
+//    infoText += (QString::number(bus->capacity) + " мест\n");
+//    infoText += (QString::number(bus->stops.size()) + " остановок");
+//
+//    QLabel* infoLabel = new QLabel(infoText, backgroundLabel);
+//    infoLabel->setStyleSheet("color: #2E1C0C; font: 500 10pt 'JetBrains Mono';");
+//    infoLabel->setFixedSize(138, 57);
+//    infoLabel->setAlignment(Qt::AlignLeft);
+//    infoLabel->move(84, 22);
+//
+//    // кольцевой/некольцевой, длина и кривизна маршрута
+//    BusInfo bus_info = transport_catalogue_.GetBusInfo(bus->name);
+//    QString infoText2;
+//    infoText2 += (bus->is_roundtrip ? "Кольцевой\n" : "Некольцевой\n");
+//    infoText2 += ("Длина " + QString::number(bus_info.len) + " м\n");
+//    infoText2 += ("Кривизна " + QString::number(bus_info.curvature));
+//
+//    QLabel* infoLabel2 = new QLabel(infoText2, backgroundLabel);
+//    infoLabel2->setStyleSheet("color: #2E1C0C; font: 500 10pt 'JetBrains Mono';");
+//    infoLabel2->setFixedSize(138, 57);
+//    infoLabel2->setAlignment(Qt::AlignLeft);
+//    infoLabel2->move(210, 22);
+//
+//    // наличие wi-fi,  розеток и ночной ли маршрут
+//    QString infoText3;
+//    infoText3 += (bus->has_wifi ? "Есть Wi-Fi\n" : "Нет Wi-Fi\n");
+//    infoText3 += (bus->has_sockets ? "Есть розетка\n" : "Нет розетки\n");
+//    infoText3 += (bus->is_night ? "Ночной маршрут" : "Дневной маршрут");
+//
+//    QLabel* infoLabel3 = new QLabel(infoText3, backgroundLabel);
+//    infoLabel3->setStyleSheet("color: #2E1C0C; font: 500 10pt 'JetBrains Mono';");
+//    infoLabel3->setFixedSize(153, 57);
+//    infoLabel3->setAlignment(Qt::AlignLeft);
+//    infoLabel3->move(370, 22);
+//
+//    // цена
+//    QLabel* priceLabel = new QLabel(QString::number(bus->price) + " руб.", backgroundLabel);
+//    priceLabel->setStyleSheet("color: #2E1C0C; font: 500 15pt 'JetBrains Mono';");
+//    priceLabel->setFixedSize(125, 23);
+//    priceLabel->setAlignment(Qt::AlignRight);
+//    priceLabel->move(493, 63);
+//
+//    // доступность
+//    QLabel* availableLabel = new QLabel(bus->is_available ? "Доступен" : "Недоступен", backgroundLabel);
+//    availableLabel->setStyleSheet(bus->is_available ? "color: #00BF63; font: 500 10pt 'JetBrains Mono';" : "color: #FF3131; font: 500 10pt 'JetBrains Mono';");
+//    availableLabel->setFixedSize(102, 17);
+//    availableLabel->setAlignment(Qt::AlignRight);
+//    availableLabel->move(514, 15);
+//
+//    QPushButton* select_ = new QPushButton(backgroundLabel); 
+//    select_->setIcon(QIcon(":/resources/edit_20x20.png"));   
+//    select_->setIconSize(QSize(20, 20));                    
+//    select_->setFixedSize(20, 20);                           
+//    select_->move(8, 3);                                     
+//    select_->setStyleSheet("border-radius: 0px;");           
+//
+//    std::shared_ptr<Bus> bus_ptr = std::make_shared<Bus>(bus);
+//    
+//    connect(select_, &QPushButton::clicked, [this, bus]() {
+//        OpenEditBusDialog(bus_ptr);
+//        });
+//
+//    layout->addWidget(backgroundLabel);
+//}
  
 void MainWindow::DrawStop(const Stop& stop, QVBoxLayout* layout) {
     if (!stop.name.empty()) {
@@ -723,9 +820,9 @@ void MainWindow::on_connect_to_db_default_clicked()
     list->findChild<QLineEdit*>("lineEdit_password")->setText("89274800234Nn");
 }
 
-void MainWindow::OpenEditBusDialog(const Bus* bus)
+void MainWindow::OpenEditBusDialog(const std::shared_ptr<Bus>& bus)
 { 
-    BusEditor* bus_editor = new BusEditor(this, &db_manager_);
+    BusEditor* bus_editor = new BusEditor(this, &db_manager_, bus);
     bus_editor->show();
 }
 

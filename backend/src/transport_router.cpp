@@ -30,8 +30,8 @@ void TransportRouter::AddStopsToGraph() {
 
 void TransportRouter::AddBusesToGraph() {
     for (const auto& bus_item : catalogue_.GetSortedBuses()) {
-        const Bus& bus_info = bus_item.second;
-
+        auto bus_info = bus_item.second;
+        
         const std::vector<const Stop*> stops = bus_info.stops;
         size_t stops_count = stops.size();
 
