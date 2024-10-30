@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <string_view>
+#include <QStringView>
 #include <unordered_map>
 #include <unordered_set>
 

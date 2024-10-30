@@ -96,7 +96,7 @@ namespace svg {
     void Text::RenderObject(const RenderContext& context) const {
         auto& out = context.out;
         out << "<text";
-        
+
         // Выводим атрибуты, унаследованные от PathProps
         RenderAttrs(context.out);
         out << " x=\""sv << pos_.x + offset_.x << "\" y=\""sv << pos_.y + offset_.y << "\" "sv;

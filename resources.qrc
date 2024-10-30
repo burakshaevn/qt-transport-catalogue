@@ -7,7 +7,6 @@
         <file>resources/profile.png</file>
         <file>resources/stop.png</file>
         <file>resources/edit_20x20.png</file>
-        <file>resources/delete_18x17.png</file>
         <file>resources/find_21_17.png</file>
     </qresource>
 </RCC>

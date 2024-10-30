@@ -48,7 +48,7 @@ void JsonReader::ProcessRequests(const json::Node& stat_requests, RequestHandler
     json::Array result;
     for (auto& request : stat_requests.AsArray()) {
         const auto& request_map = request.AsDict();
-        const auto& type = request_map.at("type").AsString();
+        const auto& type = request_map.at("type").AsString().toStdString();
         if (type == "Stop") {
             result.push_back(PrintStop(request_map, rh).AsDict());
         }
@@ -61,7 +61,7 @@ void JsonReader::ProcessRequests(const json::Node& stat_requests, RequestHandler
         else if (type == "Route") {
             result.push_back(PrintRoute(request_map, rh).AsDict());
         }
-    }
+    } 
 
     json::Print(json::Document{ result }, std::cout);
 } 
@@ -95,10 +95,10 @@ void JsonReader::ProcessBusRequests(const json::Array& arr, TransportCatalogue& 
     }
 }
 
-std::tuple<std::string_view, detail::Coordinates, std::map<std::string_view, int>> JsonReader::PullStop(const json::Dict& request_map) const {
-    std::string_view stop_name = request_map.at("name").AsString();
+std::tuple<QStringView, detail::Coordinates, std::map<QStringView, int>> JsonReader::PullStop(const json::Dict& request_map) const {
+    QStringView stop_name = request_map.at("name").AsString();
     detail::Coordinates coordinates = { request_map.at("latitude").AsDouble(), request_map.at("longitude").AsDouble() };
-    std::map<std::string_view, int> stop_distances;
+    std::map<QStringView, int> stop_distances;
     auto& distances = request_map.at("road_distances").AsDict();
     for (auto& [stop_name, dist] : distances) {
         stop_distances.emplace(stop_name, dist.AsInt());
@@ -124,13 +124,13 @@ void JsonReader::PullStopDistances(TransportCatalogue& catalogue) const {
 }
 
 // bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price
-std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
-    std::string_view bus_number = request_map.at("name").AsString();
+std::tuple<QStringView, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
+    QStringView bus_number = request_map.at("name").AsString();
     std::vector<const Stop*> stops;
     for (const auto& stop : request_map.at("stops").AsArray()) {
         stops.push_back(catalogue.FindStop(stop.AsString()));
-        //stops.push_back(&(*catalogue.FindStop(std::string_view(stop.AsString()))));
-        //auto stop_opt = catalogue.FindStop(std::string_view(stop.AsString()));
+        //stops.push_back(&(*catalogue.FindStop(QStringView(stop.AsString()))));
+        //auto stop_opt = catalogue.FindStop(QStringView(stop.AsString()));
         //if (stop_opt.has_value()) {
         //    stops.push_back(&(*stop_opt));  // Теперь можно безопасно взять адрес
         //}
@@ -146,20 +146,43 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
 
     std::array<uint8_t, 3> rgb = {0, 0, 0};
 
-    auto StringToBusType = [](std::string_view type_str) {
-        static const std::unordered_map<std::string_view, BusType> string_to_bus_type = {
-            {"autobus", BusType::autobus},
-            {"electrobus", BusType::electrobus},
-            {"trolleybus", BusType::trolleybus}
+    //auto StringToBusType = [](QStringView type_str) {
+        struct QStringViewHash {
+            std::size_t operator()(QStringView str) const noexcept {
+                return qHash(str);
+            }
         };
 
-        auto it = string_to_bus_type.find(type_str);
-        if (it != string_to_bus_type.end()) {
-            return it->second;
-        } else {
-            throw std::invalid_argument("Unknown bus type: " + std::string(type_str));
-        }
-    };
+        struct QStringViewEqual {
+            bool operator()(QStringView lhs, QStringView rhs) const noexcept {
+                return lhs == rhs;
+            }
+        };
+
+        auto StringToBusType = [](QStringView type_str) {
+            // Use your custom hash and equality comparator
+            static const std::unordered_map<QStringView, BusType, QStringViewHash, QStringViewEqual> string_to_bus_type = {
+                {QString("autobus"), BusType::autobus},
+                {QString("electrobus"), BusType::electrobus},
+                {QString("trolleybus"), BusType::trolleybus}
+            };
+
+            auto it = string_to_bus_type.find(type_str);
+            if (it != string_to_bus_type.end()) {
+                return it->second;
+            }
+            else {
+                throw std::invalid_argument("Unknown bus type: " + type_str.toString().toStdString());
+            }
+            };
+
+    //    auto it = string_to_bus_type.find(type_str);
+    //    if (it != string_to_bus_type.end()) {
+    //        return it->second;
+    //    } else {
+    //        throw std::invalid_argument("Unknown bus type: " + type_str.toString().toStdString());
+    //    }
+    //};
 
     BusType bus_type = StringToBusType(request_map.at("bus_type").AsString());
 
@@ -173,8 +196,8 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
     return { bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price };
 }
 
-// std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
-//     std::string_view bus_number = request_map.at("name").AsString();
+// std::tuple<QStringView, std::vector<const Stop*>, bool, size_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
+//     QStringView bus_number = request_map.at("name").AsString();
 //     std::vector<const Stop*> stops;
 //     for (auto& stop : request_map.at("stops").AsArray()) {
 //         stops.push_back(catalogue.FindStop(stop.AsString()));
@@ -205,7 +228,7 @@ renderer::MapRenderer JsonReader::PullRenderSettings(const json::Dict& request_m
     
     for (const auto& color_element : color_palette) {
         if (color_element.IsString()) {
-            render_settings.color_palette.emplace_back(color_element.AsString());
+            render_settings.color_palette.emplace_back(color_element.AsString().toStdString());
         }
         
         else if (color_element.IsArray()) {
@@ -236,10 +259,10 @@ TransportRouter JsonReader::PullRoutingSettings(const json::Node& settings_map, 
 
 const json::Node JsonReader::PrintBus(const json::Dict& request_map, RequestHandler& rh) const {
     json::Dict result;
-    const std::string& route_number = request_map.at("name").AsString();
+    const QString& route_number = request_map.at("name").AsString();
     result["request_id"] = request_map.at("id").AsInt();
     if (!rh.GetCatalogue().FindBus(route_number)) {
-        result["error_message"] = json::Node{ static_cast<std::string>("not found") };
+        result["error_message"] = json::Node{ static_cast<QString>("not found") };
     }
     else {
         const auto& bus = rh.GetBusStat(route_number);
@@ -253,14 +276,14 @@ const json::Node JsonReader::PrintBus(const json::Dict& request_map, RequestHand
 
 const json::Node JsonReader::PrintStop(const json::Dict& request_map, RequestHandler& rh) const {
     json::Dict result;
-    const std::string& stop_name = request_map.at("name").AsString();
+    const QString& stop_name = request_map.at("name").AsString();
     result["request_id"] = request_map.at("id").AsInt();
     if (!rh.GetCatalogue().FindStop(stop_name)) {
-        result["error_message"] = std::string("not found");
+        result["error_message"] = QString("not found");
     }
     else {
         json::Array buses;
-        std::set<std::string> sorted_buses;
+        std::set<QString> sorted_buses;
         for (const auto& bus : rh.GetCatalogue().GetBusesForStop(stop_name)) {
             sorted_buses.insert(bus->name);
         }
@@ -278,25 +301,25 @@ const json::Node JsonReader::PrintMap(const json::Dict& request_map, RequestHand
     json::Dict result;
     result["request_id"] = request_map.at("id").AsInt();
     std::ostringstream strm;
-    svg::Document map = rh.RenderMap("");
+    svg::Document map = rh.RenderMap(QStringView());
     map.Render(strm);
-    result["map"] = strm.str();
+    result[QString("map")] = QString::fromStdString(strm.str());
 
     return json::Node{ result };
 }
 
 const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHandler& rh) const {
     json::Node result;
-    const int id = request_map.at("id"s).AsInt();
-    const std::string_view stop_from = request_map.at("from"s).AsString();
-    const std::string_view stop_to = request_map.at("to"s).AsString();
+    const int id = request_map.at("id").AsInt();
+    const QStringView stop_from = request_map.at("from").AsString();
+    const QStringView stop_to = request_map.at("to").AsString();
     const auto& [optimal_route_opt, graph] = rh.GetOptimalRoute(stop_from, stop_to);
 
     if (!optimal_route_opt) {
         result = json::Builder{}
             .StartDict()
-            .Key("request_id"s).Value(id)
-            .Key("error_message"s).Value("not found"s)
+            .Key("request_id").Value(id)
+            .Key("error_message").Value("not found")
             .EndDict()
             .Build();
     }
@@ -310,9 +333,9 @@ const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHa
             if (edge.quality == 0) {
                 items.emplace_back(json::Node(json::Builder{}
                     .StartDict()
-                    .Key("stop_name"s).Value(edge.name)
-                    .Key("time"s).Value(edge.weight)
-                    .Key("type"s).Value("Wait"s)
+                    .Key("stop_name").Value(edge.name)
+                    .Key("time").Value(edge.weight)
+                    .Key("type").Value("Wait")
                     .EndDict()
                     .Build()));
 
@@ -321,10 +344,10 @@ const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHa
             else {
                 items.emplace_back(json::Node(json::Builder{}
                     .StartDict()
-                    .Key("bus"s).Value(edge.name)
-                    .Key("span_count"s).Value(static_cast<int>(edge.quality))
-                    .Key("time"s).Value(edge.weight)
-                    .Key("type"s).Value("Bus"s)
+                    .Key("bus").Value(edge.name)
+                    .Key("span_count").Value(static_cast<int>(edge.quality))
+                    .Key("time").Value(edge.weight)
+                    .Key("type").Value("Bus")
                     .EndDict()
                     .Build()));
 
@@ -334,9 +357,9 @@ const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHa
 
         result = json::Builder{}
             .StartDict()
-            .Key("request_id"s).Value(id)
-            .Key("total_time"s).Value(total_time)
-            .Key("items"s).Value(items)
+            .Key("request_id").Value(id)
+            .Key("total_time").Value(total_time)
+            .Key("items").Value(items)
             .EndDict()
             .Build();
     }
@@ -346,7 +369,7 @@ const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHa
 
 svg::Color JsonReader::PullColor(const json::Node& color_node) const {
     if (color_node.IsString()) {
-        return color_node.AsString();  
+        return color_node.AsString().toStdString();  
     }
     else if (color_node.IsArray()) {
         const json::Array& color_array = color_node.AsArray();

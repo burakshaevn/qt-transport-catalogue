@@ -14,6 +14,7 @@
 #include "transport_router.h"
 #include <iostream>
 #include <sstream>
+#include <QString>
 
 class RequestHandler;
 
@@ -57,9 +58,9 @@ public:
 private:
     json::Document input_;  
 
-    std::tuple<std::string_view, detail::Coordinates, std::map<std::string_view, int>> PullStop(const json::Dict& request_map) const;
+    std::tuple<QStringView, detail::Coordinates, std::map<QStringView, int>> PullStop(const json::Dict& request_map) const;
     
     void PullStopDistances(TransportCatalogue& catalogue) const;
     
-    std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const;
+    std::tuple<QStringView, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const;
 };

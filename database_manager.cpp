@@ -45,15 +45,15 @@ bool DatabaseManager::AddStop(const QString& name, double latitude, double longi
     return query.exec();
 }
 
-std::optional<Stop> DatabaseManager::FindStop(const std::string_view name)
+std::optional<Stop> DatabaseManager::FindStop(const QStringView name)
 {
     QSqlQuery query = ExecuteSelectQuery(
-        QString("SELECT * FROM stops WHERE name = '%1'").arg(QString::fromStdString(std::string(name)))
+        QString("SELECT * FROM stops WHERE name = '%1'").arg(name)
     );
 
     if (query.next()) {
         Stop stop;
-        stop.name = query.value("name").toString().toStdString();
+        stop.name = query.value("name").toString();
         stop.coords.lat = query.value("latitude").toDouble();
         stop.coords.lng = query.value("longitude").toDouble();
         return stop;
@@ -78,8 +78,8 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
 {
     QSqlQuery query = ExecuteSelectQuery(
         QString("SELECT distance FROM distances WHERE from_stop = '%1' AND to_stop = '%2'")
-        .arg(QString::fromStdString(from->name))
-        .arg(QString::fromStdString(to->name))
+        .arg(from->name)
+        .arg(to->name)
     );
 
     if (query.next()) {
@@ -95,8 +95,8 @@ std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> Databas
 
     QSqlQuery query = ExecuteSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
     while (query.next()) {
-        std::string from_stop_name = query.value("from_stop").toString().toStdString();
-        std::string to_stop_name = query.value("to_stop").toString().toStdString();
+        QString from_stop_name = query.value("from_stop").toString();
+        QString to_stop_name = query.value("to_stop").toString();
         int distance = query.value("distance").toInt(); 
         auto from_stop_opt = FindStop(from_stop_name);
         auto to_stop_opt = FindStop(to_stop_name);
@@ -164,7 +164,7 @@ bool DatabaseManager::AddBus(const QString& name, const std::vector<const Stop*>
     // Добавляем остановки автобуса в таблицу bus_stops
     int bus_id = query.lastInsertId().toInt();
     for (auto stop : stops) {
-        if (!AddBusStop(bus_id, QString::fromStdString(stop->name))) {
+        if (!AddBusStop(bus_id, stop->name)) {
             return false;
         }
     }
@@ -303,7 +303,7 @@ bool DatabaseManager::UpdateBus(const QString& name, const std::vector<const Sto
     for (size_t i = 0; i < stops.size(); ++i) {
         QSqlQuery stopIdQuery;
         stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
-        stopIdQuery.bindValue(":name", QString::fromStdString(stops[i]->name));
+        stopIdQuery.bindValue(":name", stops[i]->name);
         if (!stopIdQuery.exec() || !stopIdQuery.next()) {
             //qDebug() << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
             QSqlDatabase::database().rollback();
@@ -311,7 +311,7 @@ bool DatabaseManager::UpdateBus(const QString& name, const std::vector<const Sto
         }
         int stop_id = stopIdQuery.value(0).toInt();
 
-        if (!AddBusStop(bus_id, stop_id, i + 1, QString::fromStdString(stops[i]->name))) {
+        if (!AddBusStop(bus_id, stop_id, i + 1, stops[i]->name)) {
             //qDebug() << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
             QSqlDatabase::database().rollback();
             return false;
@@ -326,15 +326,15 @@ bool DatabaseManager::UpdateBus(const QString& name, const std::vector<const Sto
 
     return true;
 }
-std::optional<Bus> DatabaseManager::FindBus(const std::string_view name)
+std::optional<Bus> DatabaseManager::FindBus(const QStringView name)
 {
     QSqlQuery query = ExecuteSelectQuery(
-        QString("SELECT * FROM buses WHERE name = '%1';").arg(QString::fromStdString(std::string(name)))
+        QString("SELECT * FROM buses WHERE name = '%1';").arg(name)
     );
 
     if (query.next()) {
         Bus bus;
-        bus.name = query.value("name").toString().toStdString();
+        bus.name = query.value("name").toString();
         bus.is_roundtrip = query.value("is_roundtrip").toBool();
         bus.color_index = query.value("color_index").toUInt();
         bus.bus_type = StringToBusType(query.value("bus_type").toString().toStdString());
@@ -352,7 +352,7 @@ std::optional<Bus> DatabaseManager::FindBus(const std::string_view name)
         static std::vector<std::unique_ptr<Stop>> stops_storage;
         while (stops_query.next()) { 
             auto stop_ptr = std::make_unique<Stop>();
-            stop_ptr->name = stops_query.value("name").toString().toStdString();
+            stop_ptr->name = stops_query.value("name").toString();
             stop_ptr->coords.lat = stops_query.value("latitude").toDouble();
             stop_ptr->coords.lng = stops_query.value("longitude").toDouble();
              
@@ -438,11 +438,11 @@ QSqlQuery DatabaseManager::ExecuteSelectQuery(const QString& queryStr) {
     return query;
 }
 
-const int DatabaseManager::GetRowsCount(std::string_view table_name) const
+const int DatabaseManager::GetRowsCount(QStringView table_name) const
 {
    QSqlQuery query;
     query.prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_name = :table_name;");
-    query.bindValue(":table_name", QString::fromStdString(std::string(table_name)));
+    query.bindValue(":table_name", table_name.toString());
     if (query.exec() && query.next()) {
         return query.value(0).toInt();
     }

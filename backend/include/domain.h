@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#include <string>
+#include <QString>
 #include <vector> 
 #include "geo.h"
 #include <array>
 
 struct Stop {
     Stop() = default;
-    std::string name;
+    QString name;
     detail::Coordinates coords; 
 
     bool operator<(const Stop& other) const {
@@ -22,7 +22,7 @@ enum class BusType {
     trolleybus 
 };
 
-std::string BusTypeToString(BusType bus_type);
+QString BusTypeToString(BusType bus_type);
 
 template <typename T>
 BusType StringToBusType(const T bus_type) {
@@ -40,10 +40,10 @@ BusType StringToBusType(const T bus_type) {
     }
 }
 
-std::vector<std::string> SplitIntoWords(const std::string& text);
+std::vector<QString> SplitIntoWords(const QString& text);
 
 struct Bus {
-    std::string name;
+    QString name;
     std::vector<const Stop*> stops;
     bool is_roundtrip;
     size_t color_index;
@@ -60,7 +60,7 @@ struct Bus {
 };
 
 struct BusInfo {
-    std::string name;
+    QString name;
     size_t count_stops;
     size_t unique_count_stops;
     double len;

@@ -1,6 +1,6 @@
 #include "domain.h"
 
-std::string BusTypeToString(BusType bus_type) {
+QString BusTypeToString(BusType bus_type) {
     switch (bus_type) {
     case BusType::autobus:
         return "autobus";
@@ -13,12 +13,12 @@ std::string BusTypeToString(BusType bus_type) {
     }
 }
 
-std::vector<std::string> SplitIntoWords(const std::string& text) {
-    std::vector<std::string> words;
-    std::string word;
-    for (const char c : text) {
+std::vector<QString> SplitIntoWords(const QString& text) {
+    std::vector<QString> words;
+    QString word;
+    for (const QChar c : text) {
         if (c == ' ') {
-            if (!word.empty()) {
+            if (!word.isEmpty()) {
                 words.push_back(word);
                 word.clear();
             }
@@ -27,7 +27,7 @@ std::vector<std::string> SplitIntoWords(const std::string& text) {
             word += c;
         }
     }
-    if (!word.empty()) {
+    if (!word.isEmpty()) {
         words.push_back(word);
     }
     return words;

@@ -10,6 +10,7 @@
 #include "domain.h"
 
 #include <algorithm>
+#include <QString>
 
 namespace renderer {
 
@@ -105,20 +106,20 @@ namespace renderer {
             : render_settings_(render_settings)
         {}
 
-        std::vector<svg::Polyline> GetRouteLines(const std::map<std::string_view, const Bus*>& buses, const SphereProjector& sp) const;
+        std::vector<svg::Polyline> GetRouteLines(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const;
 
-        std::vector<svg::Text> GetBusLabel(const std::map<std::string_view, const Bus*>& buses, const SphereProjector& sp) const;
+        std::vector<svg::Text> GetBusLabel(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const;
 
-        std::vector<svg::Circle> GetStopsSymbols(const std::map<std::string_view, const Stop*>& stops, const SphereProjector& sp) const;
+        std::vector<svg::Circle> GetStopsSymbols(const std::map<QStringView, const Stop*>& stops, const SphereProjector& sp) const;
 
-        std::vector<svg::Text> GetStopsLabels(const std::map<std::string_view, const Stop*>& stops, const SphereProjector& sp) const;
+        std::vector<svg::Text> GetStopsLabels(const std::map<QStringView, const Stop*>& stops, const SphereProjector& sp) const;
 
-        svg::Document GetSVG(const std::map<std::string_view, const Bus*>& buses) const; 
+        svg::Document GetSVG(const std::map<QStringView, const Bus*>& buses) const; 
 
-        void DrawRouteLines(const std::map<std::string_view, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;
-        void DrawBusLabel(const std::map<std::string_view, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;
-        void DrawStopsSymbols(std::map<std::string_view, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const;
-        void DrawStopsLabels(std::map<std::string_view, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const;
+        void DrawRouteLines(const std::map<QStringView, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;
+        void DrawBusLabel(const std::map<QStringView, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;
+        void DrawStopsSymbols(std::map<QStringView, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const;
+        void DrawStopsLabels(std::map<QStringView, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const;
 
     private:
         const RenderSettings render_settings_;

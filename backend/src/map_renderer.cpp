@@ -5,7 +5,7 @@
 #include "map_renderer.h"
 
 namespace renderer { 
-    std::vector<svg::Polyline> MapRenderer::GetRouteLines(const std::map<std::string_view, const Bus*>& buses, const SphereProjector& sp) const {
+    std::vector<svg::Polyline> MapRenderer::GetRouteLines(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const {
         std::vector<svg::Polyline> result;
         //size_t color_num = 0;
         for (const auto& [bus_number, bus] : buses) {
@@ -38,7 +38,7 @@ namespace renderer {
         return result;
     }
 
-    std::vector<svg::Text> MapRenderer::GetBusLabel(const std::map<std::string_view, const Bus*>& buses, const SphereProjector& sp) const {
+    std::vector<svg::Text> MapRenderer::GetBusLabel(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const {
         std::vector<svg::Text> result;
         //size_t color_num = 0;
         for (const auto& [bus_number, bus] : buses) {
@@ -52,7 +52,7 @@ namespace renderer {
             text.SetFontSize(render_settings_.bus_label_font_size);
             text.SetFontFamily("Verdana");
             text.SetFontWeight("bold");
-            text.SetData(bus->name);
+            text.SetData(bus->name.toStdString());
             text.SetFillColor(render_settings_.color_palette[bus->color_index/*color_num*/]);
             
             /*if (color_num < (render_settings_.color_palette.size() - 1)) {
@@ -67,7 +67,7 @@ namespace renderer {
             underlayer.SetFontSize(render_settings_.bus_label_font_size);
             underlayer.SetFontFamily("Verdana");
             underlayer.SetFontWeight("bold");
-            underlayer.SetData(bus->name);
+            underlayer.SetData(bus->name.toStdString());
             underlayer.SetFillColor(render_settings_.underlayer_color);
             underlayer.SetStrokeColor(render_settings_.underlayer_color);
             underlayer.SetStrokeWidth(render_settings_.underlayer_width);
@@ -90,7 +90,7 @@ namespace renderer {
         return result;
     }
 
-    std::vector<svg::Circle> MapRenderer::GetStopsSymbols(const std::map<std::string_view, const Stop*>& stops, const SphereProjector& sp) const {
+    std::vector<svg::Circle> MapRenderer::GetStopsSymbols(const std::map<QStringView, const Stop*>& stops, const SphereProjector& sp) const {
         std::vector<svg::Circle> result;
         for (const auto& [stop_name, stop] : stops) {
             svg::Circle symbol;
@@ -104,7 +104,7 @@ namespace renderer {
         return result;
     }
 
-    std::vector<svg::Text> MapRenderer::GetStopsLabels(const std::map<std::string_view, const Stop*>& stops, const SphereProjector& sp) const {
+    std::vector<svg::Text> MapRenderer::GetStopsLabels(const std::map<QStringView, const Stop*>& stops, const SphereProjector& sp) const {
         std::vector<svg::Text> result;
         svg::Text text;
         svg::Text underlayer;
@@ -113,14 +113,14 @@ namespace renderer {
             text.SetOffset(render_settings_.stop_label_offset);
             text.SetFontSize(render_settings_.stop_label_font_size);
             text.SetFontFamily("Verdana");
-            text.SetData(stop->name);
+            text.SetData(stop->name.toStdString());
             text.SetFillColor("black");
 
             underlayer.SetPosition(sp(stop->coords));
             underlayer.SetOffset(render_settings_.stop_label_offset);
             underlayer.SetFontSize(render_settings_.stop_label_font_size);
             underlayer.SetFontFamily("Verdana");
-            underlayer.SetData(stop->name);
+            underlayer.SetData(stop->name.toStdString());
             underlayer.SetFillColor(render_settings_.underlayer_color);
             underlayer.SetStrokeColor(render_settings_.underlayer_color);
             underlayer.SetStrokeWidth(render_settings_.underlayer_width);
@@ -134,13 +134,13 @@ namespace renderer {
         return result;
     } 
 
-    svg::Document MapRenderer::GetSVG(const std::map<std::string_view, const Bus*>& buses) const {
+    svg::Document MapRenderer::GetSVG(const std::map<QStringView, const Bus*>& buses) const {
         svg::Document result;
         std::vector<detail::Coordinates> route_stops_coord;
-        std::map<std::string_view, const Stop*> all_stops;
+        std::map<QStringView, const Stop*> all_stops;
 
-        // Преобразуем std::map<std::string, Bus> в std::map<std::string_view, const Bus*>
-        /*std::map<std::string_view, const Bus*> buses_view;
+        // Преобразуем std::map<QString, Bus> в std::map<QStringView, const Bus*>
+        /*std::map<QStringView, const Bus*> buses_view;
         for (const auto& [bus_number, bus] : buses) {
             buses_view[bus_number] = &bus;
         }*/
@@ -166,22 +166,22 @@ namespace renderer {
         return result;
     }
 
-    void MapRenderer::DrawRouteLines(const std::map<std::string_view, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawRouteLines(const std::map<QStringView, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
         for (const auto& line : GetRouteLines(buses, sp)) {
             result.Add(line);
         }
     }
-    void MapRenderer::DrawBusLabel(const std::map<std::string_view, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawBusLabel(const std::map<QStringView, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
         for (const auto& text : GetBusLabel(buses, sp)) {
             result.Add(text);
         }
     }
-    void MapRenderer::DrawStopsSymbols(std::map<std::string_view, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawStopsSymbols(std::map<QStringView, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const {
         for (const auto& circle : GetStopsSymbols(all_stops, sp)) {
             result.Add(circle);
         }
     }
-    void MapRenderer::DrawStopsLabels(std::map<std::string_view, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawStopsLabels(std::map<QStringView, const Stop*>& all_stops, SphereProjector& sp, svg::Document& result) const {
         for (const auto& text : GetStopsLabels(all_stops, sp)) {
             result.Add(text);
         }

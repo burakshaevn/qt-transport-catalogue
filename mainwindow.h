@@ -57,12 +57,12 @@ private:
     void SetLineEditSettings();
     void SetLabelSettings();
 
-    void DisplayMapOnLabel(const std::string& bus_name);
+    void DisplayMapOnLabel(const QString& bus_name);
 
-    Value JsonToSVG(const std::string& bus_name);
+    Value JsonToSVG(const QString& bus_name);
 
-    void GetRelevantBuses(const std::string_view name = "",
-                        const std::string_view stops = "",
+    void GetRelevantBuses(const QStringView name = QStringView{},
+                        const QStringView stops = QStringView{},
                         const std::optional<bool> is_roundtrip = std::nullopt,
                         const size_t color_index = -1,
                         const std::set<BusType>& bus_types = {},

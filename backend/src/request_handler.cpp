@@ -3,7 +3,7 @@
 #include "request_handler.h"
 #include <algorithm> 
 
-std::optional<BusInfo> RequestHandler::GetBusStat(const std::string_view bus_number) const {
+std::optional<BusInfo> RequestHandler::GetBusStat(const QStringView bus_number) const {
     BusInfo bus_stat{};
     const Bus* bus = catalogue_.FindBus(bus_number); 
     if (bus == nullptr) {
@@ -37,10 +37,10 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const std::string_view bus_num
     return bus_stat;
 } 
 
-svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view bus_name) const {
+svg::Document RequestHandler::RenderMap([[maybe_unused]] const QStringView bus_name) const {
     // Преобразование карты автобусов в карту указателей на автобусы
-    auto convertToPointerMap = [](const std::map<std::string, Bus>& buses) -> std::map<std::string, Bus> {
-        std::map<std::string, Bus> pointer_map;
+    auto convertToPointerMap = [](const std::map<QString, Bus>& buses) -> std::map<QString, Bus> {
+        std::map<QString, Bus> pointer_map;
         for (const auto& [bus_name, bus] : buses) {
             pointer_map[bus_name] = bus;   
         }
@@ -62,7 +62,7 @@ const TransportCatalogue& RequestHandler::GetCatalogue() const {
 }
 
 std::pair<std::optional<graph::Router<double>::RouteInfo>, const TransportRouter::Graph&>
-RequestHandler::GetOptimalRoute(const std::string_view from, const std::string_view to) const {
+RequestHandler::GetOptimalRoute(const QStringView from, const QStringView to) const {
     auto route_info_opt = transport_router_.FindRoute(from, to);
     if (!route_info_opt) {
         return { std::nullopt, transport_router_.graph_ };

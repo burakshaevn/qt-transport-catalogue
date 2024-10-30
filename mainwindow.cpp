@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() = default;   
 
-void MainWindow::DisplayMapOnLabel(const std::string& bus_name) {
+void MainWindow::DisplayMapOnLabel(const QString& bus_name) {
     auto feedback = JsonToSVG(bus_name);
 
     if (std::holds_alternative<QString>(feedback)) {
@@ -82,7 +82,7 @@ QVariantList ParseArrayString(const QString& array_str) {
     return result;
 }
 
-MainWindow::Value MainWindow::JsonToSVG(const std::string& bus_name) {
+MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
     QString appDir = QCoreApplication::applicationDirPath();
 
     json::Dict render_settings;
@@ -181,13 +181,13 @@ MainWindow::Value MainWindow::JsonToSVG(const std::string& bus_name) {
         }
 
         QTextStream out(&svg_file);
-        std::stringstream svg_data;
+        std::ostringstream svg_data;
         rh.RenderMap(bus_name).Render(svg_data);
         out << QString::fromStdString(svg_data.str());
 
         svg_file.close();
 
-        qDebug() << "SVG успешно сохранён в " << file_path;
+        qDebug() << "G успешно сохранён в " << file_path;
 
         return file_path;
     }
@@ -409,8 +409,8 @@ void MainWindow::on_search_bus_clicked()
         is_night_routeis = std::nullopt;
     }
     
-    GetRelevantBuses(ui->lineEdit_busname->text().toStdString(),
-        { ui->lineEdit_stopname->text().toStdString() },
+    GetRelevantBuses(ui->lineEdit_busname->text(),
+        { ui->lineEdit_stopname->text() },
         is_roundtrip,
         -1,
         selected_bus_types,
@@ -424,8 +424,8 @@ void MainWindow::on_search_bus_clicked()
 }
 
 void MainWindow::GetRelevantBuses(
-    const std::string_view name,
-    const std::string_view desired_stop,
+    const QStringView name,
+    const QStringView desired_stop,
     const std::optional<bool> is_roundtrip,
     const size_t color_index,
     const std::set<BusType>& bus_types,
@@ -533,7 +533,7 @@ void MainWindow::GetRelevantBuses(
     QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     layout->setAlignment(Qt::AlignTop);
 
-    std::map<std::string_view, const Bus*> buses = transport_catalogue_.GetSortedBuses();
+    std::map<QStringView, const Bus*> buses = transport_catalogue_.GetSortedBuses();
 
     std::multimap<double, const Bus*, std::greater<double>> relevant_buses;
 
@@ -558,7 +558,7 @@ void MainWindow::DrawBus(Bus* bus, QVBoxLayout* layout) {
     backgroundLabel->setFixedSize(631, 100);
 
     // Номер автобуса
-    QLabel* numberLabel = new QLabel(QString::fromStdString(bus->name), backgroundLabel);
+    QLabel* numberLabel = new QLabel(bus->name, backgroundLabel);
     numberLabel->setStyleSheet("color: #2E1C0C; font: 500 20pt 'JetBrains Mono';");
     numberLabel->setFixedSize(70, 31);
     numberLabel->setAlignment(Qt::AlignLeft);
@@ -643,13 +643,13 @@ void MainWindow::DrawBus(Bus* bus, QVBoxLayout* layout) {
 }
  
 void MainWindow::DrawStop(Stop* stop, QVBoxLayout* layout) {
-    if (!stop->name.empty()) {
+    if (!stop->name.isEmpty()) {
         QLabel* background = new QLabel(ui->scrollAreaWidgetContents_2);
         background->setStyleSheet("background-color: #F8F8F8;");
         background->setFixedSize(589, 88);
         background->setAlignment(Qt::AlignCenter);
 
-        QLabel* stop_name = new QLabel(QString::fromStdString(stop->name), background);
+        QLabel* stop_name = new QLabel(stop->name, background);
         stop_name->setStyleSheet("color: #2E1C0C; font: 700 16pt 'JetBrains Mono';");
         stop_name->setFixedSize(420, 24);
         stop_name->setAlignment(Qt::AlignLeft);
@@ -691,7 +691,7 @@ void MainWindow::on_search_stop_clicked() {
         QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents_2);
         layout->setAlignment(Qt::AlignTop);
 
-        for (const auto& stop : ComputeTfIdfs(transport_catalogue_.GetSortedStops(), ui->lineEdit_find_stopname->text().toStdString())) {
+        for (const auto& stop : ComputeTfIdfs(transport_catalogue_.GetSortedStops(), ui->lineEdit_find_stopname->text())) {
             DrawStop(stop, layout);  
         }
         layout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
@@ -739,40 +739,4 @@ void MainWindow::OpenEditBusDialog(Bus* bus)
 { 
     BusEditor* bus_editor = new BusEditor(this, &db_manager_, &transport_catalogue_, bus);
     bus_editor->show();
-}
-
-//void MainWindow::transferCatalogueDataToDatabase(DatabaseManager& db) {
-//    for (const auto& [stop_name, stop_ptr] : transport_catalogue_.GetSortedStops()) {
-//        db.AddStop(QString::fromStdString(stop_ptr.name), stop_ptr.coords.lat, stop_ptr.coords.lng);
-//
-//        for (const auto& [to_stop, distance] : transport_catalogue_.GetDistances()) {
-//            if (to_stop.first->name == stop_ptr.name) {
-//                db.AddDistance(
-//                    QString::fromStdString(stop_ptr.name),
-//                    QString::fromStdString(to_stop.second->name),
-//                    distance
-//                );
-//            }
-//        }
-//    }
-//
-//    for (const auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
-//        QStringList stops;
-//        for (const Stop* stop : bus_ptr.stops) {
-//            stops << QString::fromStdString(stop->name);
-//        }
-//        db.AddBus(
-//            QString::fromStdString(bus_ptr.name),
-//            stops,
-//            bus_ptr.is_roundtrip,
-//            bus_ptr.color_index,
-//            QString::fromStdString(BusTypeToString(bus_ptr.bus_type)),
-//            bus_ptr.capacity,
-//            bus_ptr.has_wifi,
-//            bus_ptr.has_sockets,
-//            bus_ptr.is_night,
-//            bus_ptr.is_available,
-//            bus_ptr.price
-//        );
-//    }
-//}
+} 

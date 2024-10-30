@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <QString>
 
 namespace json {
 
@@ -18,7 +19,7 @@ namespace json {
     public:
         Builder();
         Node Build();
-        DictValueContext Key(std::string key);
+        DictValueContext Key(QString key);
         BaseContext Value(Node::Value value);
         DictItemContext StartDict();
         ArrayItemContext StartArray();
@@ -28,7 +29,7 @@ namespace json {
     private:
         Node root_{ nullptr };
         std::vector<Node*> nodes_stack_;
-        std::optional<std::string> key_{ std::nullopt };
+        std::optional<QString> key_{ std::nullopt };
 
         Node::Value& GetCurrentValue();
         const Node::Value& GetCurrentValue() const;
@@ -44,7 +45,7 @@ namespace json {
             Node Build() {
                 return builder_.Build();
             }
-            DictValueContext Key(std::string key) {
+            DictValueContext Key(QString key) {
                 return builder_.Key(std::move(key));
             }
             BaseContext Value(Node::Value value) {
@@ -74,7 +75,7 @@ namespace json {
                 return DictItemContext(builder_);
             }
             Node Build() = delete;
-            DictValueContext Key(std::string key) = delete;
+            DictValueContext Key(QString key) = delete;
             BaseContext EndDict() = delete;
             BaseContext EndArray() = delete;
         };
@@ -96,7 +97,7 @@ namespace json {
                 return ArrayItemContext(builder_);
             }
             Node Build() = delete;
-            DictValueContext Key(std::string key) = delete;
+            DictValueContext Key(QString key) = delete;
             BaseContext EndDict() = delete;
         };
     };

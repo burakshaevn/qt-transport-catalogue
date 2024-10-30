@@ -48,7 +48,7 @@ public:
 
     bool AddStop(const QString& name, double latitude, double longitude);
 
-    std::optional<Stop> FindStop(const std::string_view name); 
+    std::optional<Stop> FindStop(const QStringView name); 
      
     bool DistanceIsExists(const QString& from, const QString& to);
 
@@ -64,7 +64,7 @@ public:
 
     bool UpdateBus(const QString& name, const std::vector<const Stop*>& stops, bool is_roundtrip, size_t color_index, const QString& bus_type, int capacity, bool has_wifi, bool has_sockets, bool is_night, bool is_available, int price);
 
-    std::optional<Bus> FindBus(const std::string_view name); 
+    std::optional<Bus> FindBus(const QStringView name); 
 
     // Проверка существования связки bus_stop
     bool BusStopIsExists(int bus_id, const QString& stop_name);
@@ -80,7 +80,7 @@ public:
     // Выполнение запроса с возвратом данных
     QSqlQuery ExecuteSelectQuery(const QString& queryStr);
 
-    const int GetRowsCount(std::string_view table_name) const;
+    const int GetRowsCount(QStringView table_name) const;
 
 private:
     QSqlDatabase db_;

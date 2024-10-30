@@ -76,7 +76,7 @@ void BusEditor::on_edit_page_append_stop_clicked()
 {
 	QString stopname = ui.lineEdit_find_stopname->text();
 	// Если остановка существует в базе данных, разрешаем добавить её в «Проходимые» автобусом
-	if (const Stop* stop = transport_catalogue->FindStop(stopname.toStdString()); stop != nullptr) {
+	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
 		stops_.push_back(stop);
 		ui.lineEdit_find_stopname->clear();
 		DisplayCurrentBusToEditPage();
@@ -120,7 +120,7 @@ void BusEditor::on_edit_page_save_clicked() {
 void BusEditor::DisplayCurrentBusToEditPage() {
 	if (db_manager->Open()) {
 		QSqlQuery query = db_manager->ExecuteSelectQuery(
-			QString("SELECT * FROM buses WHERE name = '%1';").arg(QString::fromStdString(current_bus->name))
+			QString("SELECT * FROM buses WHERE name = '%1';").arg(current_bus->name)
 		);
 
 		while (query.next()) {
@@ -161,12 +161,12 @@ void BusEditor::DisplayCurrentBusToEditPage() {
 			layout->setAlignment(Qt::AlignTop);  
 			
 			for (size_t i = 0; i < stops_.size(); ++i) {
-				if (!stops_[i]->name.empty()) {
+				if (!stops_[i]->name.isEmpty()) {
 					QLabel* background = new QLabel(ui.scrollAreaWidgetContents);
 					background->setStyleSheet("background-color: #F8F8F8;");
 					background->setFixedSize(349, 17);
 
-					QLabel* stop_name = new QLabel(QString::fromStdString(stops_[i]->name), background);
+					QLabel* stop_name = new QLabel(stops_[i]->name, background);
 					stop_name->setStyleSheet("color: #2E1C0C; font: 700 11t 'JetBrains Mono';");
 					stop_name->setFixedSize(290, 17);
 					stop_name->setAlignment(Qt::AlignLeft);

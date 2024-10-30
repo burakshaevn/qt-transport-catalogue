@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <QString>
 
 namespace graph {
 
@@ -12,7 +13,7 @@ namespace graph {
 
     template <typename Weight>
     struct Edge {
-        std::string name;
+        QString name;
         size_t quality;
         VertexId from;
         VertexId to;

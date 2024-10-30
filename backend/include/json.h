@@ -5,11 +5,12 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include <QString>
 
 namespace json {
 
     class Node;
-    using Dict = std::map<std::string, Node>;
+    using Dict = std::map<QString, Node>;
     using Array = std::vector<Node>;
 
     class ParsingError : public std::runtime_error {
@@ -18,7 +19,7 @@ namespace json {
     };
 
     class Node final
-        : private std::variant<std::nullptr_t, Array, Dict, bool, int, double, std::string> {
+        : private std::variant<std::nullptr_t, Array, Dict, bool, int, double, QString> {
     public:
         using variant::variant;
         using Value = variant;
@@ -82,15 +83,15 @@ namespace json {
         }
 
         bool IsString() const {
-            return std::holds_alternative<std::string>(*this);
+            return std::holds_alternative<QString>(*this);
         }
-        const std::string& AsString() const {
+        const QString& AsString() const {
             using namespace std::literals;
             if (!IsString()) {
                 throw std::logic_error("Not a string"s);
             }
 
-            return std::get<std::string>(*this);
+            return std::get<QString>(*this);
         }
 
         bool IsDict() const {

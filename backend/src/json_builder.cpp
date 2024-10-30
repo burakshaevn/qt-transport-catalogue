@@ -15,7 +15,7 @@ namespace json {
         return std::move(root_);
     }
 
-    Builder::DictValueContext Builder::Key(std::string key) {
+    Builder::DictValueContext Builder::Key(QString key) {
         Node::Value& host_value = GetCurrentValue();
 
         if (!std::holds_alternative<Dict>(host_value)) {

@@ -11,7 +11,7 @@ void TransportRouter::BuildGraph() {
 }
 
 void TransportRouter::AddStopsToGraph() {
-    std::unordered_map<std::string, graph::VertexId> stop_ids;
+    std::unordered_map<QString, graph::VertexId> stop_ids;
     graph::VertexId vertex_id = 0;
 
     for (const auto& [stop_name, stop_info] : catalogue_.GetSortedStops()) {
@@ -71,7 +71,7 @@ void TransportRouter::AddBusesToGraph() {
     }
 }
 
-const std::optional<graph::Router<double>::RouteInfo> TransportRouter::FindRoute(const std::string_view stop_from, const std::string_view stop_to) const {
+const std::optional<graph::Router<double>::RouteInfo> TransportRouter::FindRoute(const QStringView stop_from, const QStringView stop_to) const {
     try {
         return router_.get()->BuildRoute(GetVertexId(stop_from), GetVertexId(stop_to));
     }

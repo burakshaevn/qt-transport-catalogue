@@ -1,7 +1,7 @@
 ﻿#include "transport_catalogue.h" 
 
 // РґРѕР±Р°РІР»РµРЅРёРµ РјР°СЂС€СЂСѓС‚Р° РІ Р±Р°Р·Сѓ,
-void TransportCatalogue::AddBus(const std::string_view busname,
+void TransportCatalogue::AddBus(const QStringView busname,
                                 std::vector<const Stop*>& stops,
                                 const bool is_roundtrip,
                                 const size_t color_index,
@@ -14,7 +14,7 @@ void TransportCatalogue::AddBus(const std::string_view busname,
                                 const bool is_available,
                                 const uint8_t price
                                 ) {
-    buses_.push_back({ std::string(busname), stops, is_roundtrip, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price });
+    buses_.push_back({ busname.toString(), stops, is_roundtrip, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price});
 	busname_to_bus_[buses_.back().name] = &buses_.back();
 	for (auto& stop : stops) { 
 		stop_buses_[stop->name].emplace(&buses_.back());
@@ -22,13 +22,13 @@ void TransportCatalogue::AddBus(const std::string_view busname,
 }
 
 // РґРѕР±Р°РІР»РµРЅРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РІ Р±Р°Р·Сѓ,
-void TransportCatalogue::AddStop(const std::string_view stopname, const detail::Coordinates& coordinates) {
-	stops_.push_back({ std::string(stopname), coordinates });
+void TransportCatalogue::AddStop(const QStringView stopname, const detail::Coordinates& coordinates) {
+	stops_.push_back({ stopname.toString(), coordinates});
 	stopname_to_stop_[stops_.back().name] = &stops_.back();
 } 
 
 // РїРѕРёСЃРє РјР°СЂС€СЂСѓС‚Р° РїРѕ РёРјРµРЅРё,
-const Bus* TransportCatalogue::FindBus(const std::string_view busname) const {
+const Bus* TransportCatalogue::FindBus(const QStringView busname) const {
 	auto iter = busname_to_bus_.find(busname);
 	if (iter != busname_to_bus_.end()) {
 		return iter->second;
@@ -39,7 +39,7 @@ const Bus* TransportCatalogue::FindBus(const std::string_view busname) const {
 }
 
 // РїРѕРёСЃРє РѕСЃС‚Р°РЅРѕРІРєРё РїРѕ РёРјРµРЅРё,
-const Stop* TransportCatalogue::FindStop(const std::string_view stopname) const {
+const Stop* TransportCatalogue::FindStop(const QStringView stopname) const {
 	auto iter = stopname_to_stop_.find(stopname);
 	if (iter != stopname_to_stop_.end()) {
 		return iter->second;
@@ -56,7 +56,7 @@ const BusInfo TransportCatalogue::GetBusInfo(const Bus* current_bus) const {
 	bus_info.count_stops = current_bus->stops.size();
 
 	// РџРѕРґСЃС‡С‘С‚ СѓРЅРёРєР°Р»СЊРЅС‹С… РѕСЃС‚Р°РЅРѕРІРѕРє 
-	std::unordered_set<std::string> unique_stops;
+	std::unordered_set<QString> unique_stops;
 	for (const auto& stop : current_bus->stops) {
 		unique_stops.insert(stop->name);
 	}
@@ -91,7 +91,7 @@ const BusInfo TransportCatalogue::GetBusInfo(const Bus* current_bus) const {
 	return bus_info;
 }
 
-const std::set<Bus*> TransportCatalogue::GetBusesForStop(const std::string_view stopname) const {
+const std::set<Bus*> TransportCatalogue::GetBusesForStop(const QStringView stopname) const {
 	auto it = stop_buses_.find(stopname);
 	if (it != stop_buses_.end()) {
 		return it->second;
@@ -114,24 +114,24 @@ int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
 	return 0;  
 }
 
-size_t TransportCatalogue::ComputeUniqueStopsCount(std::string_view bus_number) const {
-	std::unordered_set<std::string_view> unique_stops;
+size_t TransportCatalogue::ComputeUniqueStopsCount(QStringView bus_number) const {
+	std::unordered_set<QStringView> unique_stops;
 	for (const auto& stop : busname_to_bus_.at(bus_number)->stops) {
 		unique_stops.insert(stop->name);
 	}
 	return unique_stops.size();
 }
 
-const std::map<std::string_view, const Bus*> TransportCatalogue::GetSortedBuses() const {
-	std::map<std::string_view, const Bus*> result;
+const std::map<QStringView, const Bus*> TransportCatalogue::GetSortedBuses() const {
+	std::map<QStringView, const Bus*> result;
 	for (const auto& bus : busname_to_bus_) {
 		result.emplace(bus);
 	}
 	return result;
 } 
 
-[[maybe_unused]] const std::map<std::string_view, const Bus*> TransportCatalogue::GetSortedBuses(const std::string_view bus_name) const {
-	std::map<std::string_view, const Bus*> result;
+[[maybe_unused]] const std::map<QStringView, const Bus*> TransportCatalogue::GetSortedBuses(const QStringView bus_name) const {
+	std::map<QStringView, const Bus*> result;
 	for (const auto& bus : busname_to_bus_) {
 		if (bus.second->name == bus_name) {
 			result.emplace(bus);
@@ -144,8 +144,8 @@ const std::map<std::string_view, const Bus*> TransportCatalogue::GetSortedBuses(
 	return result;
 }
 
-const std::map<std::string_view, const Stop*> TransportCatalogue::GetSortedStops() const {
-	std::map<std::string_view, const Stop*> result;
+const std::map<QStringView, const Stop*> TransportCatalogue::GetSortedStops() const {
+	std::map<QStringView, const Stop*> result;
 	for (const auto& stop : stopname_to_stop_) {
 		result.emplace(stop);
 	}
@@ -161,7 +161,7 @@ void TransportCatalogue::UpdateStops() {
 
 	while (query.next()) {
 		Stop stop;
-		stop.name = query.value("name").toString().toStdString();
+		stop.name = query.value("name").toString();
 		stop.coords.lat = query.value("latitude").toDouble();
 		stop.coords.lng = query.value("longitude").toDouble();
 		stops_.push_back(stop);
@@ -185,10 +185,10 @@ void TransportCatalogue::UpdateBuses() {
 
 	while (query.next()) {
 		Bus bus;
-		bus.name = query.value("name").toString().toStdString();
+		bus.name = query.value("name").toString();
 		bus.is_roundtrip = query.value("is_roundtrip").toBool();
 		bus.color_index = query.value("color_index").toUInt();
-		bus.bus_type = StringToBusType(query.value("bus_type").toString().toStdString());
+		bus.bus_type = StringToBusType(query.value("bus_type").toString());
 		bus.capacity = query.value("capacity").toUInt();
 		bus.has_wifi = query.value("has_wifi").toBool();
 		bus.has_sockets = query.value("has_sockets").toBool();
@@ -203,7 +203,7 @@ void TransportCatalogue::UpdateBuses() {
 		static std::vector<std::unique_ptr<Stop>> stops_storage;
 		while (stops_query.next()) {
 			auto stop_ptr = std::make_unique<Stop>();
-			stop_ptr->name = stops_query.value("name").toString().toStdString();
+			stop_ptr->name = stops_query.value("name").toString();
 			stop_ptr->coords.lat = stops_query.value("latitude").toDouble();
 			stop_ptr->coords.lng = stops_query.value("longitude").toDouble();
 
@@ -248,7 +248,7 @@ void TransportCatalogue::UpdateBusnameToBus() {
 	}
 }
 void TransportCatalogue::UpdateStopBuses() { 
-	for (size_t i = 1; i <= db_manager_.GetRowsCount("buses"); ++i) {
+	for (size_t i = 1; i <= db_manager_.GetRowsCount(QString("buses")); ++i) {
 		QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
 			QString("SELECT b.name AS bus_name, s.name AS stop_name FROM buses b "
 				"JOIN bus_stops bs ON b.id = bs.bus_id "
@@ -259,10 +259,10 @@ void TransportCatalogue::UpdateStopBuses() {
 			QString bus_name = stops_query.value(0).toString();
 			QString stop_name = stops_query.value(1).toString();
 			 
-			auto bus_it = busname_to_bus_.find(bus_name.toStdString());
+			auto bus_it = busname_to_bus_.find(bus_name);
 			if (bus_it != busname_to_bus_.end()) {
 				Bus* bus_ptr = const_cast<Bus*>(bus_it->second);
-				stop_buses_[stop_name.toStdString()].insert(bus_ptr);
+				stop_buses_[stop_name].insert(bus_ptr);
 			}
 		}
 	}
@@ -270,8 +270,8 @@ void TransportCatalogue::UpdateStopBuses() {
 void TransportCatalogue::UpdateDistances() {
 	QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
 	while (query.next()) {
-		std::string from_stop_name = query.value("from_stop").toString().toStdString();
-		std::string to_stop_name = query.value("to_stop").toString().toStdString();
+		QString from_stop_name = query.value("from_stop").toString();
+		QString to_stop_name = query.value("to_stop").toString();
 		int distance = query.value("distance").toInt();
 		auto from_stop_opt = FindStop(from_stop_name);
 		auto to_stop_opt = FindStop(to_stop_name);
@@ -287,7 +287,7 @@ void TransportCatalogue::UpdateDistances() {
 // ===============================================================================================================
 
 // Р”РѕР±Р°РІР»РµРЅРёРµ Р°РІС‚РѕР±СѓСЃР° РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
-//void TransportCatalogue::AddBus(const std::string_view name, std::vector<const Stop*>& stops, const bool is_roundtrip,
+//void TransportCatalogue::AddBus(const QStringView name, std::vector<const Stop*>& stops, const bool is_roundtrip,
 //    const size_t color_index, const std::array<uint8_t, 3> rgb, const BusType bus_type,
 //    const uint8_t capacity, const bool has_wifi, const bool has_sockets,
 //    const bool is_night, const bool is_available, const uint8_t price) {
@@ -300,7 +300,7 @@ void TransportCatalogue::UpdateDistances() {
 //    }
 //
 //    db_manager_.AddBus(
-//        QString::fromStdString(std::string(name)),
+//        QString::fromStdString(QString(name)),
 //        stop_names,
 //        is_roundtrip,
 //        color_index,
@@ -315,8 +315,8 @@ void TransportCatalogue::UpdateDistances() {
 //}
 
 // Р”РѕР±Р°РІР»РµРЅРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
-//void TransportCatalogue::AddStop(const std::string_view name, const detail::Coordinates& coordinates) {
-//    db_manager_.AddStop(QString::fromStdString(std::string(name)), coordinates.lat, coordinates.lng);
+//void TransportCatalogue::AddStop(const QStringView name, const detail::Coordinates& coordinates) {
+//    db_manager_.AddStop(QString::fromStdString(QString(name)), coordinates.lat, coordinates.lng);
 //}
 
 //// РЈСЃС‚Р°РЅРѕРІРєР° СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ РѕСЃС‚Р°РЅРѕРІРєР°РјРё
@@ -324,9 +324,9 @@ void TransportCatalogue::UpdateDistances() {
 //    db_manager_.AddDistance(QString::fromStdString(from->name), QString::fromStdString(to->name), distance);
 //}
  
-//std::optional<Bus> TransportCatalogue::FindBus(const std::string_view name) const {
+//std::optional<Bus> TransportCatalogue::FindBus(const QStringView name) const {
 //    QSqlQuery query = db_manager_.ExecuteSelectQuery(
-//        QString("SELECT * FROM buses WHERE name = '%1';").arg(QString::fromStdString(std::string(name)))
+//        QString("SELECT * FROM buses WHERE name = '%1';").arg(QString::fromStdString(QString(name)))
 //    );
 //
 //    if (query.next()) {
@@ -364,9 +364,9 @@ void TransportCatalogue::UpdateDistances() {
 //}
 
 // РџРѕРёСЃРє РѕСЃС‚Р°РЅРѕРІРєРё РїРѕ РёРјРµРЅРё
-//std::optional<Stop> TransportCatalogue::FindStop(const std::string_view name) const {
+//std::optional<Stop> TransportCatalogue::FindStop(const QStringView name) const {
 //    QSqlQuery query = db_manager_.ExecuteSelectQuery(
-//        QString("SELECT * FROM stops WHERE name = '%1'").arg(QString::fromStdString(std::string(name)))
+//        QString("SELECT * FROM stops WHERE name = '%1'").arg(QString::fromStdString(QString(name)))
 //    );
 //
 //    if (query.next()) {
@@ -380,7 +380,7 @@ void TransportCatalogue::UpdateDistances() {
 //    return std::nullopt;
 //}
 
-//BusInfo TransportCatalogue::GetBusInfo(const std::string_view bus_name) const {
+//BusInfo TransportCatalogue::GetBusInfo(const QStringView bus_name) const {
 //    auto bus_opt = FindBus(bus_name);
 //    if (!bus_opt) {
 //        throw std::runtime_error("Bus not found");
@@ -392,7 +392,7 @@ void TransportCatalogue::UpdateDistances() {
 //    bus_info.count_stops = bus.stops.size();
 //
 //    // РџРѕРґСЃС‡С‘С‚ СѓРЅРёРєР°Р»СЊРЅС‹С… РѕСЃС‚Р°РЅРѕРІРѕРє
-//    std::unordered_set<std::string> unique_stops;
+//    std::unordered_set<QString> unique_stops;
 //    for (const auto& stop : bus.stops) {
 //        unique_stops.insert(stop->name);
 //    }
@@ -446,8 +446,8 @@ void TransportCatalogue::UpdateDistances() {
 //
 //    QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT from_stop, to_stop, distance FROM distances;");
 //    while (query.next()) {
-//        std::string from_stop_name = query.value("from_stop").toString().toStdString();
-//        std::string to_stop_name = query.value("to_stop").toString().toStdString();
+//        QString from_stop_name = query.value("from_stop").toString().toStdString();
+//        QString to_stop_name = query.value("to_stop").toString().toStdString();
 //        int distance = query.value("distance").toInt();
 //
 //        // РќР°С…РѕРґРёРј СѓРєР°Р·Р°С‚РµР»Рё РЅР° РѕСЃС‚Р°РЅРѕРІРєРё
@@ -464,8 +464,8 @@ void TransportCatalogue::UpdateDistances() {
 //}
 
 // РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… Р°РІС‚РѕР±СѓСЃРѕРІ, РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹С… РїРѕ РёРјРµРЅРё 
-//std::map<std::string, Bus> TransportCatalogue::GetSortedBuses() const {
-//    std::map<std::string, Bus> result; 
+//std::map<QString, Bus> TransportCatalogue::GetSortedBuses() const {
+//    std::map<QString, Bus> result; 
 //    static std::vector<std::unique_ptr<Stop>> temp_storage; 
 //
 //    if (!db_manager_.Open()) {
@@ -512,12 +512,12 @@ void TransportCatalogue::UpdateDistances() {
 //    return result;
 //}
  
-//std::map<std::string, Bus> TransportCatalogue::GetSortedBuses(const std::string_view bus_name) const {
-//    std::map<std::string, Bus> result;
+//std::map<QString, Bus> TransportCatalogue::GetSortedBuses(const QStringView bus_name) const {
+//    std::map<QString, Bus> result;
 //     
 //    QSqlQuery query;
 //    query.prepare("SELECT * FROM buses WHERE name = :bus_name");
-//    query.bindValue(":bus_name", QString::fromStdString(std::string(bus_name)));   
+//    query.bindValue(":bus_name", QString::fromStdString(QString(bus_name)));   
 //
 //    if (query.exec()) {
 //        while (query.next()) {
@@ -535,8 +535,8 @@ void TransportCatalogue::UpdateDistances() {
 //}
 
 // РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… РѕСЃС‚Р°РЅРѕРІРѕРє, РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹С… РїРѕ РёРјРµРЅРё
-//std::map<std::string, Stop> TransportCatalogue::GetSortedStops() const {
-//    std::map<std::string, Stop> result;
+//std::map<QString, Stop> TransportCatalogue::GetSortedStops() const {
+//    std::map<QString, Stop> result;
 //
 //    QSqlQuery query = db_manager_.ExecuteSelectQuery("SELECT * FROM stops;");
 //    while (query.next()) {
@@ -550,26 +550,26 @@ void TransportCatalogue::UpdateDistances() {
 //    return result;
 //}
 
-//size_t TransportCatalogue::ComputeUniqueStopsCount(const std::string_view bus_number) const {
+//size_t TransportCatalogue::ComputeUniqueStopsCount(const QStringView bus_number) const {
 //    auto bus_opt = FindBus(bus_number);
 //    if (!bus_opt) {
 //        throw std::runtime_error("Bus not found");
 //    }
 //
 //    const Bus& bus = *bus_opt;
-//    std::unordered_set<std::string> unique_stops;
+//    std::unordered_set<QString> unique_stops;
 //    for (const auto& stop : bus.stops) {
 //        unique_stops.insert(stop->name);
 //    }
 //    return unique_stops.size();
 //}
 
-//std::set<const Bus*> TransportCatalogue::GetBusesForStop(const std::string_view stop_name) const {
+//std::set<const Bus*> TransportCatalogue::GetBusesForStop(const QStringView stop_name) const {
 //    std::set<const Bus*> buses_for_stop;
 //
 //    QSqlQuery query;
 //    query.prepare("SELECT bus_name FROM bus_stops WHERE stop_name = :stop_name");
-//    query.bindValue(":stop_name", QString::fromStdString(std::string(stop_name)));
+//    query.bindValue(":stop_name", QString::fromStdString(QString(stop_name)));
 //
 //    if (query.exec()) {
 //        while (query.next()) {

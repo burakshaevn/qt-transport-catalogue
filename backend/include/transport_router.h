@@ -5,6 +5,7 @@
 #include "transport_catalogue.h"
 #include <utility>
 #include <memory>
+#include <QString>
 
 class TransportRouter {
 public:
@@ -30,7 +31,7 @@ public:
 		return bus_velocity_;
 	}
 
-	const std::optional<graph::Router<double>::RouteInfo> FindRoute(const std::string_view stop_from, const std::string_view stop_to) const;
+	const std::optional<graph::Router<double>::RouteInfo> FindRoute(const QStringView stop_from, const QStringView stop_to) const;
 
 private:
 	friend class RequestHandler;
@@ -44,14 +45,14 @@ private:
 	Graph graph_;
 	Router router_;
 	TransportCatalogue catalogue_;
-	std::unordered_map<std::string, graph::VertexId> stop_name_to_vertex_id_;
+	std::unordered_map<QString, graph::VertexId> stop_name_to_vertex_id_;
 
 	void BuildGraph();
 	void AddStopsToGraph();
 	void AddBusesToGraph();
 
-	graph::VertexId GetVertexId(const std::string_view stop_name) const {
-		auto it = stop_name_to_vertex_id_.find(std::string(stop_name));
+	graph::VertexId GetVertexId(const QStringView stop_name) const {
+		auto it = stop_name_to_vertex_id_.find(stop_name.toString());
 		if (it != stop_name_to_vertex_id_.end()) {
 			return it->second;
 		}

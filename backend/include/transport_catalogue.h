@@ -17,9 +17,6 @@
 #include <QSqlError>
 #include <QObject>
 
-using namespace std::string_literals;
-using namespace std::string_view_literals;
-
 // РєР»Р°СЃСЃ С‚СЂР°РЅСЃРїРѕСЂС‚РЅРѕРіРѕ СЃРїСЂР°РІРѕС‡РЅРёРєР° 
 
 class TransportCatalogue { 
@@ -29,7 +26,7 @@ public:
 		: db_manager_(db_manager) 
 	{}
 
-    void AddBus(const std::string_view name,
+    void AddBus(const QStringView name,
                 std::vector<const Stop*>& stops,
                 const bool is_roundtrip,
                 const size_t color_index,
@@ -43,24 +40,24 @@ public:
                 const uint8_t price
                 );
 
-	void AddStop(const std::string_view name, const detail::Coordinates& coordinates);
+	void AddStop(const QStringView name, const detail::Coordinates& coordinates);
 
-	const Bus* FindBus(const std::string_view name) const;
+	const Bus* FindBus(const QStringView name) const;
 
-	const Stop* FindStop(const std::string_view name) const; 
+	const Stop* FindStop(const QStringView name) const; 
 
 	const BusInfo GetBusInfo(const Bus* current_bus) const; 
 
-	const std::set<Bus*> GetBusesForStop(const std::string_view name) const; 
+	const std::set<Bus*> GetBusesForStop(const QStringView name) const; 
 
 	void SetDistance(const Stop* from, const Stop* to, int distance);
 
 	int GetDistance(const Stop* from, const Stop* to) const;
 
-	const std::map<std::string_view, const Bus*> GetSortedBuses() const; 
-	[[maybe_unused]] const std::map<std::string_view, const Bus*> GetSortedBuses(const std::string_view bus_name) const;
+	const std::map<QStringView, const Bus*> GetSortedBuses() const; 
+	[[maybe_unused]] const std::map<QStringView, const Bus*> GetSortedBuses(const QStringView bus_name) const;
 
-	const std::map<std::string_view, const Stop*> GetSortedStops() const;
+	const std::map<QStringView, const Stop*> GetSortedStops() const;
 
 	std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> GetDistances() {
 		return distances_;
@@ -69,7 +66,7 @@ public:
 	//std::deque<Stop> stops_;
 	void UpdateStops();
 
-	//std::unordered_map<std::string_view, const Stop*> stopname_to_stop_;
+	//std::unordered_map<QStringView, const Stop*> stopname_to_stop_;
 	void UpdateStopnameToStop();
 
 	//std::deque<Bus> buses_;
@@ -88,11 +85,11 @@ public:
 		int price
 	);
 
-	//std::unordered_map<std::string_view, const Bus*> busname_to_bus_;
+	//std::unordered_map<QStringView, const Bus*> busname_to_bus_;
 	// Хранит <название_остановки <название_остановки, координаты_остановки>>
 	void UpdateBusnameToBus();
 
-	//std::unordered_map<std::string_view, std::set<Bus*>> stop_buses_;
+	//std::unordered_map<QStringView, std::set<Bus*>> stop_buses_;
 	// Хранит название остановки и автобусы, которые посещают эту остановку
 	void UpdateStopBuses();
 
@@ -106,22 +103,22 @@ private:
 
 	bool data_has_been_changed{ false };
 
-	size_t ComputeUniqueStopsCount(std::string_view bus_number) const;
+	size_t ComputeUniqueStopsCount(QStringView bus_number) const;
 	
 	// дек остановок
 	std::deque<Stop> stops_;
 
 	// хранит <название_остановки, указатель на остановку>
-	std::unordered_map<std::string_view, const Stop*> stopname_to_stop_;
+	std::unordered_map<QStringView, const Stop*> stopname_to_stop_;
 
 	// дек автобусов
 	std::deque<Bus> buses_;
 
 	// хранит <название_автобуса, указатель на автобус>
-	std::unordered_map<std::string_view, const Bus*> busname_to_bus_;
+	std::unordered_map<QStringView, const Bus*> busname_to_bus_;
 
 	// хранит название остановки и автобусы, которые проходят эту остановку
-	std::unordered_map<std::string_view, std::set<Bus*>> stop_buses_;
+	std::unordered_map<QStringView, std::set<Bus*>> stop_buses_;
 
 	// расстояние между остановками { от, до }
 	std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> distances_;
@@ -134,11 +131,11 @@ private:
 //        : db_manager_(db_manager) {}
 //
 //    // РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїР° Р°РІС‚РѕР±СѓСЃР° РІ СЃС‚СЂРѕРєСѓ Рё РѕР±СЂР°С‚РЅРѕ
-//    std::string BusTypeToString(BusType bus_type);
-//    BusType StringToBusType(const std::string& bus_type) const;
+//    QString BusTypeToString(BusType bus_type);
+//    BusType StringToBusType(const QString& bus_type) const;
 //
 //    // РњРµС‚РѕРґС‹ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р°РІС‚РѕР±СѓСЃРѕРІ, РѕСЃС‚Р°РЅРѕРІРѕРє Рё СЂР°СЃСЃС‚РѕСЏРЅРёР№ РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
-//    void AddBus(const std::string_view name,
+//    void AddBus(const QStringView name,
 //        std::vector<const Stop*>& stops, 
 //        const bool is_roundtrip,
 //        const size_t color_index, 
@@ -152,16 +149,16 @@ private:
 //        const uint8_t price
 //    );
 //
-//    void AddStop(const std::string_view name, const detail::Coordinates& coordinates);
+//    void AddStop(const QStringView name, const detail::Coordinates& coordinates);
 //
 //    void SetDistance(const Stop* from, const Stop* to, int distance);
 //
 //    // РњРµС‚РѕРґС‹ РґР»СЏ РїРѕРёСЃРєР° Р°РІС‚РѕР±СѓСЃРѕРІ Рё РѕСЃС‚Р°РЅРѕРІРѕРє
-//    std::optional<Bus> FindBus(const std::string_view name) const;
-//    std::optional<Stop> FindStop(const std::string_view name) const;
+//    std::optional<Bus> FindBus(const QStringView name) const;
+//    std::optional<Stop> FindStop(const QStringView name) const;
 //
 //    // РџРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РјР°СЂС€СЂСѓС‚Рµ Р°РІС‚РѕР±СѓСЃР°
-//    BusInfo GetBusInfo(const std::string_view bus_name) const;
+//    BusInfo GetBusInfo(const QStringView bus_name) const;
 //
 //    // РџРѕР»СѓС‡РµРЅРёРµ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ РґРІСѓРјСЏ РѕСЃС‚Р°РЅРѕРІРєР°РјРё
 //    int GetDistance(const Stop* from, const Stop* to) const;
@@ -169,13 +166,13 @@ private:
 //    std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> GetDistances();
 //
 //    // РџРѕР»СѓС‡РµРЅРёРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹С… РґР°РЅРЅС‹С…
-//    std::map<std::string/*_view*/, Bus> GetSortedBuses() const;
-//    std::map<std::string, Bus> GetSortedBuses(const std::string_view bus_name) const;
-//    std::map<std::string, Stop> GetSortedStops() const;
+//    std::map<QString/*_view*/, Bus> GetSortedBuses() const;
+//    std::map<QString, Bus> GetSortedBuses(const QStringView bus_name) const;
+//    std::map<QString, Stop> GetSortedStops() const;
 //
-//    size_t ComputeUniqueStopsCount(const std::string_view bus_number) const;
+//    size_t ComputeUniqueStopsCount(const QStringView bus_number) const;
 //
-//    std::set<const Bus*> GetBusesForStop(const std::string_view stop_name) const;
+//    std::set<const Bus*> GetBusesForStop(const QStringView stop_name) const;
 //
 //private:
 //    DatabaseManager& db_manager_; 
