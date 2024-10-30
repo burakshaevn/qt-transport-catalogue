@@ -169,9 +169,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -260,9 +261,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -351,9 +353,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -572,9 +575,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLineEdit { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -618,11 +622,16 @@
      <widget class="QScrollArea" name="scrollArea">
       <property name="geometry">
        <rect>
-        <x>8</x>
-        <y>427</y>
-        <width>641</width>
-        <height>146</height>
+        <x>144</x>
+        <y>458</y>
+        <width>390</width>
+        <height>115</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QScrollArea {
+	border-radius: 0px;
+}</string>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -632,16 +641,16 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>639</width>
-         <height>144</height>
+         <width>390</width>
+         <height>115</height>
         </rect>
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="edit_save">
+     <widget class="QPushButton" name="edit_page_save">
       <property name="geometry">
        <rect>
-        <x>256</x>
+        <x>178</x>
         <y>590</y>
         <width>145</width>
         <height>20</height>
@@ -652,6 +661,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
+	border-radius: 0px;
 }</string>
       </property>
       <property name="text">
@@ -669,16 +679,17 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox_bustype_2">
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>429</x>
         <y>114</y>
         <width>201</width>
         <height>17</height>
@@ -686,9 +697,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -703,9 +715,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -720,9 +733,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -737,9 +751,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
@@ -754,16 +769,17 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
-  font: 11pt &quot;JetBrains Mono&quot;; 
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
 } </string>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox_is_wifi_2">
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>429</x>
         <y>228</y>
         <width>201</width>
         <height>17</height>
@@ -771,10 +787,73 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QComboBox { 
-  background-color: #737373; 
+  background-color: #FFFFFF; 
   border-radius: 0px;       
+  font: 10pt &quot;JetBrains Mono&quot;; 
+  color: #363636;
+} </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="edit_page_delete">
+      <property name="geometry">
+       <rect>
+        <x>335</x>
+        <y>590</y>
+        <width>145</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #FFFFFF;
+	background-color: #FF0000; 
+	border-radius: 0px;
+}</string>
+      </property>
+      <property name="text">
+       <string>Удалить</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="edit_page_append_stop">
+      <property name="geometry">
+       <rect>
+        <x>373</x>
+        <y>437</y>
+        <width>145</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #FFFFFF;
+	background-color: #363636; 
+	border-radius: 0px;
+}</string>
+      </property>
+      <property name="text">
+       <string>Добавить</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_find_stopname">
+      <property name="geometry">
+       <rect>
+        <x>155</x>
+        <y>437</y>
+        <width>213</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit { 
+  background-color: #FFFFFF; 
+  border-radius: 0px;   
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
      <zorder>label_13</zorder>
@@ -806,7 +885,7 @@
      <zorder>lineEdit_price_2</zorder>
      <zorder>label_38</zorder>
      <zorder>scrollArea</zorder>
-     <zorder>edit_save</zorder>
+     <zorder>edit_page_save</zorder>
      <zorder>comboBox_is_sockets_2</zorder>
      <zorder>comboBox_bustype_2</zorder>
      <zorder>comboBox_is_roundtrip_2</zorder>
@@ -814,6 +893,9 @@
      <zorder>comboBox_is_day_bus_2</zorder>
      <zorder>comboBox_is_night_bus_2</zorder>
      <zorder>comboBox_is_wifi_2</zorder>
+     <zorder>edit_page_delete</zorder>
+     <zorder>edit_page_append_stop</zorder>
+     <zorder>lineEdit_find_stopname</zorder>
     </widget>
     <widget class="QWidget" name="append">
      <widget class="QLabel" name="label_40">
@@ -1313,9 +1395,9 @@
      <widget class="QScrollArea" name="scrollArea_2">
       <property name="geometry">
        <rect>
-        <x>8</x>
+        <x>154</x>
         <y>427</y>
-        <width>641</width>
+        <width>350</width>
         <height>146</height>
        </rect>
       </property>
@@ -1327,7 +1409,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>639</width>
+         <width>348</width>
          <height>144</height>
         </rect>
        </property>
@@ -1409,7 +1491,7 @@
      <widget class="QComboBox" name="comboBox_is_wifi">
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>429</x>
         <y>228</y>
         <width>201</width>
         <height>17</height>

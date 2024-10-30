@@ -24,6 +24,7 @@ set(BACKEND_SOURCES
     include/transport_catalogue.h 
     include/transport_router.h
     ../database_manager.h
+    src/domain.cpp
     src/transport_router.cpp 
     src/transport_catalogue.cpp 
     src/svg.cpp 

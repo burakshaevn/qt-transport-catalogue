@@ -12,11 +12,21 @@
 #include <utility>
 #include <QMessageBox>
 
+//#include "domain.h"
+#include "C:\Users\burak\OneDrive\Documents\qt-transport-catalogue\backend\include\domain.h"
+
+struct StopHasher {
+    size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
+        size_t hash_first = std::hash<const void*>{}(points.first);
+        size_t hash_second = std::hash<const void*>{}(points.second);
+        return hash_first + hash_second * 37;
+    }
+};
+
 class DatabaseManager {
 public:
-    DatabaseManager() = default;
+    DatabaseManager();
     
-    // Конструктор, принимающий перемещающую ссылку (forwarding reference)
     template <typename Container, typename Port>
     DatabaseManager(Container&& host, Port&& port, Container&& db_name, Container&& username, Container&& password)
     {
@@ -28,186 +38,54 @@ public:
         db_.setPassword(std::forward<Container>(password));
     }  
 
-    bool Open() {
-        return db_.open();
-    }
+    bool Open();
 
-    void Close() {
-        db_.close();
-    }
+    void Close();
 
-    void UpdateConnection(const QString& host, int port, const QString& db_name, const QString& username, const QString& password) {
-        db_ = QSqlDatabase::addDatabase("QPSQL");
-        db_.setHostName(host);
-        db_.setPort(port);
-        db_.setDatabaseName(db_name);
-        db_.setUserName(username);
-        db_.setPassword(password); 
-    }
+    void UpdateConnection(const QString& host, int port, const QString& db_name, const QString& username, const QString& password);
 
-    bool StopIsExists(const QString& name) {
-        QSqlQuery query;
-        query.prepare("SELECT COUNT(*) FROM stops WHERE name = :name");
-        query.bindValue(":name", name);
-        if (query.exec() && query.next()) {
-            return query.value(0).toInt() > 0;
-        }
-        return false;
-    }
+    bool StopIsExists(const QString& name);
 
-    bool AddStop(const QString& name, double latitude, double longitude)
-    {
-        if (StopIsExists(name)) {
-            qDebug() << "Остановка уже существует:" << name;
-            return false;
-        }
+    bool AddStop(const QString& name, double latitude, double longitude);
 
-        QSqlQuery query;
-        query.prepare("INSERT INTO stops (name, latitude, longitude) VALUES (:name, :latitude, :longitude)");
-        query.bindValue(":name", name);
-        query.bindValue(":latitude", latitude);
-        query.bindValue(":longitude", longitude);
+    std::optional<Stop> FindStop(const std::string_view name); 
+     
+    bool DistanceIsExists(const QString& from, const QString& to);
 
-        return query.exec();
-    }
+    int GetDistance(const Stop* from, const Stop* to); 
 
-    // Проверка существования дистанции
-    bool DistanceIsExists(const QString& from, const QString& to) {
-        QSqlQuery query;
-        query.prepare("SELECT COUNT(*) FROM distances WHERE from_stop = :from AND to_stop = :to");
-        query.bindValue(":from", from);
-        query.bindValue(":to", to);
-        if (query.exec() && query.next()) {
-            return query.value(0).toInt() > 0;
-        }
-        return false;
-    }
+    std::unordered_map<std::pair<const Stop*, const Stop*>, int, StopHasher> GetDistances();
 
-    bool AddDistance(const QString& from, const QString& to, int distance)
-    {
-        if (DistanceIsExists(from, to)) {
-            //qDebug() << "Дистанция уже существует:" << from << "->" << to;
-            return false;
-        }
+    bool AddDistance(const QString& from, const QString& to, int distance);
+     
+    bool BusExists(const QString& name);
 
-        QSqlQuery query;
-        query.prepare("INSERT INTO distances (from_stop, to_stop, distance) VALUES (:from, :to, :distance)");
-        query.bindValue(":from", from);
-        query.bindValue(":to", to);
-        query.bindValue(":distance", distance);
+    bool AddBus(const QString& name, const std::vector<const Stop*>& stops, bool is_roundtrip, size_t color_index, const QString& bus_type, int capacity, bool has_wifi, bool has_sockets, bool is_night, bool is_available, int price);
 
-        return query.exec();
-    }
+    bool UpdateBus(const QString& name, const std::vector<const Stop*>& stops, bool is_roundtrip, size_t color_index, const QString& bus_type, int capacity, bool has_wifi, bool has_sockets, bool is_night, bool is_available, int price);
 
-    // Проверка существования автобуса
-    bool BusExists(const QString& name) {
-        QSqlQuery query;
-        query.prepare("SELECT COUNT(*) FROM buses WHERE name = :name");
-        query.bindValue(":name", name);
-        if (query.exec() && query.next()) {
-            return query.value(0).toInt() > 0;
-        }
-        return false;
-    }
-
-    bool AddBus(const QString& name, const QStringList& stops, bool is_roundtrip, size_t color_index, const QString& bus_type, int capacity, bool has_wifi, bool has_sockets, bool is_night, bool is_available, int price)
-    {
-        if (BusExists(name)) { 
-            return false;
-        }
-
-        QSqlQuery query;
-        query.prepare("INSERT INTO buses (name, is_roundtrip, color_index, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price) "
-            "VALUES (:name, :is_roundtrip, :color_index, :bus_type, :capacity, :has_wifi, :has_sockets, :is_night, :is_available, :price)");
-        query.bindValue(":name", name);
-        query.bindValue(":is_roundtrip", is_roundtrip);
-        query.bindValue(":color_index", color_index);
-        query.bindValue(":bus_type", bus_type);
-        query.bindValue(":capacity", capacity);
-        query.bindValue(":has_wifi", has_wifi);
-        query.bindValue(":has_sockets", has_sockets);
-        query.bindValue(":is_night", is_night);
-        query.bindValue(":is_available", is_available);
-        query.bindValue(":price", price);
-
-        if (!query.exec()) {
-            return false;
-        }
-
-        // Добавляем остановки автобуса в таблицу bus_stops
-        int bus_id = query.lastInsertId().toInt();
-        for (const QString& stop : stops) {
-            if (!AddBusStop(bus_id, stop)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    std::optional<Bus> FindBus(const std::string_view name); 
 
     // Проверка существования связки bus_stop
-    bool BusStopIsExists(int bus_id, const QString& stop_name) {
-        QSqlQuery query;
-        query.prepare("SELECT COUNT(*) FROM bus_stops WHERE bus_id = :bus_id AND stop_name = :stop_name");
-        query.bindValue(":bus_id", bus_id);
-        query.bindValue(":stop_name", stop_name);
-        if (query.exec() && query.next()) {
-            return query.value(0).toInt() > 0;
-        }
-        return false;
-    }
+    bool BusStopIsExists(int bus_id, const QString& stop_name);
 
-    bool AddBusStop(int bus_id, const QString& stop_name)
-    {
-        if (BusStopIsExists(bus_id, stop_name)) {
-            qDebug() << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
-            return false;
-        }
+    bool AddBusStop(int bus_id, const QString& stop_name);
+    bool AddBusStop(int bus_id, int stop_id, int stop_position, const QString& stop_name);
 
-        QSqlQuery query;
-        query.prepare("INSERT INTO bus_stops (bus_id, stop_name) VALUES (:bus_id, :stop_name)");
-        query.bindValue(":bus_id", bus_id);
-        query.bindValue(":stop_name", stop_name);
-        return query.exec();
-    }
-
-    bool UpdateRoutingSettings(const double bus_velocity, const int bus_wait_time)
-    {
-        constexpr double epsilon = 1e-9;
-        if (bus_velocity > epsilon) {
-            if (bus_wait_time > epsilon) {
-                QSqlQuery query;
-                query.prepare("UPDATE public.routing_settings SET bus_velocity = :bus_velocity, bus_wait_time = :bus_wait_time");
-                query.bindValue(":bus_velocity", bus_velocity);
-                query.bindValue(":bus_wait_time", bus_wait_time);
-                return query.exec();
-
-            }
-        }
-        return false;
-    }
+    bool UpdateRoutingSettings(const double bus_velocity, const int bus_wait_time);
 
     // Выполнение запроса без возврата данных
-    bool ExecuteQuery(const QString& queryStr) {
-        QSqlQuery query;
-        if (!query.exec(queryStr)) {
-            qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();
-            return false;
-        }
-        return true;
-    }
+    bool ExecuteQuery(const QString& queryStr);
 
     // Выполнение запроса с возвратом данных
-    QSqlQuery ExecuteSelectQuery(const QString& queryStr) {
-        QSqlQuery query;
-        if (!query.exec(queryStr)) {
-            qDebug() << "Ошибка выполнения SELECT-запроса:" << query.lastError().text();
-        }
-        return query;
-    }  
+    QSqlQuery ExecuteSelectQuery(const QString& queryStr);
+
+    const int GetRowsCount(std::string_view table_name) const;
 
 private:
     QSqlDatabase db_;
+
+    
 };
 
 #endif // DATABASEMANAGER_H

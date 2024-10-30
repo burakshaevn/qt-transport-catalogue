@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="database">
      <widget class="QLabel" name="label_3">
@@ -1163,6 +1163,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
+	border-radius: 0px;
 }</string>
       </property>
       <property name="text">
@@ -1473,7 +1474,7 @@
      <zorder>is_non_roundtrip</zorder>
     </widget>
     <widget class="QWidget" name="map">
-     <widget class="QLabel" name="label">
+     <widget class="QWidget" name="widget_2" native="true">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1481,14 +1482,6 @@
         <width>1280</width>
         <height>716</height>
        </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel {
-	background-color: rgb(255, 255, 255); 
-}</string>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
     </widget>

@@ -113,7 +113,7 @@ namespace renderer {
 
         std::vector<svg::Text> GetStopsLabels(const std::map<std::string_view, const Stop*>& stops, const SphereProjector& sp) const;
 
-        svg::Document GetSVG(const std::map<std::string, Bus>& buses) const; 
+        svg::Document GetSVG(const std::map<std::string_view, const Bus*>& buses) const; 
 
         void DrawRouteLines(const std::map<std::string_view, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;
         void DrawBusLabel(const std::map<std::string_view, const Bus* >& buses, SphereProjector& sp, svg::Document& result) const;

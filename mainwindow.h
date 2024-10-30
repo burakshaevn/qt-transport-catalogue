@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "database_manager.h" 
 #include "bus_editor.h"
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,9 +22,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
-    using Value = std::variant<QString, std::runtime_error>; 
-
-    DatabaseManager GetDatabaseManager();
+    using Value = std::variant<QString, std::runtime_error>;  
 
 private slots:
     void on_button_buses_clicked();
@@ -44,7 +43,7 @@ private slots:
 
     void on_connect_to_db_default_clicked();
 
-    void OpenEditBusDialog(const std::shared_ptr<Bus>& bus);
+    void OpenEditBusDialog(Bus* bus);
 
 private:
     Ui::MainWindow *ui;
@@ -58,7 +57,7 @@ private:
     void SetLineEditSettings();
     void SetLabelSettings();
 
-    void DisplayMapOnLabel(const std::string& bus_name, QLabel* label);
+    void DisplayMapOnLabel(const std::string& bus_name);
 
     Value JsonToSVG(const std::string& bus_name);
 
@@ -76,38 +75,24 @@ private:
 
     void DrawBus(Bus* bus, QVBoxLayout* layout);
 
-    void DrawStop(const Stop& stop, QVBoxLayout* layout);
+    void DrawStop(Stop* stop, QVBoxLayout* layout); 
 
-    std::string BusTypeToString(BusType bus_type) {
-        switch (bus_type) {
-        case BusType::Autobus:
-            return "Autobus";
-        case BusType::Electrobus:
-            return "Electrobus";
-        case BusType::Trolleybus:
-            return "Trolleybus";
-        default:
-            return "Undefined";
-        }
-    }
-
-    void transferCatalogueDataToDatabase(DatabaseManager& db);
+    //void transferCatalogueDataToDatabase(DatabaseManager& db);
 
     template <typename Documents, typename Term>
-    std::vector<Stop> ComputeTfIdfs(const Documents& documents_, const Term& term) {
-        std::map<Stop, double> tf_idfs;
+    std::vector<Stop*> ComputeTfIdfs(const Documents& documents_, const Term& term) {
+        std::map<Stop*, double> tf_idfs;
         int term_occurrences = 0;
 
         // Проходим по документам и считаем TF (Term Frequency)
         for (const auto& [key, document] : documents_) {
-            auto words = SplitIntoWords(document.name);
+            auto words = SplitIntoWords(document->name);
 
             int count_term_in_document = std::count(words.begin(), words.end(), term);
-
-            // Попытка найти остановку
-            auto stop_opt = transport_catalogue_.FindStop(key);
-            if (stop_opt) {
-                tf_idfs[stop_opt.value()] = static_cast<double>(count_term_in_document) / words.size();
+             
+            Stop* stop = const_cast<Stop*>(transport_catalogue_.FindStop(key));
+            if (stop != nullptr) {
+                tf_idfs[stop] = static_cast<double>(count_term_in_document) / words.size();
 
                 if (count_term_in_document > 0) {
                     ++term_occurrences;
@@ -121,40 +106,19 @@ private:
             tf *= idf;
         }
 
-        std::vector<Stop> stops;
+        std::vector<Stop*> stops;
         for (const auto& [stop, tf] : tf_idfs) {
             if (tf != 0) {
                 stops.push_back(stop);
             }
         }
-
-        // Сортируем остановки по значению TF-IDF, используя лямбда-функцию
-        std::sort(stops.begin(), stops.end(), [&tf_idfs](const Stop& lhs, const Stop& rhs) {
-            return tf_idfs.at(lhs) > tf_idfs.at(rhs); // Сортировка по значению TF-IDF
+         
+        std::sort(stops.begin(), stops.end(), [&tf_idfs](Stop* lhs, Stop* rhs) {
+            return tf_idfs.at(lhs) > tf_idfs.at(rhs);  
             });
 
         return stops;
-    }
-      
-    std::vector<std::string> SplitIntoWords(const std::string& text) {
-        std::vector<std::string> words;
-        std::string word;
-        for (const char c : text) {
-            if (c == ' ') {
-                if (!word.empty()) {
-                    words.push_back(word);
-                    word.clear();
-                }
-            }
-            else {
-                word += c;
-            }
-        }
-        if (!word.empty()) {
-            words.push_back(word);
-        }
-        return words;
-    }  
+    } 
 };
 
 #endif // MAINWINDOW_H

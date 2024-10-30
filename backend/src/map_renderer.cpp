@@ -134,22 +134,22 @@ namespace renderer {
         return result;
     } 
 
-    svg::Document MapRenderer::GetSVG(const std::map<std::string, Bus>& buses) const {
+    svg::Document MapRenderer::GetSVG(const std::map<std::string_view, const Bus*>& buses) const {
         svg::Document result;
         std::vector<detail::Coordinates> route_stops_coord;
         std::map<std::string_view, const Stop*> all_stops;
 
         // Преобразуем std::map<std::string, Bus> в std::map<std::string_view, const Bus*>
-        std::map<std::string_view, const Bus*> buses_view;
+        /*std::map<std::string_view, const Bus*> buses_view;
         for (const auto& [bus_number, bus] : buses) {
             buses_view[bus_number] = &bus;
-        }
+        }*/
 
         for (const auto& [bus_number, bus] : buses) {
-            if (bus.stops.empty()) {
+            if (bus->stops.empty()) {
                 continue;
             }
-            for (const auto& stop : bus.stops) {
+            for (const auto& stop : bus->stops) {
                 route_stops_coord.push_back(stop->coords);
                 all_stops[stop->name] = stop;
             }
@@ -158,8 +158,8 @@ namespace renderer {
         SphereProjector sp(route_stops_coord.begin(), route_stops_coord.end(), render_settings_.width, render_settings_.height, render_settings_.padding);
 
         // Вызываем методы с преобразованной картой
-        DrawRouteLines(buses_view, sp, result);
-        DrawBusLabel(buses_view, sp, result);
+        DrawRouteLines(buses, sp, result);
+        DrawBusLabel(buses, sp, result);
         DrawStopsSymbols(all_stops, sp, result);
         DrawStopsLabels(all_stops, sp, result);
 

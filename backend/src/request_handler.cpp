@@ -5,13 +5,10 @@
 
 std::optional<BusInfo> RequestHandler::GetBusStat(const std::string_view bus_number) const {
     BusInfo bus_stat{};
-    //const Bus* bus = catalogue_.FindBus(bus_number);
-    std::optional<Bus> bus_opt = catalogue_.FindBus(bus_number);
-    if (!bus_opt.has_value()) {
+    const Bus* bus = catalogue_.FindBus(bus_number); 
+    if (bus == nullptr) {
         throw std::invalid_argument("Bus not found");
-    }
-
-    const Bus* bus = &(*bus_opt);  // Получаем указатель на значение внутри std::optional
+    } 
 
     if (!bus) throw std::invalid_argument("bus not found");
 
@@ -52,11 +49,11 @@ svg::Document RequestHandler::RenderMap([[maybe_unused]] const std::string_view 
 
     if (bus_name.empty()) {
         // Если название автобуса пустое, значит, нам нужно отрисовать все маршруты на карте
-        return renderer_.GetSVG(convertToPointerMap(catalogue_.GetSortedBuses()));
+        return renderer_.GetSVG(/*convertToPointerMap(*/catalogue_.GetSortedBuses()/*)*/);
     }
     else { 
         // Если название автобуса указано, значит, нам нужно отрисовать только конкретный маршрут
-        return renderer_.GetSVG(convertToPointerMap(catalogue_.GetSortedBuses(bus_name)));
+        return renderer_.GetSVG(/*convertToPointerMap(*/catalogue_.GetSortedBuses(bus_name)/*)*/);
     }
 }
 

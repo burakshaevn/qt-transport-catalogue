@@ -16,11 +16,31 @@ struct Stop {
 };
 
 enum class BusType {
-    Undefined,
-    Autobus,
-    Electrobus,
-    Trolleybus
+    undefined,
+    autobus,
+    electrobus,
+    trolleybus 
 };
+
+std::string BusTypeToString(BusType bus_type);
+
+template <typename T>
+BusType StringToBusType(const T bus_type) {
+    if (bus_type == "autobus") {
+        return BusType::autobus;
+    }
+    else if (bus_type == "electrobus") {
+        return BusType::electrobus;
+    }
+    else if (bus_type == "trolleybus") {
+        return BusType::trolleybus;
+    }
+    else {
+        return BusType::undefined;
+    }
+}
+
+std::vector<std::string> SplitIntoWords(const std::string& text);
 
 struct Bus {
     std::string name;

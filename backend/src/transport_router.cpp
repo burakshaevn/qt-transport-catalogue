@@ -15,9 +15,9 @@ void TransportRouter::AddStopsToGraph() {
     graph::VertexId vertex_id = 0;
 
     for (const auto& [stop_name, stop_info] : catalogue_.GetSortedStops()) {
-        stop_ids[stop_info.name] = vertex_id;
+        stop_ids[stop_info->name] = vertex_id;
         graph_.AddEdge({
-            stop_info.name,
+            stop_info->name,
             0,
             vertex_id,
             ++vertex_id,
@@ -32,7 +32,7 @@ void TransportRouter::AddBusesToGraph() {
     for (const auto& bus_item : catalogue_.GetSortedBuses()) {
         auto bus_info = bus_item.second;
         
-        const std::vector<const Stop*> stops = bus_info.stops;
+        const std::vector<const Stop*> stops = bus_info->stops;
         size_t stops_count = stops.size();
 
         for (size_t i = 0; i < stops_count; ++i) {
@@ -49,17 +49,17 @@ void TransportRouter::AddBusesToGraph() {
 
                 const double& weight = static_cast<double>(dist_sum) / (bus_velocity_ * (100.0 / 6.0));
                 graph_.AddEdge({
-                    bus_info.name,
+                    bus_info->name,
                     j - i,
                     stop_name_to_vertex_id_.at(stop_from->name) + 1,
                     stop_name_to_vertex_id_.at(stop_to->name),
                     weight
                     });
 
-                if (!bus_info.is_roundtrip) {
+                if (!bus_info->is_roundtrip) {
                     const double& weight_inverse = static_cast<double>(dist_sum_inverse) / (bus_velocity_ * (100.0 / 6.0));
                     graph_.AddEdge({
-                        bus_info.name,
+                        bus_info->name,
                         j - i,
                         stop_name_to_vertex_id_.at(stop_to->name) + 1,
                         stop_name_to_vertex_id_.at(stop_from->name),

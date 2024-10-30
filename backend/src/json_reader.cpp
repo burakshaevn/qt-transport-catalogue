@@ -128,17 +128,16 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
     std::string_view bus_number = request_map.at("name").AsString();
     std::vector<const Stop*> stops;
     for (const auto& stop : request_map.at("stops").AsArray()) {
-        //stops.push_back(catalogue.FindStop(stop.AsString()));
+        stops.push_back(catalogue.FindStop(stop.AsString()));
         //stops.push_back(&(*catalogue.FindStop(std::string_view(stop.AsString()))));
-        auto stop_opt = catalogue.FindStop(std::string_view(stop.AsString()));
-        if (stop_opt.has_value()) {
-            stops.push_back(&(*stop_opt));  // Теперь можно безопасно взять адрес
-        }
-        else {
-            // Обработка случая, когда остановка не найдена
-            std::cerr << "Stop not found: " << stop.AsString() << std::endl;
-        }
-
+        //auto stop_opt = catalogue.FindStop(std::string_view(stop.AsString()));
+        //if (stop_opt.has_value()) {
+        //    stops.push_back(&(*stop_opt));  // Теперь можно безопасно взять адрес
+        //}
+        //else {
+        //    // Обработка случая, когда объект не найден
+        //    std::cerr << "Stop not found: " << stop.AsString() << std::endl;
+        //}
     }
     bool circular_route = request_map.at("is_roundtrip").AsBool();
 
@@ -149,9 +148,9 @@ std::tuple<std::string_view, std::vector<const Stop*>, bool, size_t, std::array<
 
     auto StringToBusType = [](std::string_view type_str) {
         static const std::unordered_map<std::string_view, BusType> string_to_bus_type = {
-            {"autobus", BusType::Autobus},
-            {"electrobus", BusType::Electrobus},
-            {"trolleybus", BusType::Trolleybus}
+            {"autobus", BusType::autobus},
+            {"electrobus", BusType::electrobus},
+            {"trolleybus", BusType::trolleybus}
         };
 
         auto it = string_to_bus_type.find(type_str);
