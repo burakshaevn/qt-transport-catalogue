@@ -21,11 +21,11 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const QStringView bus_number) 
         auto from = bus->stops[i];
         auto to = bus->stops[i + 1];
 
-        route_length += catalogue_.GetDistance(from, to);
+        route_length += catalogue_.GetDistance(from->name, to->name);
         geographic_length += detail::ComputeDistance(from->coords, to->coords);
 
         if (!bus->is_roundtrip) {
-            route_length += catalogue_.GetDistance(to, from);
+            route_length += catalogue_.GetDistance(to->name, from->name);
             geographic_length += detail::ComputeDistance(to->coords, from->coords);
         }
     }
@@ -38,22 +38,13 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const QStringView bus_number) 
 } 
 
 svg::Document RequestHandler::RenderMap([[maybe_unused]] const QStringView bus_name) const {
-    // Преобразование карты автобусов в карту указателей на автобусы
-    auto convertToPointerMap = [](const std::map<QString, Bus>& buses) -> std::map<QString, Bus> {
-        std::map<QString, Bus> pointer_map;
-        for (const auto& [bus_name, bus] : buses) {
-            pointer_map[bus_name] = bus;   
-        }
-        return pointer_map;
-        };
-
     if (bus_name.empty()) {
         // Если название автобуса пустое, значит, нам нужно отрисовать все маршруты на карте
-        return renderer_.GetSVG(/*convertToPointerMap(*/catalogue_.GetSortedBuses()/*)*/);
+        return renderer_.GetSVG(catalogue_.GetSortedBuses());
     }
     else { 
         // Если название автобуса указано, значит, нам нужно отрисовать только конкретный маршрут
-        return renderer_.GetSVG(/*convertToPointerMap(*/catalogue_.GetSortedBuses(bus_name)/*)*/);
+        return renderer_.GetSVG(catalogue_.GetSortedBuses(bus_name));
     }
 }
 

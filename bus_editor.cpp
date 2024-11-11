@@ -1,26 +1,24 @@
 ﻿#include "bus_editor.h"
 
 BusEditor::BusEditor(QWidget* parent, DatabaseManager* db_, TransportCatalogue* transport_catalogue_, Bus* bus_)
-	: QMainWindow(parent)
+	: QDialog(parent) 
 	, db_manager(db_)
 	, transport_catalogue(transport_catalogue_)
 	, current_bus(bus_)
-	, stops_(bus_->stops)
+	, cache_stops_(bus_->stops)
 {
 	ui.setupUi(this);
 	this->setFixedSize(657, 671);
-	FillComboBox(); 
-	SetLabelsAlign();
-	DisplayCurrentBusToEditPage();
+    FillComboBox();
+	DisplayCurrentBusToEditPage(ui.listWidgetStops);
 }
 
-BusEditor::~BusEditor()
-{}
+BusEditor::~BusEditor() = default;
 
 void BusEditor::on_button_edit_clicked() {
 	ui.stackedWidget->setCurrentWidget(ui.edit);
 	if (db_manager->Open()) {
-		DisplayCurrentBusToEditPage();
+		DisplayCurrentBusToEditPage(ui.listWidgetStops);
 	}
 	else {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
@@ -53,6 +51,8 @@ void BusEditor::on_button_settings_clicked() {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
 	}
 }
+
+// Кнопка 'Сохранить' на странице 'Настройки'
 void BusEditor::on_settings_save_clicked() {
 	bool ok1, ok2;
 	double busVelocity = ui.lineEdit_bus_velocity->text().toDouble(&ok1);
@@ -72,14 +72,14 @@ void BusEditor::on_settings_save_clicked() {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
 	}
 }
-void BusEditor::on_edit_page_append_stop_clicked()
-{
+
+// Кнопка 'Добавить' на странице 'Редактировать'
+void BusEditor::on_edit_append_stop_clicked() {
 	QString stopname = ui.lineEdit_find_stopname->text();
-	// Если остановка существует в базе данных, разрешаем добавить её в «Проходимые» автобусом
 	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
-		stops_.push_back(stop);
+        cache_stops_.push_back(stop);
 		ui.lineEdit_find_stopname->clear();
-		DisplayCurrentBusToEditPage();
+		DisplayCurrentBusToEditPage(ui.listWidgetStops);
 		QMessageBox::information(this, "", QString("Остановка %1 добавлена в список проходимых остановок по маршруту.").arg(stopname));
 	}
 	else {
@@ -87,37 +87,200 @@ void BusEditor::on_edit_page_append_stop_clicked()
 	}
 }
 
-void BusEditor::on_button_append_clicked() {
-	if (db_manager->Open()) {
-		// ...
+// Кнопка 'Добавить' на странице 'Добавление'
+void BusEditor::on_append_append_stop_clicked()
+{
+	QString stopname = ui.lineEdit_find_stopname_2->text();
+	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
+		cache_new_bus_stops_.push_back(stop); // Добавляем новую остановку в конец
+		ui.lineEdit_find_stopname_2->clear();
+		DisplayCurrentBusToEditPage(ui.listWidgetStops_2);
+		QMessageBox::information(this, "", QString("Остановка %1 добавлена в список проходимых остановок по маршруту.").arg(stopname));
 	}
 	else {
-		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
+		QMessageBox::critical(this, "Ошибка", QString("Остановка %1 несуществует.").arg(stopname));
 	}
 }
-void BusEditor::on_edit_page_save_clicked() {
+
+void BusEditor::SetupStopListWidget() {
+	ui.listWidgetStops->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui.listWidgetStops->setDragDropMode(QAbstractItemView::InternalMove);
+	ui.listWidgetStops->setDefaultDropAction(Qt::MoveAction);
+
+	connect(ui.listWidgetStops->model(), &QAbstractItemModel::rowsMoved, this, &BusEditor::UpdateStopOrder);
+}
+
+// Функция для обновления порядка остановок после перемещения
+void BusEditor::UpdateStopOrder() {
+	cache_stops_.clear();
+	for (int i = 0; i < ui.listWidgetStops->count(); ++i) {
+		QListWidgetItem* item = ui.listWidgetStops->item(i);
+		const Stop* stop = item->data(Qt::UserRole).value<const Stop*>();
+		cache_stops_.push_back(stop);
+	}
+}
+
+// Функция для создания виджета остановки с меткой и кнопкой удаления
+QWidget* BusEditor::CreateStopWidget(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+	QWidget* widget = new QWidget();
+	QHBoxLayout* layout = new QHBoxLayout(widget);
+	layout->setContentsMargins(0, 0, 0, 0);
+
+	QLabel* label = new QLabel(stop->name, widget);
+	label->setStyleSheet("font: 500 10pt 'JetBrains Mono'; color: #363636;");
+	// Поиск индекса элемента stop в stops_
+	auto it = std::find(cache_array.begin(), cache_array.end(), stop);
+	int index = (it != cache_array.end()) ? std::distance(cache_array.begin(), it) : 0;
+
+	// Создание поля для ввода позиции с учетом найденного индекса
+	QLineEdit* positionEdit = new QLineEdit(QString::number(index + 1), widget);
+	positionEdit->setFixedSize(48, 17);
+	positionEdit->setAlignment(Qt::AlignCenter);
+	positionEdit->setValidator(new QIntValidator(1, 999, this));
+	positionEdit->move(10, 0);
+	positionEdit->setStyleSheet("font: 500 10pt 'JetBrains Mono'; background-color: transparent; border: none; color: #363636;");
+
+	QPushButton* deleteButton = new QPushButton(widget);
+    deleteButton->setIcon(QIcon(":/resources/close.svg"));
+	deleteButton->setIconSize(QSize(17, 17));
+	deleteButton->setFixedSize(17, 17);
+	deleteButton->move(8, 3);
+	deleteButton->setStyleSheet("border-radius: 0px;");
+
+	layout->addWidget(positionEdit);
+	layout->addWidget(label);
+	layout->addWidget(deleteButton);
+	widget->setLayout(layout);
+
+    connect(deleteButton, &QPushButton::clicked, widget, [this, stop, &cache_array, listWidgetStops]() {
+        on_edit_delete_stop_clicked(stop, cache_array, listWidgetStops);
+    });
+
+    connect(positionEdit, &QLineEdit::editingFinished, widget, [this, positionEdit, stop, &cache_array, listWidgetStops]() {
+        int new_position = positionEdit->text().toInt() - 1;
+        on_stop_position_changed(new_position, stop, cache_array, listWidgetStops);
+    });
+
+	return widget;
+}
+
+// Удаление остановки из `stops_` и интерфейса
+void BusEditor::on_edit_delete_stop_clicked(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+	auto it = std::find(cache_array.begin(), cache_array.end(), stop);
+	if (it != cache_array.end()) {
+		cache_array.erase(it);
+	}
+	DisplayCurrentBusToEditPage(listWidgetStops);
+}
+
+// Функция для обработки изменения позиции остановки
+void BusEditor::on_stop_position_changed(int new_position, const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+	auto it = std::find(cache_array.begin(), cache_array.end(), stop);
+	if (it != cache_array.end()) {
+		cache_array.erase(it);
+		cache_array.insert(cache_array.begin() + new_position, stop);
+	}
+	DisplayCurrentBusToEditPage(listWidgetStops);
+}
+
+// Добавление нового автобуса
+void BusEditor::on_button_append_clicked() {
 	if (db_manager->Open()) {
-		QString busname = ui.lineEdit_busname_2->text();
-		QString bus_type = ui.comboBox_bustype_2->currentText();
-		size_t capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
-		bool is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да" ? true : false;
-		int color_index = ui.lineEdit_color_index_2->text().toInt();
-		bool is_wifi = ui.comboBox_is_wifi_2->currentText() == "Да" ? true : false;
-		bool is_sockets = ui.comboBox_is_sockets_2->currentText() == "Да" ? true : false;
-		bool is_day_bus = ui.comboBox_is_day_bus_2->currentText() == "Да" ? true : false;
-		bool is_night_bus = ui.comboBox_is_night_bus_2->currentText() == "Да" ? true : false;
-		bool is_available = ui.comboBox_is_available_2->currentText() == "Да" ? true : false;
-		int is_text = ui.lineEdit_price_2->text().toInt();
-		current_bus->stops.clear();
-		current_bus->stops = std::move(stops_);
-		db_manager->UpdateBus(busname, current_bus->stops, is_roundtrip, color_index, bus_type, capacity, is_wifi, is_sockets, is_night_bus, is_available, is_text);
+		new_bus = std::make_unique<Bus>();
+		
+		new_bus->name = ui.lineEdit_busname_3->text();
+		if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
+			QMessageBox::critical(this, "Ошибка", "Маршрут с именем " + new_bus->name + " уже существует."); 
+			new_bus.reset();
+			return;
+		}
+		new_bus->bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
+		new_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
+		new_bus->is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
+		new_bus->color_index = ui.lineEdit_color_index_3->text().toInt();
+		new_bus->has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
+		new_bus->has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
+		new_bus->is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
+		new_bus->is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
+		new_bus->is_available = ui.comboBox_is_available_3->currentText() == "Да";
+		new_bus->price = ui.lineEdit_price_3->text().toDouble();
+
+		if (!new_bus->stops.empty()) {
+			QStringList missingDistances;
+			for (size_t i = 0; i < cache_new_bus_stops_.size() - 1; ++i) {
+				const Stop* from_stop = cache_new_bus_stops_[i];
+				const Stop* to_stop = cache_new_bus_stops_[i + 1];
+
+				int distance = db_manager->GetDistance(from_stop, to_stop);
+				if (distance == 0) {
+					missingDistances.append(QString("%1 → %2").arg(from_stop->name, to_stop->name));
+				}
+			}
+
+			if (!missingDistances.isEmpty()) {
+				QString message = "Не найдены расстояния между следующими остановками:\n" + missingDistances.join("\n");
+				QMessageBox::warning(this, "Недостающие расстояния", message);
+				// Прерываем сохранение, если есть недостающие расстояния
+				return;
+			}
+		}
+		new_bus->stops = cache_new_bus_stops_;
+        db_manager->UpdateBus(new_bus.get());
+		transport_catalogue->UpdateBus(new_bus.get());
+		QMessageBox::information(this, "", "Новый маршрут успешно добавлен.");
 	}
 	else {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
 	}
 }
 
-void BusEditor::DisplayCurrentBusToEditPage() {
+// Кнопка 'Сохранить' на странице 'Редактирование'
+void BusEditor::on_edit_save_clicked() {
+	if (db_manager->Open()) {
+		Bus* bus = new Bus();
+		bus->name = ui.lineEdit_busname_2->text();
+		bus->bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
+		bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
+		bus->is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
+		bus->color_index = ui.lineEdit_color_index_2->text().toInt();
+		bus->has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
+		bus->has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
+		bus->is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
+		bus->is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
+		bus->is_available = ui.comboBox_is_available_2->currentText() == "Да";
+        bus->price = ui.lineEdit_price_2->text().toDouble();
+        bus->stops = cache_stops_;
+
+		if (!cache_stops_.empty()) {
+			QStringList missingDistances;
+			for (size_t i = 0; i < cache_stops_.size() - 1; ++i) {
+				const Stop* from_stop = cache_stops_[i];
+				const Stop* to_stop = cache_stops_[i + 1];
+
+				int distance = db_manager->GetDistance(from_stop, to_stop);
+				if (distance == 0) {
+					missingDistances.append(QString("%1 → %2").arg(from_stop->name, to_stop->name));
+				}
+			}
+
+			if (!missingDistances.isEmpty()) {
+				QString message = "Не найдены расстояния между следующими остановками:\n" + missingDistances.join("\n");
+				QMessageBox::warning(this, "Недостающие расстояния", message);
+				// Прерываем сохранение, если есть недостающие расстояния
+				return;
+			}
+        }
+        db_manager->UpdateBus(bus);
+		transport_catalogue->UpdateBus(bus);
+        transport_catalogue->UpdateStopBuses();
+		QMessageBox::information(this, "", "Информация о маршруте обновлена.");
+	}
+	else {
+		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
+	}
+}
+
+void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops) {
 	if (db_manager->Open()) {
 		QSqlQuery query = db_manager->ExecuteSelectQuery(
 			QString("SELECT * FROM buses WHERE name = '%1';").arg(current_bus->name)
@@ -145,61 +308,17 @@ void BusEditor::DisplayCurrentBusToEditPage() {
 			ui.comboBox_is_day_bus_2->setCurrentText(isNightBus ? "Да" : "Нет");
 			ui.comboBox_is_night_bus_2->setCurrentText(isNightBus ? "Да" : "Нет");
 			ui.comboBox_is_available_2->setCurrentText(isAvailable ? "Да" : "Нет");
-			ui.lineEdit_price_2->setText(QString::number(price, 'f', 2));
+			ui.lineEdit_price_2->setText(QString::number(price, 'f', 2)); 
 
-			QLayout* existingLayout = ui.scrollAreaWidgetContents->layout();
-			if (existingLayout != nullptr) {
-				QLayoutItem* item;
-				while ((item = existingLayout->takeAt(0)) != nullptr) {
-					delete item->widget();
-					delete item;
-				}
-				delete existingLayout;
-			}
-
-			QVBoxLayout* layout = new QVBoxLayout(ui.scrollAreaWidgetContents);
-			layout->setAlignment(Qt::AlignTop);  
-			
-			for (size_t i = 0; i < stops_.size(); ++i) {
-				if (!stops_[i]->name.isEmpty()) {
-					QLabel* background = new QLabel(ui.scrollAreaWidgetContents);
-					background->setStyleSheet("background-color: #F8F8F8;");
-					background->setFixedSize(349, 17);
-
-					QLabel* stop_name = new QLabel(stops_[i]->name, background);
-					stop_name->setStyleSheet("color: #2E1C0C; font: 700 11t 'JetBrains Mono';");
-					stop_name->setFixedSize(290, 17);
-					stop_name->setAlignment(Qt::AlignLeft);
-					stop_name->move(62, 0);
-
-					/*QSqlQuery stop_position_query = db_manager->ExecuteSelectQuery(QString("select stops.name, bus_stops.stop_position from bus_stops left join buses ON bus_stops.bus_id = buses.id left join stops ON bus_stops.stop_id = stops.id where buses.name = '%1';")
-						.arg(QString::fromStdString(current_bus->name)));*/
-
-					//if (stop_position_query.next()) {
-						QLabel* stop_position = new QLabel(QString::fromStdString(std::to_string(i + 1))/*stop_position_query.value(0).toString()*/, background);
-						stop_position->setStyleSheet("color: #2E1C0C; font: 700 11t 'JetBrains Mono';");
-						stop_position->setFixedSize(48, 17);
-						stop_position->setAlignment(Qt::AlignLeft);
-						stop_position->move(5, 0);
-
-						QPushButton* delete_ = new QPushButton("✕", background);
-						delete_->setFixedSize(17, 17);
-						delete_->move(331, 0);
-						delete_->setStyleSheet("border-radius: 0px; font: 9pt 'JetBrains Mono'; ");
-
-						layout->addWidget(background);
-					//}
-				}
+			listWidgetStops->clear();
+			for (const Stop* stop : cache_stops_) {
+				QListWidgetItem* item = new QListWidgetItem(listWidgetStops);
+				QWidget* stopWidget = CreateStopWidget(stop, cache_stops_, listWidgetStops);
+				item->setSizeHint(stopWidget->sizeHint());
+				listWidgetStops->addItem(item);
+				listWidgetStops->setItemWidget(item, stopWidget);
 			}
 		}
-	}
-	else {
-		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
-	}
-}
-void BusEditor::DisplayCurrentBusToAppendPage() {
-	if (db_manager->Open()) {
-		// ...
 	}
 	else {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
@@ -221,13 +340,13 @@ void BusEditor::FillComboBox()
 	ui.comboBox_is_roundtrip_2->addItem("Да");
 	ui.comboBox_is_roundtrip_2->addItem("Нет");
 
-	// Page: edit; ComboBox: is_wifi
+	// Page: edit; ComboBox: has_wifi
 	ui.comboBox_is_wifi_2->addItem("Не выбрано");
 	ui.comboBox_is_wifi_2->setCurrentText("Не выбрано");
 	ui.comboBox_is_wifi_2->addItem("Да");
 	ui.comboBox_is_wifi_2->addItem("Нет");
 
-	// Page: edit; ComboBox: is_sockets
+	// Page: edit; ComboBox: has_sockets
 	ui.comboBox_is_sockets_2->addItem("Не выбрано");
 	ui.comboBox_is_sockets_2->setCurrentText("Не выбрано");
 	ui.comboBox_is_sockets_2->addItem("Да");
@@ -250,19 +369,69 @@ void BusEditor::FillComboBox()
 	ui.comboBox_is_available_2->setCurrentText("Не выбрано");
 	ui.comboBox_is_available_2->addItem("Да");
 	ui.comboBox_is_available_2->addItem("Нет");
+
+	// Page: append; ComboBox: bus_type
+	ui.comboBox_bustype_3->addItem("undefined");
+	ui.comboBox_bustype_3->setCurrentText("undefined");
+	ui.comboBox_bustype_3->addItem("autobus");
+	ui.comboBox_bustype_3->addItem("electrobus");
+	ui.comboBox_bustype_3->addItem("trolleybus");
+
+	// Page: append; ComboBox: is_roundtrip
+	ui.comboBox_is_roundtrip_3->addItem("Не выбрано");
+	ui.comboBox_is_roundtrip_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_roundtrip_3->addItem("Да");
+	ui.comboBox_is_roundtrip_3->addItem("Нет");
+
+	// Page: append; ComboBox: has_wifi
+	ui.comboBox_is_wifi_3->addItem("Не выбрано");
+	ui.comboBox_is_wifi_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_wifi_3->addItem("Да");
+	ui.comboBox_is_wifi_3->addItem("Нет");
+
+	// Page: append; ComboBox: has_sockets
+	ui.comboBox_is_sockets_3->addItem("Не выбрано");
+	ui.comboBox_is_sockets_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_sockets_3->addItem("Да");
+	ui.comboBox_is_sockets_3->addItem("Нет");
+
+	// Page: append; ComboBox: is_day_bus
+	ui.comboBox_is_day_bus_3->addItem("Не выбрано");
+	ui.comboBox_is_day_bus_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_day_bus_3->addItem("Да");
+	ui.comboBox_is_day_bus_3->addItem("Нет");
+
+	// Page: append; ComboBox: is_night_bus
+	ui.comboBox_is_night_bus_3->addItem("Не выбрано");
+	ui.comboBox_is_night_bus_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_night_bus_3->addItem("Да");
+	ui.comboBox_is_night_bus_3->addItem("Нет");
+
+	// Page: append; ComboBox: is_available
+	ui.comboBox_is_available_3->addItem("Не выбрано");
+	ui.comboBox_is_available_3->setCurrentText("Не выбрано");
+	ui.comboBox_is_available_3->addItem("Да");
+	ui.comboBox_is_available_3->addItem("Нет");
 }
 
-void BusEditor::SetLabelsAlign()
+void BusEditor::on_edit_delete_clicked()
 {
-	for (auto& obj : {
-		ui.label_2,
-		ui.label_38,
-		ui.label_51,
-		ui.label_52,
-		ui.label_14,
-		}) 
-	{
-		obj->setAlignment(Qt::AlignCenter);
-	}  
-} 
- 
+    QMessageBox confirmBox;
+    confirmBox.setWindowTitle("Подтверждение удаления");
+    confirmBox.setText("Вы уверены, что хотите удалить маршрут " + current_bus->name + "?");
+    confirmBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirmBox.setDefaultButton(QMessageBox::No);
+
+    int result = confirmBox.exec();
+    if (result == QMessageBox::Yes) {
+        if (db_manager->DeleteBus(static_cast<const Bus*>(current_bus))) {
+            transport_catalogue->DeleteBus(current_bus);
+            DisplayCurrentBusToEditPage(ui.listWidgetStops);
+            QMessageBox::information(this, "Удаление", "Автобус успешно удалён.");
+            close();
+        } else {
+            QMessageBox::warning(this, "Ошибка", "Не удалось удалить автобус.");
+        }
+    }
+}
+

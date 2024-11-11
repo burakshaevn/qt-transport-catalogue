@@ -5,14 +5,10 @@
 #include "geo.h"
 #include <array>
 
-struct Stop {
-    Stop() = default;
+struct Stop { 
     QString name;
     detail::Coordinates coords; 
-
-    bool operator<(const Stop& other) const {
-        return name < other.name;
-    }
+     
 };
 
 enum class BusType {
@@ -43,6 +39,12 @@ BusType StringToBusType(const T bus_type) {
 std::vector<QString> SplitIntoWords(const QString& text);
 
 struct Bus {
+    Bus() = default;  
+    Bus(const Bus&) = default;
+    Bus& operator=(const Bus&) = default;
+    Bus(Bus&&) = default;
+    Bus& operator=(Bus&&) = default;
+
     QString name;
     std::vector<const Stop*> stops;
     bool is_roundtrip;
@@ -50,13 +52,14 @@ struct Bus {
 
     std::array<uint8_t, 3> rgb;
     BusType bus_type;
-    uint8_t capacity;
+    int capacity;
     bool has_wifi;
     bool has_sockets;
     bool is_night;
+    bool is_day;
 
     bool is_available;
-    uint8_t price;
+    int price;
 };
 
 struct BusInfo {
@@ -68,11 +71,12 @@ struct BusInfo {
 
     std::array<uint8_t, 3> rgb;
     BusType bus_type;
-    uint8_t capacity;
+    int capacity;
     bool has_wifi;
     bool has_sockets;
     bool is_night;
+    bool is_day;
 
     bool is_available;
-    uint8_t price;
+    int price;
 };

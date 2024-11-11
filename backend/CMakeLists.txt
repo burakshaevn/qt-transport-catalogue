@@ -5,10 +5,8 @@ project(backend)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# РЈРєР°Р·С‹РІР°РµРј РґРёСЂРµРєС‚РѕСЂРёСЋ СЃ Р·Р°РіРѕР»РѕРІРѕС‡РЅС‹РјРё С„Р°Р№Р»Р°РјРё
 include_directories(include)
 
-# РџРѕРґРєР»СЋС‡Р°РµРј С„Р°Р№Р»С‹ database_manager.cpp Рё .h
 set(BACKEND_SOURCES
     include/domain.h 
     include/geo.h 
@@ -23,7 +21,7 @@ set(BACKEND_SOURCES
     include/svg.h 
     include/transport_catalogue.h 
     include/transport_router.h
-    ../database_manager.h
+    include/database_manager.h
     src/domain.cpp
     src/transport_router.cpp 
     src/transport_catalogue.cpp 
@@ -33,14 +31,11 @@ set(BACKEND_SOURCES
     src/json_reader.cpp 
     src/json_builder.cpp 
     src/json.cpp
-    ../database_manager.cpp   
+    src/database_manager.cpp
 )
-
 add_library(backend STATIC ${BACKEND_SOURCES})
 
-# РџРѕРґРєР»СЋС‡Р°РµРј Р±РёР±Р»РёРѕС‚РµРєРё Qt Рё PostgreSQL РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ database_manager
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
+target_include_directories(backend PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(backend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql)
-target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL) 
+target_link_libraries(backend PRIVATE PostgreSQL::PostgreSQL)

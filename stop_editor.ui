@@ -1,22 +1,19 @@
-<UI version="4.0" >
- <class>StopEditorClass</class>
- <widget class="QMainWindow" name="StopEditorClass" >
-  <property name="objectName" >
-   <string notr="true">StopEditorClass</string>
-  </property>
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StopEditor</class>
+ <widget class="QWidget" name="StopEditor">
+  <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>600</width>
-	<height>400</height>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>StopEditor</string>
-  </property>  <widget class="QMenuBar" name="menuBar" />  <widget class="QToolBar" name="mainToolBar" />  <widget class="QWidget" name="centralWidget" />  <widget class="QStatusBar" name="statusBar" />
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <resources/>
  <connections/>
-</UI>
+</ui>

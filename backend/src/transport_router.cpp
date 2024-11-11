@@ -43,8 +43,8 @@ void TransportRouter::AddBusesToGraph() {
                 int dist_sum_inverse = 0;
 
                 for (size_t k = i + 1; k <= j; ++k) {
-                    dist_sum += catalogue_.GetDistance(stops[k - 1], stops[k]);
-                    dist_sum_inverse += catalogue_.GetDistance(stops[k], stops[k - 1]);
+                    dist_sum += catalogue_.GetDistance(stops[k - 1]->name, stops[k]->name);
+                    dist_sum_inverse += catalogue_.GetDistance(stops[k]->name, stops[k - 1]->name);
                 }
 
                 const double& weight = static_cast<double>(dist_sum) / (bus_velocity_ * (100.0 / 6.0));

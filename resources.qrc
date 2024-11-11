@@ -1,12 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/open_in_a_browser.png</file>
-        <file>resources/search.png</file>
-        <file>resources/bus.png</file>
-        <file>resources/price.png</file>
-        <file>resources/profile.png</file>
-        <file>resources/stop.png</file>
-        <file>resources/edit_20x20.png</file>
-        <file>resources/find_21_17.png</file>
+        <file>resources/delete.svg</file>
+        <file>resources/marker.svg</file>
+        <file>resources/search.svg</file>
+        <file>resources/add.svg</file>
+        <file>resources/close.svg</file>
+        <file>resources/directions_bus.svg</file>
+        <file>resources/edit.svg</file>
+        <file>resources/Database.svg</file>
+        <file>resources/Map 02.svg</file>
     </qresource>
 </RCC>

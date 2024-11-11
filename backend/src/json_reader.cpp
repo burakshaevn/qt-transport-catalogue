@@ -89,8 +89,22 @@ void JsonReader::ProcessBusRequests(const json::Array& arr, TransportCatalogue& 
         const auto& request_bus_map = request_bus.AsDict();
         const auto& type = request_bus_map.at("type").AsString();
         if (type == "Bus") {
-            auto [bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price] = PullBus(request_bus_map, catalogue);
-            catalogue.AddBus(bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price);
+            Bus bus;
+            auto [name, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price] = PullBus(request_bus_map, catalogue);
+            bus.name = name.toString();
+            bus.stops = stops;
+            bus.is_roundtrip = circular_route;
+            bus.color_index = color_index;
+            bus.rgb = rgb;
+            bus.bus_type = bus_type;
+            bus.capacity = capacity;
+            bus.has_wifi = has_wifi;
+            bus.has_sockets = has_sockets;
+            bus.is_night = is_night;
+            bus.is_available = is_available;
+            bus.price = price;
+            //catalogue.AddBus(bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price);
+            catalogue.AddBus(bus);
         }
     }
 }
@@ -117,7 +131,7 @@ void JsonReader::PullStopDistances(TransportCatalogue& catalogue) const {
                 auto from = catalogue.FindStop(stop_name);
                 auto to = catalogue.FindStop(to_name);
                 //catalogue.SetDistance(from, to, dist);
-                catalogue.SetDistance(&(*from), &(*to), dist);
+                catalogue.SetDistance(from->name, to->name, dist);
             }
         }
     }
