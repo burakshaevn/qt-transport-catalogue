@@ -22,7 +22,14 @@
 
 Сборка и запуск:
 
-...
+* Visual Studio 2022
+  ```sh
+  cd ..\qt-transport-catalogue\
+  mkdir build-vs
+  cd ..\qt-transport-catalogue\build-vs
+  cmake .. -G "Visual Studio 17 2022" -DCMAKE_PREFIX_PATH="C:\Qt\6.6.2\msvc2019_64\"
+  ```
+  где `-DCMAKE_PREFIX_PATH="C:\Qt\6.6.2\msvc2019_64\"` — путь к месту установки фреймворка Qt, собранного с использованием компилятора Microsoft Visual Studio.
 
 ## Основные классы
 ...
