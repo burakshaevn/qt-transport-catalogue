@@ -31,7 +31,7 @@ set(PROJECT_SOURCES
     bus_editor.h
     bus_editor.ui
 
-    stdafx.h
+
     resources.qrc
 )
 
@@ -40,6 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         stop_editor.h stop_editor.cpp stop_editor.ui
+        stdafx.h
 
     )
 else()

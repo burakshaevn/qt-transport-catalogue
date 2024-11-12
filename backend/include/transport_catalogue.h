@@ -38,6 +38,7 @@ public:
 	void AddStop(const QStringView name, const detail::Coordinates& coordinates);
     void AddStopForBus(const Stop* stop);
     void DeleteStop(Stop* stop);
+    void UpdateStop(const QStringView old_name, const QStringView new_name, const double latitude, const double longitude);
 
 	const Bus* FindBus(const QStringView name) const;
     const Stop* FindStop(const QStringView name) const;
@@ -78,7 +79,7 @@ private:
 	std::deque<Stop> stops_;
 
 	// хранит <название_остановки, указатель на остановку>
-    std::unordered_map<QString, const Stop*> stopname_to_stop_;
+    std::unordered_map<QString, std::shared_ptr<const Stop>> stopname_to_stop_;
 
 	// дек автобусов
 	std::deque<Bus> buses_;

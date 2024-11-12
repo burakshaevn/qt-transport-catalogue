@@ -92,7 +92,7 @@ void BusEditor::on_append_append_stop_clicked()
 {
 	QString stopname = ui.lineEdit_find_stopname_2->text();
 	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
-		cache_new_bus_stops_.push_back(stop); // Добавляем новую остановку в конец
+        cache_new_bus_stops_.push_back(stop);
 		ui.lineEdit_find_stopname_2->clear();
 		DisplayCurrentBusToEditPage(ui.listWidgetStops_2);
 		QMessageBox::information(this, "", QString("Остановка %1 добавлена в список проходимых остановок по маршруту.").arg(stopname));
@@ -272,7 +272,7 @@ void BusEditor::on_edit_save_clicked() {
         }
         db_manager->UpdateBus(bus);
 		transport_catalogue->UpdateBus(bus);
-        transport_catalogue->UpdateStopBuses();
+        //transport_catalogue->UpdateStopBuses();
 		QMessageBox::information(this, "", "Информация о маршруте обновлена.");
 	}
 	else {

@@ -36,11 +36,13 @@ void TransportCatalogue::DeleteBus(Bus* bus){
 // РґРѕР±Р°РІР»РµРЅРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РІ Р±Р°Р·Сѓ,
 void TransportCatalogue::AddStop(const QStringView stopname, const detail::Coordinates& coordinates) {
 	stops_.push_back({ stopname.toString(), coordinates});
-	stopname_to_stop_[stops_.back().name] = &stops_.back();
+    // stopname_to_stop_[stops_.back().name] = &stops_.back();
+    stopname_to_stop_[stops_.back().name] = std::make_shared<Stop>(stops_.back());
 }
 
 void TransportCatalogue::AddStopForBus(const Stop* stop) {
-    stopname_to_stop_[stop->name] = stop;
+    // stopname_to_stop_[stop->name] = stop;
+    stopname_to_stop_[stop->name] = std::make_shared<Stop>(stops_.back());
 }
 
 void TransportCatalogue::DeleteStop(Stop* stop) {
@@ -54,7 +56,11 @@ void TransportCatalogue::DeleteStop(Stop* stop) {
     if (stop_buses_.count(stop_name)) {
         for (Bus* bus : stop_buses_[stop_name]) {
             auto& stops = bus->stops;  // Получаем вектор остановок для конкретного автобуса
-            stops.erase(std::remove(stops.begin(), stops.end(), stop), stops.end());
+            // Находим итератор на элемент, равный `stop`
+            auto it = std::remove(stops.begin(), stops.end(), stop);
+            // Удаляем элемент
+            stops.erase(it, stops.end());
+
         }
         // Удаляем записи об остановке из `stop_buses_`
         stop_buses_.erase(stop_name);
@@ -81,6 +87,33 @@ void TransportCatalogue::DeleteStop(Stop* stop) {
     }
 }
 
+// void TransportCatalogue::UpdateStop(const QStringView old_name, const QStringView new_name, const double latitude, const double longitude) {
+//     auto it = stopname_to_stop_.find(old_name.toString());
+//     if (it != stopname_to_stop_.end()) {
+//         // Копируем старую остановку
+//         auto new_stop_ptr = std::make_shared<Stop>(*it->second);
+
+//         // Обновляем поля
+//         new_stop_ptr->name = new_name.toString();
+//         new_stop_ptr->coords.lat = latitude;
+//         new_stop_ptr->coords.lng = longitude;
+
+//         // Заменяем везде старый объект новым
+//         stopname_to_stop_.erase(it);
+//         stopname_to_stop_[new_name.toString()] = new_stop_ptr;
+
+//         // Обновляем все маршруты (Bus), которые содержат старую остановку
+//         for (auto& bus : buses_) {
+//             for (auto& stop : bus.stops) {
+//                 if (stop == it->second.get()) {
+//                     stop = new_stop_ptr.get(); // Обновляем указатель на новую версию остановки
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
 // РїРѕРёСЃРє РјР°СЂС€СЂСѓС‚Р° РїРѕ РёРјРµРЅРё,
 const Bus* TransportCatalogue::FindBus(const QStringView busname) const {
     auto iter = busname_to_bus_.find(busname.toString());
@@ -96,7 +129,7 @@ const Bus* TransportCatalogue::FindBus(const QStringView busname) const {
 const Stop* TransportCatalogue::FindStop(const QStringView stopname) const {
     auto iter = stopname_to_stop_.find(stopname.toString());
 	if (iter != stopname_to_stop_.end()) {
-		return iter->second;
+        return iter->second.get();
 	}
 	else {
 		return nullptr;
@@ -158,19 +191,16 @@ std::set<Bus*> TransportCatalogue::GetBusesForStop(const QStringView stopname) {
     if (it != stop_buses_.end()) {
         return it->second;
     }
-    return std::set<Bus*>();
+    return std::set<Bus*>();        
 }
 
 const std::vector<const Stop*> TransportCatalogue::GetStopsForBus(const QStringView name) const{
     return GetStopsForBus(name);
 }
 std::vector<const Stop*> TransportCatalogue::GetStopsForBus(const QStringView name) {
-    auto it = std::find_if(buses_.begin(), buses_.end(), [&](const Bus& bus) {
-        return bus.name == name;
-    });
-
-    if (it != buses_.end()) {
-        return it->stops;
+    auto it = busname_to_bus_.find(name.toString());
+    if (it != busname_to_bus_.end()) {
+        return it->second->stops;
     }
     return std::vector<const Stop*>();
 }
@@ -218,13 +248,20 @@ const std::map<QStringView, const Bus*> TransportCatalogue::GetSortedBuses() con
 	return result;
 }
 
+// const std::map<QStringView, const Stop*> TransportCatalogue::GetSortedStops() const {
+// 	std::map<QStringView, const Stop*> result;
+// 	for (const auto& stop : stopname_to_stop_) {
+// 		result.emplace(stop);
+// 	}
+// 	return result;
+// }
 const std::map<QStringView, const Stop*> TransportCatalogue::GetSortedStops() const {
-	std::map<QStringView, const Stop*> result;
-	for (const auto& stop : stopname_to_stop_) {
-		result.emplace(stop);
-	}
-	return result;
-} 
+    std::map<QStringView, const Stop*> result;
+    for (const auto& [name, stop_ptr] : stopname_to_stop_) {
+        result.emplace(name, stop_ptr.get());
+    }
+    return result;
+}
 
 // Signals
 
@@ -249,7 +286,8 @@ void TransportCatalogue::UpdateStopnameToStop() {
 		stopname_to_stop_.clear();
 	}
 	for (const auto& stop : stops_) {
-		stopname_to_stop_[stop.name] = &stop;
+        // stopname_to_stop_[stop.name] = &stop;
+        stopname_to_stop_[stop.name] = std::make_shared<Stop>(stop);
 	}
 }
 void TransportCatalogue::UpdateBuses() {
@@ -295,7 +333,14 @@ void TransportCatalogue::UpdateBus(const Bus* bus) {
     auto it = busname_to_bus_.find(bus->name);
 	if (it != busname_to_bus_.end()) {
         it->second = bus;
-	}
+
+        for(auto& stop : bus->stops){
+            auto it = stop_buses_.find(stop->name);
+            if (it == stop_buses_.end()){
+                stop_buses_[stop->name].emplace(const_cast<Bus*>(bus));
+            }
+        }
+    }
 	else {
         // Если автобус не найден, добавляем как новый
 		AddBus(const_cast<Bus&>(*bus));

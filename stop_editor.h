@@ -13,16 +13,16 @@ class StopEditor : public QDialog {
     Q_OBJECT
 
 public:
-    explicit StopEditor(QWidget* parent = nullptr)
+    explicit StopEditor(QWidget* parent = nullptr, const QString& title_ = "", const QString& button_title_ = "")
         : QDialog(parent)
     {
-        setWindowTitle("Добавить остановку");
+        setWindowTitle(title_);
 
         layout_ = new QVBoxLayout(this);
         layout_->setSizeConstraint(QLayout::SetFixedSize);  // Устанавливаем автоматическую подстройку размера
 
         // Кнопка "Добавить" всегда будет внизу
-        buttonAdd_ = new QPushButton("Добавить", this);
+        buttonAdd_ = new QPushButton(button_title_, this);
         layout_->addWidget(buttonAdd_);
 
         connect(buttonAdd_, &QPushButton::clicked, this, &StopEditor::onAddClicked);

@@ -248,9 +248,12 @@ void MainWindow::on_button_stops_clicked()
         }
         QVBoxLayout* layout = new QVBoxLayout();
         layout->setAlignment(Qt::AlignTop);
+        size_t results_size{};
         for (auto& [stop_name, stop_ptr] : transport_catalogue_.GetSortedStops()) {
             DrawStop(const_cast<Stop*>(stop_ptr), layout);
+            ++results_size;
         }
+        ui->results_count->setText("Результатов: " + QString::number(results_size));
         ui->scrollAreaWidgetContents_2->setLayout(layout);
     }
     else {
@@ -717,7 +720,72 @@ void MainWindow::DrawBus(Bus* bus, QVBoxLayout* layout) {
 }
 
 void MainWindow::EditStop(Stop* stop){
+    StopEditor stopEditor(this, "Редактирование", "Сохранить");
 
+    QLineEdit* stop_name_field = stopEditor.addField("Ред. Название:");
+    QLineEdit* latitude_field = stopEditor.addField("Широта:");
+    QLineEdit* longitude_field = stopEditor.addField("Долгота:");
+
+    stop_name_field->setText(stop->name);
+    latitude_field->setText(QString::number(stop->coords.lat));
+    longitude_field->setText(QString::number(stop->coords.lng));
+
+    connect(&stopEditor, &QDialog::finished, this, [&](){
+        on_button_stops_clicked();
+    });
+
+    connect(&stopEditor, &StopEditor::fieldsEntered, this, [&]() {
+        bool ok;
+        double latitude = stopEditor.getFieldText(latitude_field).toDouble(&ok);
+        if (!ok || latitude < 0) {
+            QMessageBox::warning(&stopEditor, "Ошибка", "Введите корректное значение для широты.");
+            return;
+        }
+        bool ok1;
+        double longitude = stopEditor.getFieldText(longitude_field).toDouble(&ok1);
+        if (!ok1 || longitude < 0) {
+            QMessageBox::warning(&stopEditor, "Ошибка", "Введите корректное значение для долготы.");
+            return;
+        }
+
+        QString stop_name = stopEditor.getFieldText(stop_name_field);
+
+        if (db_manager_.UpdateStop(stop->name, stop_name, latitude, longitude)) {
+            // transport_catalogue_.UpdateStop(stop->name, stop_name, latitude, longitude);
+            transport_catalogue_.UpdateBuses();
+            transport_catalogue_.UpdateBusnameToBus();
+            transport_catalogue_.UpdateStops();
+            transport_catalogue_.UpdateStopnameToStop();
+            transport_catalogue_.UpdateStopBuses();
+            transport_catalogue_.UpdateDistances();
+            QMessageBox::information(this, "Успех", "Данные остановки обновлены.");
+        } else {
+            QMessageBox::critical(this, "Ошибка", "Произошла ошибка при обновлении.");
+        }
+    });
+
+    stopEditor.exec();
+}
+
+void MainWindow::InfoStop(Stop* stop){
+    StopEditor stopEditor(this, "Информация", "Закрыть");
+
+    QLineEdit* stop_name_field = stopEditor.addField("Название:");
+    QLineEdit* latitude_field = stopEditor.addField("Широта:");
+    QLineEdit* longitude_field = stopEditor.addField("Долгота:");
+    QLineEdit* count_buses_field = stopEditor.addField("Количество проходящих маршрутов:");
+
+    stop_name_field->setReadOnly(true);
+    latitude_field->setReadOnly(true);
+    longitude_field->setReadOnly(true);
+    count_buses_field->setReadOnly(true);
+
+    stop_name_field->setText(stop->name);
+    latitude_field->setText(QString::number(stop->coords.lat));
+    longitude_field->setText(QString::number(stop->coords.lng));
+    count_buses_field->setText(QString::number(transport_catalogue_.GetBusesForStop(stop->name).size()));
+
+    stopEditor.exec();
 }
 
 void MainWindow::DeleteStop(Stop* stop){
@@ -730,8 +798,13 @@ void MainWindow::DeleteStop(Stop* stop){
     int result = confirmBox.exec();
     if (result == QMessageBox::Yes) {
         if (db_manager_.DeleteStop(stop)) {
-            transport_catalogue_.DeleteStop(stop);
-
+            //transport_catalogue_.DeleteStop(stop);
+            transport_catalogue_.UpdateBuses();
+            transport_catalogue_.UpdateBusnameToBus();
+            transport_catalogue_.UpdateStops();
+            transport_catalogue_.UpdateStopnameToStop();
+            transport_catalogue_.UpdateStopBuses();
+            transport_catalogue_.UpdateDistances();
             QLayout* existingLayout = ui->scrollAreaWidgetContents_2->layout();
             if (existingLayout != nullptr) {
                 QLayoutItem* item;
@@ -745,9 +818,12 @@ void MainWindow::DeleteStop(Stop* stop){
             QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents_2);
             layout->setAlignment(Qt::AlignTop);
 
+            size_t results_size{};
             for(auto& stop : transport_catalogue_.GetSortedStops()){
                 DrawStop(const_cast<Stop*>(stop.second), layout);
+                ++results_size;
             }
+            ui->results_count->setText("Результатов: " + QString::number(results_size));
             QMessageBox::information(this, "Удаление", "Остановка удалена.");
         }
         else {
@@ -782,6 +858,17 @@ void MainWindow::DrawStop(Stop* stop, QVBoxLayout* layout) {
         location->setAlignment(Qt::AlignLeft);
         location->move(45, 55);
         location->setReadOnly(true);
+
+        QPushButton* info_ = new QPushButton(background);
+        info_->setIcon(QIcon(":/resources/Information Circle Contained.svg"));
+        info_->setStyleSheet("border-radius: 0px;");
+        info_->setIconSize(QSize(17, 17));
+        info_->setFixedSize(17, 17);
+        info_->move(518, 7);
+
+        connect(info_, &QPushButton::clicked, [this, stop]() {
+            InfoStop(stop);
+        });
 
         QPushButton* edit_ = new QPushButton(background);
         edit_->setIcon(QIcon(":/resources/edit.svg"));
@@ -855,10 +942,12 @@ void MainWindow::on_stops_search_clicked() {
 
         QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents_2);
         layout->setAlignment(Qt::AlignTop);
-
+        size_t results_size{};
         for (const auto& stop : ComputeTfIdfs(transport_catalogue_.GetSortedStops(), term)) {
             DrawStop(stop, layout);
+            ++results_size;
         }
+        ui->results_count->setText("Результатов: " + QString::number(results_size));
         layout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
         ui->scrollAreaWidgetContents_2->setLayout(layout);
@@ -868,9 +957,8 @@ void MainWindow::on_stops_search_clicked() {
     }
 }
 
-void MainWindow::on_stops_append_clicked()
-{
-    StopEditor stopEditor(this);
+void MainWindow::on_stops_append_clicked() {
+    StopEditor stopEditor(this, "Добавление остановки", "Добавить");
 
     QLineEdit* stop_name_field = stopEditor.addField("Название:");
     QLineEdit* latitude_field = stopEditor.addField("Широта:");
@@ -954,7 +1042,7 @@ void MainWindow::on_search_distance_clicked()
 }
 
 void MainWindow::on_add_distance_clicked() {
-    StopEditor stopEditor(this);
+    StopEditor stopEditor(this, "Добавление дистанции", "Добавить");
 
     QLineEdit* fromField = stopEditor.addField("Откуда:");
     QLineEdit* toField = stopEditor.addField("Куда:");

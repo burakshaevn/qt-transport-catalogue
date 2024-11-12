@@ -17,17 +17,17 @@
 #include <QFileDialog>
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsRectItem>
-#include <QGraphicsScene> 
+#include <QGraphicsScene>
 #include <QGraphicsSvgItem>
-#include <QGraphicsView> 
+#include <QGraphicsView>
 #include <QLabel>
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
 #include <QRegularExpression>
-#include <QSvgRenderer> 
+#include <QSvgRenderer>
 #include <QUrl>
 #include <QVBoxLayout>
-    
+
 
 #endif // STDAFX_H

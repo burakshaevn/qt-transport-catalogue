@@ -28,7 +28,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="database">
      <widget class="QLabel" name="label_3">
@@ -319,7 +319,7 @@
       <property name="geometry">
        <rect>
         <x>330</x>
-        <y>130</y>
+        <y>170</y>
         <width>639</width>
         <height>528</height>
        </rect>
@@ -467,6 +467,28 @@
         <width>30</width>
         <height>30</height>
        </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="results_count">
+      <property name="geometry">
+       <rect>
+        <x>444</x>
+        <y>130</y>
+        <width>412</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -1628,6 +1650,16 @@ QPushButton::pressed {
     </property>
     <property name="text">
      <string>Дистанции</string>
+    </property>
+    <property name="icon">
+     <iconset resource="resources.qrc">
+      <normaloff>:/resources/Arrow Roadmap.svg</normaloff>:/resources/Arrow Roadmap.svg</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>12</width>
+      <height>12</height>
+     </size>
     </property>
    </widget>
    <zorder>label_2</zorder>

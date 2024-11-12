@@ -38,7 +38,7 @@ public:
     bool AddStop(const QString& name, double latitude, double longitude);
     bool DeleteStop(const Stop* stop);
     std::optional<Stop> FindStop(const QStringView name);
-    bool UpdateStop(const Stop* stop);
+    bool UpdateStop(const QStringView old_name, const QStringView new_name, const double latitude, const double longitude);
 
     bool AddDistance(const QString& from, const QString& to, int distance);
     bool DeleteDistance(const QString& from, const QString& to);

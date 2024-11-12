@@ -9,5 +9,7 @@
         <file>resources/edit.svg</file>
         <file>resources/Database.svg</file>
         <file>resources/Map 02.svg</file>
+        <file>resources/Arrow Roadmap.svg</file>
+        <file>resources/Information Circle Contained.svg</file>
     </qresource>
 </RCC>
