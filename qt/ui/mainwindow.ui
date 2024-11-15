@@ -14,7 +14,7 @@
    <string>Транспортный справочник</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/resources/directions_bus.svg</normaloff>:/resources/directions_bus.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -44,24 +44,7 @@
        <string notr="true">QLabel {
 	background-color: rgb(255, 255, 255);
 	border-radius: 10px;
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>454</x>
-        <y>219</y>
-        <width>393</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel {
-	background-color: #363636;
+	border: 1px solid #000000;
 }</string>
       </property>
       <property name="text">
@@ -156,18 +139,18 @@
      <widget class="QPushButton" name="connect_to_db">
       <property name="geometry">
        <rect>
-        <x>499</x>
-        <y>409</y>
-        <width>123</width>
-        <height>25</height>
+        <x>505</x>
+        <y>414</y>
+        <width>108</width>
+        <height>18</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">QPushButton {
 	background-color: #363636;
-	border-radius: 10px;
+	border-radius: 5px;
 	color: #FFFFFF;
-	font: 500 11pt &quot;JetBrains Mono&quot;;
+	font: 500 9pt &quot;JetBrains Mono&quot;;
 }</string>
       </property>
       <property name="text">
@@ -185,9 +168,9 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #FFFFFF; 
+	color: #000000; 
 	text-align: center; 
-	font: 700 13pt &quot;JetBrains Mono&quot;;
+	font: 500 13pt &quot;JetBrains Mono&quot;;
 }</string>
       </property>
       <property name="text">
@@ -208,7 +191,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #363636;
+	color: #000000;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
 }</string>
       </property>
@@ -227,7 +210,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #363636;
+	color: #000000;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
 }</string>
       </property>
@@ -246,7 +229,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #363636;
+	color: #000000;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
 }</string>
       </property>
@@ -265,7 +248,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #363636;
+	color: #000000;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
 }</string>
       </property>
@@ -284,7 +267,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	color: #363636;
+	color: #000000;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
 }</string>
       </property>
@@ -295,22 +278,22 @@
      <widget class="QPushButton" name="connect_to_db_default">
       <property name="geometry">
        <rect>
-        <x>678</x>
-        <y>409</y>
-        <width>123</width>
-        <height>25</height>
+        <x>624</x>
+        <y>414</y>
+        <width>178</width>
+        <height>18</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton {
-	background-color: #363636;
-	border-radius: 10px;
-	color: #FFFFFF;
-	font: 500 11pt &quot;JetBrains Mono&quot;;
+       <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #363636; 
+	border-radius: 5px;
+	border: 1px solid #363636;
 }</string>
       </property>
       <property name="text">
-       <string>Default</string>
+       <string>Данные по умолчанию</string>
       </property>
      </widget>
     </widget>
@@ -332,7 +315,7 @@
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+      <widget class="QWidget" name="scrollArea_stops">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -357,7 +340,7 @@
   background-color: #FFFFFF; 
   border-radius: 10px;   
   font: 11pt &quot;JetBrains Mono&quot;; 
-
+	border: 1px solid #000000;
 } </string>
       </property>
       <property name="text">
@@ -383,8 +366,8 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/resources/search.svg</normaloff>:/resources/search.svg</iconset>
+       <iconset resource="../resources/resources.qrc">
+        <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -434,8 +417,8 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/resources/add.svg</normaloff>:/resources/add.svg</iconset>
+       <iconset resource="../resources/resources.qrc">
+        <normaloff>:/add.svg</normaloff>:/add.svg</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -450,7 +433,7 @@
         <x>812</x>
         <y>66</y>
         <width>43</width>
-        <height>42</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -549,6 +532,7 @@
        <string notr="true">QLabel {
 	background-color: rgb(255, 255, 255); 
 	border-radius: 10px;
+	border: 1px solid #000000;
 }</string>
       </property>
       <property name="text">
@@ -594,8 +578,8 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/resources/search.svg</normaloff>:/resources/search.svg</iconset>
+       <iconset resource="../resources/resources.qrc">
+        <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -738,11 +722,12 @@
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">QPushButton {
-	background-color: #FF0000;
+       <string notr="true">QPushButton { 
+	font: 11pt &quot;JetBrains Mono&quot;; 
+	color: #363636;
+	/*background-color: #363636; */
 	border-radius: 10px;
-	color: #FFFFFF;
-	font: 500 11pt &quot;JetBrains Mono&quot;;
+	border: 1px solid #363636;
 }</string>
       </property>
       <property name="text">
@@ -798,6 +783,7 @@
        <string notr="true">QLabel {
 	background-color: rgb(255, 255, 255); 
 	border-radius: 10px;
+	border: 1px solid #000000;
 }</string>
       </property>
       <property name="text">
@@ -807,9 +793,9 @@
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
-        <x>105</x>
+        <x>20</x>
         <y>489</y>
-        <width>408</width>
+        <width>579</width>
         <height>43</height>
        </rect>
       </property>
@@ -817,6 +803,7 @@
        <string notr="true">QLabel {
 	background-color: rgb(255, 255, 255); 
 	border-radius: 10px;
+	border: 1px solid #000000;
 }</string>
       </property>
       <property name="text">
@@ -840,7 +827,7 @@
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
+      <widget class="QWidget" name="scrollArea_buses">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -1070,10 +1057,11 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QPushButton { 
-	font: 9pt &quot;JetBrains Mono&quot;;
-	color: #FFFFFF;
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #363636;
+	/*background-color: #363636; */
 	border-radius: 5px;
-	background-color: #FF0000; 
+	border: 1px solid #363636;
 }</string>
       </property>
       <property name="text">
@@ -1275,6 +1263,7 @@
        <string notr="true">QLabel {
 	background-color: rgb(255, 255, 255); 
 	border-radius: 10px;
+	border: 1px solid #000000;
 }</string>
       </property>
       <property name="text">
@@ -1442,6 +1431,29 @@
        <string>Сортировка по цветам</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="show_colors">
+      <property name="geometry">
+       <rect>
+        <x>305</x>
+        <y>439</y>
+        <width>146</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+      </property>
+      <property name="text">
+       <string>Показать цвета</string>
+      </property>
+     </widget>
      <zorder>label_8</zorder>
      <zorder>label_4</zorder>
      <zorder>label_7</zorder>
@@ -1474,6 +1486,7 @@
      <zorder>is_roundtrip</zorder>
      <zorder>is_non_roundtrip</zorder>
      <zorder>sort_by_color_index</zorder>
+     <zorder>show_colors</zorder>
     </widget>
     <widget class="QWidget" name="map">
      <widget class="QWidget" name="widget_2" native="true">
@@ -1514,8 +1527,8 @@ QPushButton::pressed {
      <string>Автобусы</string>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
-      <normaloff>:/resources/directions_bus.svg</normaloff>:/resources/directions_bus.svg</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -1562,8 +1575,8 @@ QPushButton::pressed {
      <string>Остановки</string>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
-      <normaloff>:/resources/marker.svg</normaloff>:/resources/marker.svg</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/marker.svg</normaloff>:/marker.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="button_db">
@@ -1592,8 +1605,8 @@ QPushButton::pressed {
      <string>База данных</string>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
-      <normaloff>:/resources/Database.svg</normaloff>:/resources/Database.svg</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/Database.svg</normaloff>:/Database.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="button_map">
@@ -1622,8 +1635,8 @@ QPushButton::pressed {
      <string>Карта</string>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
-      <normaloff>:/resources/Map 02.svg</normaloff>:/resources/Map 02.svg</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/Map 02.svg</normaloff>:/Map 02.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="button_distances">
@@ -1652,8 +1665,8 @@ QPushButton::pressed {
      <string>Дистанции</string>
     </property>
     <property name="icon">
-     <iconset resource="resources.qrc">
-      <normaloff>:/resources/Arrow Roadmap.svg</normaloff>:/resources/Arrow Roadmap.svg</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/Arrow Roadmap.svg</normaloff>:/Arrow Roadmap.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -1672,7 +1685,7 @@ QPushButton::pressed {
   </widget>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#ifndef DOMAIN_H
+#define DOMAIN_H
+
 #include <QString>
 #include <vector> 
 #include "geo.h"
@@ -20,21 +23,7 @@ enum class BusType {
 
 QString BusTypeToString(BusType bus_type);
 
-template <typename T>
-BusType StringToBusType(const T bus_type) {
-    if (bus_type == "autobus") {
-        return BusType::autobus;
-    }
-    else if (bus_type == "electrobus") {
-        return BusType::electrobus;
-    }
-    else if (bus_type == "trolleybus") {
-        return BusType::trolleybus;
-    }
-    else {
-        return BusType::undefined;
-    }
-}
+BusType StringToBusType(const QStringView bus_type);
 
 std::vector<QString> SplitIntoWords(const QString& text);
 
@@ -80,3 +69,5 @@ struct BusInfo {
     bool is_available;
     int price;
 };
+
+#endif // DOMAIN_H

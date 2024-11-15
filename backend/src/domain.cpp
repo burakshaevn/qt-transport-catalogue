@@ -13,6 +13,21 @@ QString BusTypeToString(BusType bus_type) {
     }
 }
 
+BusType StringToBusType(const QStringView bus_type){
+    if (bus_type.toString() == "autobus") {
+        return BusType::autobus;
+    }
+    else if (bus_type.toString() == "electrobus") {
+        return BusType::electrobus;
+    }
+    else if (bus_type.toString() == "trolleybus") {
+        return BusType::trolleybus;
+    }
+    else {
+        return BusType::undefined;
+    }
+}
+
 std::vector<QString> SplitIntoWords(const QString& text) {
     std::vector<QString> words;
     QString word;

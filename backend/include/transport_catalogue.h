@@ -58,6 +58,82 @@ public:
 	[[maybe_unused]] const std::map<QStringView, const Bus*> GetSortedBuses(const QStringView bus_name) const;
 
 	const std::map<QStringView, const Stop*> GetSortedStops() const;
+
+    double ComputeTfIdfForBus(const Bus* bus,
+                               const std::optional<QStringView> name,
+                               const std::optional<QStringView> desired_stop,
+                               const std::optional<bool> is_roundtrip,
+                               const std::optional<std::set<BusType>>& bus_types,
+                               const std::optional<uint8_t> capacity,
+                               const std::optional<bool> has_wifi,
+                               const std::optional<bool> has_sockets,
+                               const std::optional<bool> is_night,
+                               const std::optional<bool> is_day,
+                               const std::optional<bool> is_available,
+                               const std::optional<uint8_t> price,
+                               const std::optional<bool> sort_by_color_index
+                               );
+
+    template <typename Documents>
+    std::vector<Stop*> ComputeTfIdfForStop(const Documents& documents_, const QStringView term) {
+        std::map<Stop*, double> tf_idfs;
+        int term_occurrences = 0;
+        QString termLower = term.toString().toLower();
+
+        std::vector<Stop*> exact_match_stops;
+
+        for (const auto& [key, document] : documents_) {
+            QString nameLower = document->name.toLower();
+            if (nameLower.contains(termLower)) {
+                Stop* stop = const_cast<Stop*>(FindStop(key));
+                if (stop != nullptr) {
+                    exact_match_stops.push_back(stop);
+                    // Skip TF-IDF calculation for exact match
+                    continue;
+                }
+            }
+
+            // Split into words for TF-IDF calculation
+            auto words = SplitIntoWords(nameLower);
+
+            int count_term_in_document = std::count(words.begin(), words.end(), termLower);
+            Stop* stop = const_cast<Stop*>(FindStop(key));
+            if (stop != nullptr) {
+                tf_idfs[stop] = static_cast<double>(count_term_in_document) / words.size();
+
+                if (count_term_in_document > 0) {
+                    ++term_occurrences;
+                }
+            }
+        }
+
+        if (term_occurrences == 0 && exact_match_stops.empty()) {
+            return {};
+        }
+
+        double idf = 0.0;
+        if (term_occurrences > 0) {
+            idf = std::log(static_cast<double>(documents_.size()) / term_occurrences);
+        }
+
+        for (auto& [stop, tf] : tf_idfs) {
+            tf *= idf;
+        }
+
+        std::vector<Stop*> stops(exact_match_stops);
+        for (const auto& [stop, tf] : tf_idfs) {
+            if (tf != 0) {
+                stops.push_back(stop);
+            }
+        }
+
+        std::sort(stops.begin(), stops.end(), [&tf_idfs](Stop* lhs, Stop* rhs) {
+            double lhsScore = tf_idfs.count(lhs) ? tf_idfs.at(lhs) : std::numeric_limits<double>::max();
+            double rhsScore = tf_idfs.count(rhs) ? tf_idfs.at(rhs) : std::numeric_limits<double>::max();
+            return lhsScore > rhsScore;
+        });
+        return stops;
+    }
 	 
 	void UpdateStops(); 
 	void UpdateStopnameToStop(); 

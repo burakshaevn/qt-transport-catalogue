@@ -5,40 +5,6 @@
 #include "database_manager.h"
 #include "mainwindow.h"
 #include <QListWidget>
-// #pragma once
-
-// #ifndef STDAFX_H
-// #define STDAFX_H
-
-// #include "backend/include/json_reader.h"
-// #include "backend/include/request_handler.h"
-// #include "backend/include/transport_catalogue.h"
-// #include "backend/include/transport_router.h"
-
-// #include <fstream>
-// #include <variant>
-
-// #include <QDebug>
-// #include <QDesktopServices>
-// #include <QFile>
-// #include <QFileDialog>
-// #include <QGraphicsDropShadowEffect>
-// #include <QGraphicsRectItem>
-// #include <QGraphicsScene>
-// #include <QGraphicsSvgItem>
-// #include <QGraphicsView>
-// #include <QLabel>
-// #include <QPainter>
-// #include <QPixmap>
-// #include <QPushButton>
-// #include <QRegularExpression>
-// #include <QSvgRenderer>
-// #include <QUrl>
-// #include <QVBoxLayout>
-
-
-// #endif // STDAFX_H
-
 
 class BusEditor : public QDialog
 {
@@ -49,18 +15,16 @@ public:
     ~BusEditor();
 
 private slots:
-	void on_button_edit_clicked();
-	void on_button_append_2_clicked();
+    void on_button_edit_clicked();
+    void on_button_append_2_clicked();
 	void on_button_settings_clicked();
 
-	void on_button_append_clicked();
+    void on_append_append_bus_clicked();
     void on_edit_save_clicked();
 	void on_settings_save_clicked();
 
     void on_edit_append_stop_clicked();
     void on_append_append_stop_clicked();
-
-    void on_edit_delete_clicked();
 
 private:
 	Ui::BusEditorClass ui;
@@ -81,7 +45,7 @@ private:
 	std::vector<const Stop*> cache_stops_;
 	std::vector<const Stop*> cache_new_bus_stops_; 
 
-	void DisplayCurrentBusToEditPage(QListWidget* listWidgetStops);
+    void DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::vector<const Stop*>& collection_);
 
     void FillComboBox();
 

@@ -113,7 +113,6 @@ void TransportCatalogue::DeleteStop(Stop* stop) {
 //     }
 // }
 
-
 // РїРѕРёСЃРє РјР°СЂС€СЂСѓС‚Р° РїРѕ РёРјРµРЅРё,
 const Bus* TransportCatalogue::FindBus(const QStringView busname) const {
     auto iter = busname_to_bus_.find(busname.toString());
@@ -263,6 +262,98 @@ const std::map<QStringView, const Stop*> TransportCatalogue::GetSortedStops() co
     return result;
 }
 
+double TransportCatalogue::ComputeTfIdfForBus(const Bus* bus,
+                                               const std::optional<QStringView> name,
+                                               const std::optional<QStringView> desired_stop,
+                                               const std::optional<bool> is_roundtrip,
+                                               const std::optional<std::set<BusType>>& bus_types,
+                                               const std::optional<uint8_t> capacity,
+                                               const std::optional<bool> has_wifi,
+                                               const std::optional<bool> has_sockets,
+                                               const std::optional<bool> is_night,
+                                               const std::optional<bool> is_day,
+                                               const std::optional<bool> is_available,
+                                               const std::optional<uint8_t> price,
+                                               const std::optional<bool> sort_by_color_index
+                                               ){
+    int count_term_in_bus = 0;
+    int total_terms = 0;
+
+    if (name.has_value()) {
+        ++total_terms;
+        if (bus->name == name.value()) {
+            ++count_term_in_bus;
+        }
+    }
+    if (desired_stop.has_value() && !desired_stop->empty()) {
+        ++total_terms;
+        for (const auto& stop : bus->stops) {
+            if (stop->name == desired_stop->toString()) {
+                ++count_term_in_bus;
+                break;
+            }
+        }
+    }
+    if (capacity.has_value()) {
+        ++total_terms;
+        if (bus->capacity == capacity) {
+            ++count_term_in_bus;
+        }
+    }
+    if (price.has_value()) {
+        ++total_terms;
+        if (bus->price == price) {
+            ++count_term_in_bus;
+        }
+    }
+    if (has_wifi.has_value()) {
+        ++total_terms;
+        if (bus->has_wifi == has_wifi) {
+            ++count_term_in_bus;
+        }
+    }
+    if (has_sockets.has_value()) {
+        ++total_terms;
+        if (bus->has_sockets == has_sockets) {
+            ++count_term_in_bus;
+        }
+    }
+    if (is_night.has_value()) {
+        ++total_terms;
+        if (bus->is_night == is_night) {
+            ++count_term_in_bus;
+        }
+    }
+    if (is_day.has_value()) {
+        ++total_terms;
+        if (bus->is_day == is_day) {
+            ++count_term_in_bus;
+        }
+    }
+    if (is_roundtrip.has_value()) {
+        ++total_terms;
+        if (bus->is_roundtrip == is_roundtrip) {
+            ++count_term_in_bus;
+        }
+    }
+    if (is_available.has_value()) {
+        ++total_terms;
+        if (bus->is_available == is_available) {
+            ++count_term_in_bus;
+        }
+    }
+    if (bus_types.has_value()) {
+        ++total_terms;
+        if (bus_types->find(bus->bus_type) != bus_types->end()) {
+            ++count_term_in_bus;
+        }
+    }
+    if (total_terms == 0) {
+        return 0.0;
+    }
+    return (static_cast<double>(count_term_in_bus) / total_terms) * 1.;
+}
+
 // Signals
 
 void TransportCatalogue::UpdateStops() {
@@ -272,7 +363,6 @@ void TransportCatalogue::UpdateStops() {
     QSqlQuery query = db_manager_.ExecuteSelectQuery(
 		QString("SELECT * FROM stops;")
 	);
-
 	while (query.next()) {
 		Stop stop;
 		stop.name = query.value("name").toString();
@@ -285,8 +375,7 @@ void TransportCatalogue::UpdateStopnameToStop() {
 	if (!stopname_to_stop_.empty()) {
 		stopname_to_stop_.clear();
 	}
-	for (const auto& stop : stops_) {
-        // stopname_to_stop_[stop.name] = &stop;
+    for (const auto& stop : stops_) {
         stopname_to_stop_[stop.name] = std::make_shared<Stop>(stop);
 	}
 }
@@ -297,7 +386,6 @@ void TransportCatalogue::UpdateBuses() {
 	QSqlQuery query = db_manager_.ExecuteSelectQuery(
 		QString("SELECT * FROM buses;")
 	);
-
 	while (query.next()) {
 		Bus bus;
 		bus.name = query.value("name").toString();
@@ -311,11 +399,9 @@ void TransportCatalogue::UpdateBuses() {
 		bus.is_day = query.value("is_day").toBool();
 		bus.is_available = query.value("is_available").toBool();
 		bus.price = query.value("price").toUInt();
-
 		QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
 			QString("SELECT s.name, s.latitude, s.longitude FROM bus_stops bs LEFT JOIN stops s ON bs.stop_id = s.id WHERE bs.bus_id = %1;").arg(query.value("id").toInt())
 		);
-
 		static std::vector<std::unique_ptr<Stop>> stops_storage;
 		while (stops_query.next()) {
 			auto stop_ptr = std::make_unique<Stop>();

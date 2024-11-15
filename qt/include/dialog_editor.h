@@ -1,5 +1,5 @@
-#ifndef STOP_EDITOR_H
-#define STOP_EDITOR_H
+#ifndef DIALOG_EDITOR_H
+#define DIALOG_EDITOR_H
 
 #include <QDialog>
 #include <QPushButton>
@@ -9,11 +9,11 @@
 #include <QMessageBox>
 #include <vector>
 
-class StopEditor : public QDialog {
+class DialogEditor : public QDialog {
     Q_OBJECT
 
 public:
-    explicit StopEditor(QWidget* parent = nullptr, const QString& title_ = "", const QString& button_title_ = "")
+    explicit DialogEditor(QWidget* parent = nullptr, const QString& title_ = "", const QString& button_title_ = "")
         : QDialog(parent)
     {
         setWindowTitle(title_);
@@ -21,11 +21,11 @@ public:
         layout_ = new QVBoxLayout(this);
         layout_->setSizeConstraint(QLayout::SetFixedSize);  // Устанавливаем автоматическую подстройку размера
 
-        // Кнопка "Добавить" всегда будет внизу
+        // Кнопка "Добавить" всегда будет внизу.
         buttonAdd_ = new QPushButton(button_title_, this);
         layout_->addWidget(buttonAdd_);
 
-        connect(buttonAdd_, &QPushButton::clicked, this, &StopEditor::onAddClicked);
+        connect(buttonAdd_, &QPushButton::clicked, this, &DialogEditor::onAddClicked);
     }
 
     // Метод для добавления поля ввода с меткой
@@ -67,4 +67,4 @@ private:
     std::vector<QLineEdit*> fields_;
 };
 
-#endif // STOP_EDITOR_H
+#endif // DIALOG_EDITOR_H

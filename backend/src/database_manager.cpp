@@ -51,7 +51,7 @@ bool DatabaseManager::AddStop(const QString& name, double latitude, double longi
     else {
         QSqlQuery resetQuery;
         resetQuery.exec("SELECT setval('stops_id_seq', (SELECT COALESCE(MAX(id), 1) FROM stops), false)");
-        //qDebug() << Q_FUNC_INFO << query.lastError().text();
+        qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 }
@@ -61,7 +61,7 @@ bool DatabaseManager::DeleteStop(const Stop* stop) {
     deleteStopQuery.bindValue(":name", stop->name);
 
     if (!deleteStopQuery.exec()) {
-        //qDebug() << Q_FUNC_INFO << "Ошибка при удалении остановки:" << deleteStopQuery.lastError().text();
+        qDebug() << Q_FUNC_INFO << "Ошибка при удалении остановки:" << deleteStopQuery.lastError().text();
         return false;
     }
 
@@ -212,7 +212,7 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
 
 bool DatabaseManager::AddDistance(const QString& from, const QString& to, int distance) {
     if (DistanceIsExists(from, to)) {
-        //qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
+        qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
         return false;
     }
 
@@ -221,7 +221,7 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     query.prepare("SELECT id FROM stops WHERE name = :from_name");
     query.bindValue(":from_name", from);
     if (!query.exec() || !query.next()) {
-        //qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << from;
+        qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << from;
         return false;
     }
     int from_stop_id = query.value(0).toInt();
@@ -229,7 +229,7 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     query.prepare("SELECT id FROM stops WHERE name = :to_name");
     query.bindValue(":to_name", to);
     if (!query.exec() || !query.next()) {
-        //qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << to;
+        qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << to;
         return false;
     }
     int to_stop_id = query.value(0).toInt();
@@ -242,14 +242,14 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     if (query.exec()) {
         return true;
     } else {
-        //qDebug() << Q_FUNC_INFO << query.lastError().text();
+        qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 }
 
 bool DatabaseManager::DeleteDistance(const QString& from, const QString& to){
     if (DistanceIsExists(from, to)) {
-        //qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
+        qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
         return false;
     }
 
@@ -264,7 +264,7 @@ bool DatabaseManager::DeleteDistance(const QString& from, const QString& to){
     query.bindValue(":from_stop", from);
     query.bindValue(":to_stop", to);
     if (!query.exec() || !query.next()) {
-        //qDebug() << Q_FUNC_INFO << "Не удалось выполнить удаление: " << from;
+        qDebug() << Q_FUNC_INFO << "Не удалось выполнить удаление: " << from;
         return false;
     }
     return true;
@@ -284,13 +284,14 @@ bool DatabaseManager::BusExists(const QString& name) {
 bool DatabaseManager::AddBus(const Bus* bus)
 {
     if (BusExists(bus->name)) {
-        //qDebug() << Q_FUNC_INFO << "Автобус уже существует: " << bus->name;
+        qDebug() << Q_FUNC_INFO << "Автобус уже существует: " << bus->name;
         return false;
     }
 
     QSqlQuery query;
-    query.prepare("INSERT INTO buses (name, is_roundtrip, color_index, bus_type, capacity, has_wifi, has_sockets, is_night, is_day, is_available, price) "
-        "VALUES (:name, :is_roundtrip, :color_index, :bus_type, :capacity, :has_wifi, :has_sockets, :is_night, :is_day, :is_available, :price)");
+    query.prepare("INSERT INTO buses (name, is_roundtrip, color_index, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price, is_day) "
+                  "VALUES (:name, :is_roundtrip, :color_index, :bus_type, :capacity, :has_wifi, :has_sockets, :is_night, :is_available, :price, :is_day) "
+                  "RETURNING id");
     query.bindValue(":name", bus->name);
     query.bindValue(":is_roundtrip", bus->is_roundtrip);
     query.bindValue(":color_index", bus->color_index);
@@ -299,17 +300,19 @@ bool DatabaseManager::AddBus(const Bus* bus)
     query.bindValue(":has_wifi", bus->has_wifi);
     query.bindValue(":has_sockets", bus->has_sockets);
     query.bindValue(":is_night", bus->is_night);
-    query.bindValue(":is_day", bus->is_day);
     query.bindValue(":is_available", bus->is_available);
     query.bindValue(":price", bus->price);
+    query.bindValue(":is_day", bus->is_day);
 
     if(!query.exec()){
-        //qDebug() << Q_FUNC_INFO << query.lastError().text();
+        qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 
-    // Добавляем остановки автобуса в таблицу bus_stops
-    int bus_id = query.lastInsertId().toInt();
+    int bus_id = 0;
+    if (query.next()) {
+        bus_id = query.value(0).toInt();
+    }
     for (auto stop : bus->stops) {
         if (!AddBusStop(bus_id, stop->name)) {
             return false;
@@ -321,7 +324,7 @@ bool DatabaseManager::AddBus(const Bus* bus)
 bool DatabaseManager::UpdateBus(const Bus* bus) {
     // Начало транзакции
     if (!QSqlDatabase::database().transaction()) {
-        //qDebug() <<  Q_FUNC_INFO << "Не удалось начать транзакцию:" << QSqlDatabase::database().lastError().text();
+        qDebug() <<  Q_FUNC_INFO << "Не удалось начать транзакцию:" << QSqlDatabase::database().lastError().text();
         return false;
     }
 
@@ -330,7 +333,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
     deleteQuery.prepare("DELETE FROM bus_stops WHERE bus_id = (SELECT id FROM buses WHERE name = :name)");
     deleteQuery.bindValue(":name", bus->name);
     if (!deleteQuery.exec()) {
-        //qDebug() <<  Q_FUNC_INFO << "Ошибка удаления остановок:" << deleteQuery.lastError().text();
+        qDebug() <<  Q_FUNC_INFO << "Ошибка удаления остановок:" << deleteQuery.lastError().text();
         QSqlDatabase::database().rollback();
         return false;
     }
@@ -369,7 +372,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
     busIdQuery.prepare("SELECT id FROM buses WHERE name = :name");
     busIdQuery.bindValue(":name", bus->name);
     if (!busIdQuery.exec() || !busIdQuery.next()) {
-        //qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
+        qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
         QSqlDatabase::database().rollback();
         return false;
     }
@@ -381,14 +384,14 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
         stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
         stopIdQuery.bindValue(":name", bus->stops[i]->name);
         if (!stopIdQuery.exec() || !stopIdQuery.next()) {
-            //qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
+            qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
             QSqlDatabase::database().rollback();
             return false;
         }
         int stop_id = stopIdQuery.value(0).toInt();
 
-        if (!AddBusStop(bus_id, stop_id, i + 1, bus->stops[i]->name)) {
-            //qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
+        if (!AddBusStop(bus_id, stop_id, i /*+ 1*/, bus->stops[i]->name)) {
+            qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
             QSqlDatabase::database().rollback();
             return false;
         }
@@ -396,7 +399,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
 
     // Завершение транзакции
     if (!QSqlDatabase::database().commit()) {
-        //qDebug() <<  Q_FUNC_INFO << "Ошибка фиксации транзакции:" << QSqlDatabase::database().lastError().text();
+        qDebug() <<  Q_FUNC_INFO << "Ошибка фиксации транзакции:" << QSqlDatabase::database().lastError().text();
         return false;
     }
 
@@ -413,7 +416,7 @@ std::optional<Bus> DatabaseManager::FindBus(const QStringView name)
         bus.name = query.value("name").toString();
         bus.is_roundtrip = query.value("is_roundtrip").toBool();
         bus.color_index = query.value("color_index").toUInt();
-        bus.bus_type = StringToBusType(query.value("bus_type").toString().toStdString());
+        bus.bus_type = StringToBusType(query.value("bus_type").toString());
         bus.capacity = query.value("capacity").toUInt();
         bus.has_wifi = query.value("has_wifi").toBool();
         bus.has_sockets = query.value("has_sockets").toBool();
@@ -490,22 +493,34 @@ bool DatabaseManager::BusStopIsExists(int bus_id, const QString& stop_name) {
 
 bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name) {
     if (BusStopIsExists(bus_id, stop_name)) {
-        qDebug() <<  Q_FUNC_INFO << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
+        qDebug() << Q_FUNC_INFO << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
         return true;
     }
 
+    QSqlQuery positionQuery;
+    positionQuery.prepare("SELECT COALESCE(MAX(stop_position), 0) + 1 FROM bus_stops WHERE bus_id = :bus_id");
+    positionQuery.bindValue(":bus_id", bus_id);
+    if (!positionQuery.exec() || !positionQuery.next()) {
+        qDebug() << Q_FUNC_INFO << positionQuery.lastError().text();
+        return false;
+    }
+    int stop_position = positionQuery.value(0).toInt();
+
     QSqlQuery query;
-    query.prepare("INSERT INTO bus_stops (bus_id, stop_id) VALUES (:bus_id, :stop_id)");
+    query.prepare("INSERT INTO bus_stops (bus_id, stop_id, stop_position) "
+                  "VALUES (:bus_id, (SELECT id FROM stops WHERE name = :stop_name), :stop_position)");
     query.bindValue(":bus_id", bus_id);
-    query.bindValue(":stop_id", stop_name);
+    query.bindValue(":stop_name", stop_name);
+    query.bindValue(":stop_position", stop_position);
+
     if (query.exec()) {
         return true;
-    }
-    else{
+    } else {
         qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return false;
 }
+
 bool DatabaseManager::AddBusStop(int bus_id, int stop_id, int stop_position, const QString& stop_name)
 {
     if (BusStopIsExists(bus_id, stop_name)) {
@@ -517,7 +532,6 @@ bool DatabaseManager::AddBusStop(int bus_id, int stop_id, int stop_position, con
     query.bindValue(":bus_id", bus_id);
     query.bindValue(":stop_id", stop_id);
     query.bindValue(":stop_position", stop_position);
-    auto tmp = query.lastError().text();
     if (query.exec()) {
         return true;
     }

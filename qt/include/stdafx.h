@@ -3,10 +3,10 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-#include "backend/include/json_reader.h"
-#include "backend/include/request_handler.h"
-#include "backend/include/transport_catalogue.h"
-#include "backend/include/transport_router.h"
+#include "../include/json_reader.h"
+#include "../include/request_handler.h"
+#include "../include/transport_catalogue.h"
+#include "../include/transport_router.h"
 
 #include <fstream>
 #include <variant>

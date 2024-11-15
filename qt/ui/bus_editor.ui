@@ -636,7 +636,7 @@
      <widget class="QPushButton" name="edit_save">
       <property name="geometry">
        <rect>
-        <x>178</x>
+        <x>256</x>
         <y>590</y>
         <width>145</width>
         <height>20</height>
@@ -647,7 +647,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
-	border-radius: 0px;
+	border-radius: 5px;
 }</string>
       </property>
       <property name="text">
@@ -780,27 +780,6 @@
 } </string>
       </property>
      </widget>
-     <widget class="QPushButton" name="edit_delete">
-      <property name="geometry">
-       <rect>
-        <x>335</x>
-        <y>590</y>
-        <width>145</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton { 
-	font: 9pt &quot;JetBrains Mono&quot;; 
-	color: #FFFFFF;
-	background-color: #FF0000; 
-	border-radius: 0px;
-}</string>
-      </property>
-      <property name="text">
-       <string>Удалить</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="edit_append_stop">
       <property name="geometry">
        <rect>
@@ -894,7 +873,6 @@
      <zorder>comboBox_is_day_bus_2</zorder>
      <zorder>comboBox_is_night_bus_2</zorder>
      <zorder>comboBox_is_wifi_2</zorder>
-     <zorder>edit_delete</zorder>
      <zorder>edit_append_stop</zorder>
      <zorder>lineEdit_find_stopname</zorder>
      <zorder>listWidgetStops</zorder>
@@ -1360,6 +1338,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
+	border-radius: 5px;
 }</string>
       </property>
       <property name="text">
@@ -1560,7 +1539,6 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
-	border-radius: 0px;
 }</string>
       </property>
       <property name="text">
@@ -1793,6 +1771,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
+	border-radius: 5px;
 }</string>
       </property>
       <property name="text">
