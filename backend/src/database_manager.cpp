@@ -358,40 +358,39 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
             QSqlDatabase::database().rollback();
             return false;
         }
+        // Получение ID автобуса
+        QSqlQuery busIdQuery;
+        busIdQuery.prepare("SELECT id FROM buses WHERE name = :name");
+        busIdQuery.bindValue(":name", bus->name);
+        if (!busIdQuery.exec() || !busIdQuery.next()) {
+            qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
+            QSqlDatabase::database().rollback();
+            return false;
+        }
+        int bus_id = busIdQuery.value(0).toInt();
+
+        // Вставка новых остановок
+        for (size_t i = 0; i < bus->stops.size(); ++i) {
+            QSqlQuery stopIdQuery;
+            stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
+            stopIdQuery.bindValue(":name", bus->stops[i]->name);
+            if (!stopIdQuery.exec() || !stopIdQuery.next()) {
+                qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
+                QSqlDatabase::database().rollback();
+                return false;
+            }
+            int stop_id = stopIdQuery.value(0).toInt();
+
+            if (!AddBusStop(bus_id, stop_id, i /*+ 1*/, bus->stops[i]->name)) {
+                qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
+                QSqlDatabase::database().rollback();
+                return false;
+            }
+        }
     }
     else {
         // если маршрута не существует, добавляем его как новый
         if (!AddBus(bus)) {
-            QSqlDatabase::database().rollback();
-            return false;
-        }
-    }
-
-    // Получение ID автобуса
-    QSqlQuery busIdQuery;
-    busIdQuery.prepare("SELECT id FROM buses WHERE name = :name");
-    busIdQuery.bindValue(":name", bus->name);
-    if (!busIdQuery.exec() || !busIdQuery.next()) {
-        qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
-        QSqlDatabase::database().rollback();
-        return false;
-    }
-    int bus_id = busIdQuery.value(0).toInt();
-
-    // Вставка новых остановок
-    for (size_t i = 0; i < bus->stops.size(); ++i) {
-        QSqlQuery stopIdQuery;
-        stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
-        stopIdQuery.bindValue(":name", bus->stops[i]->name);
-        if (!stopIdQuery.exec() || !stopIdQuery.next()) {
-            qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
-            QSqlDatabase::database().rollback();
-            return false;
-        }
-        int stop_id = stopIdQuery.value(0).toInt();
-
-        if (!AddBusStop(bus_id, stop_id, i /*+ 1*/, bus->stops[i]->name)) {
-            qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
             QSqlDatabase::database().rollback();
             return false;
         }

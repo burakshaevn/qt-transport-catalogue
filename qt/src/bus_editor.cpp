@@ -187,50 +187,56 @@ void BusEditor::on_append_append_bus_clicked() {
 	if (db_manager->Open()) {
 		new_bus = std::make_unique<Bus>();
 		
-		new_bus->name = ui.lineEdit_busname_3->text();
-		if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
-			QMessageBox::critical(this, "Ошибка", "Маршрут с именем " + new_bus->name + " уже существует."); 
-			new_bus.reset();
-			return;
-		}
-		new_bus->bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
-		new_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
-		new_bus->is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
-		new_bus->color_index = ui.lineEdit_color_index_3->text().toInt();
-		new_bus->has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
-		new_bus->has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
-		new_bus->is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
-		new_bus->is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
-		new_bus->is_available = ui.comboBox_is_available_3->currentText() == "Да";
-		new_bus->price = ui.lineEdit_price_3->text().toDouble();
+        new_bus->name = ui.lineEdit_busname_3->text();
+        if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
+            QMessageBox::critical(this, "Ошибка", "Маршрут с именем " + new_bus->name + " уже существует.");
+            new_bus.reset();
+            return;
+        }
+        new_bus->color_index = ui.lineEdit_color_index_3->text().toInt();
+        if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
+            QMessageBox::critical(this, "Ошибка", "Маршрут с цветом " + QString::number(new_bus->color_index) + " уже существует.");
+            new_bus.reset();
+            return;
+        }
 
-		if (!new_bus->stops.empty()) {
-			QStringList missingDistances;
-			for (size_t i = 0; i < cache_new_bus_stops_.size() - 1; ++i) {
-				const Stop* from_stop = cache_new_bus_stops_[i];
-				const Stop* to_stop = cache_new_bus_stops_[i + 1];
+        new_bus->bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
+        new_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
+        new_bus->is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
+        new_bus->has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
+        new_bus->has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
+        new_bus->is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
+        new_bus->is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
+        new_bus->is_available = ui.comboBox_is_available_3->currentText() == "Да";
+        new_bus->price = ui.lineEdit_price_3->text().toDouble();
 
-				int distance = db_manager->GetDistance(from_stop, to_stop);
-				if (distance == 0) {
-					missingDistances.append(QString("%1 → %2").arg(from_stop->name, to_stop->name));
-				}
-			}
+        if (!new_bus->stops.empty()) {
+            QStringList missingDistances;
+            for (size_t i = 0; i < cache_new_bus_stops_.size() - 1; ++i) {
+                const Stop* from_stop = cache_new_bus_stops_[i];
+                const Stop* to_stop = cache_new_bus_stops_[i + 1];
 
-			if (!missingDistances.isEmpty()) {
-				QString message = "Не найдены расстояния между следующими остановками:\n" + missingDistances.join("\n");
-				QMessageBox::warning(this, "Недостающие расстояния", message);
-				// Прерываем сохранение, если есть недостающие расстояния
-				return;
-			}
-		}
-		new_bus->stops = cache_new_bus_stops_;
+                int distance = db_manager->GetDistance(from_stop, to_stop);
+                if (distance == 0) {
+                    missingDistances.append(QString("%1 → %2").arg(from_stop->name, to_stop->name));
+                }
+            }
+
+            if (!missingDistances.isEmpty()) {
+                QString message = "Не найдены расстояния между следующими остановками:\n" + missingDistances.join("\n");
+                QMessageBox::warning(this, "Недостающие расстояния", message);
+                // Прерываем сохранение, если есть недостающие расстояния
+                return;
+            }
+        }
+        new_bus->stops = cache_new_bus_stops_;
         db_manager->UpdateBus(new_bus.get());
-		transport_catalogue->UpdateBus(new_bus.get());
-		QMessageBox::information(this, "", "Новый маршрут успешно добавлен.");
-	}
-	else {
-		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
-	}
+        transport_catalogue->UpdateBus(new_bus.get());
+        QMessageBox::information(this, "", "Новый маршрут успешно добавлен.");
+    }
+    else {
+        QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
+    }
 }
 
 // Кнопка 'Сохранить' на странице 'Редактирование'
@@ -296,7 +302,8 @@ void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::v
 			bool isNightBus = query.value("is_night").toBool();
 			bool isAvailable = query.value("is_available").toBool();
 			double price = query.value("price").toDouble();
-			  
+            bool isDayBus = query.value("is_day").toBool();
+
 			ui.lineEdit_busname_2->setText(name);
 			ui.comboBox_bustype_2->setCurrentText(busType);
 			ui.lineEdit_capacity_2->setText(QString::number(capacity));
@@ -304,7 +311,7 @@ void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::v
 			ui.lineEdit_color_index_2->setText(QString::number(colorIndex));
 			ui.comboBox_is_wifi_2->setCurrentText(hasWifi ? "Да" : "Нет");
 			ui.comboBox_is_sockets_2->setCurrentText(hasSockets ? "Да" : "Нет");
-			ui.comboBox_is_day_bus_2->setCurrentText(isNightBus ? "Да" : "Нет");
+            ui.comboBox_is_day_bus_2->setCurrentText(isDayBus ? "Да" : "Нет");
 			ui.comboBox_is_night_bus_2->setCurrentText(isNightBus ? "Да" : "Нет");
 			ui.comboBox_is_available_2->setCurrentText(isAvailable ? "Да" : "Нет");
 			ui.lineEdit_price_2->setText(QString::number(price, 'f', 2)); 

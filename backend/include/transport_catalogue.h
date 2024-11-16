@@ -70,8 +70,7 @@ public:
                                const std::optional<bool> is_night,
                                const std::optional<bool> is_day,
                                const std::optional<bool> is_available,
-                               const std::optional<uint8_t> price,
-                               const std::optional<bool> sort_by_color_index
+                               const std::optional<uint8_t> price
                                );
 
     template <typename Documents>

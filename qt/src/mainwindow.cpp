@@ -199,7 +199,6 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
 }
 
 void MainWindow::ClearScrollWidget(QLayout* layout){
-    // QLayout* existingLayout = ui->scrollAreaWidgetContents->layout();
     if (layout != nullptr) {
         QLayoutItem* item;
         while ((item = layout->takeAt(0)) != nullptr) {
@@ -209,23 +208,52 @@ void MainWindow::ClearScrollWidget(QLayout* layout){
         delete layout;
     }
 }
+void MainWindow::ClearSearchFiltres(){
+    for(auto button_ : { ui->is_available, ui->is_unavailable }){
+        button_->setAutoExclusive(false);
+        button_->setChecked(false);
+        button_->setAutoExclusive(true);
+    }
+    for (auto button_ : {
+             ui->is_undefined,
+             ui->is_autobus,
+             ui->is_trolleybus,
+             ui->is_electrobus,
+             ui->has_wifi,
+             ui->is_no_wifi,
+             ui->has_sockets,
+             ui->is_no_sockets,
+             ui->is_night_route,
+             ui->is_day_route,
+             ui->is_roundtrip,
+             ui->is_non_roundtrip,
+             ui->sort_by_color_index
+         })
+    {
+        button_->setChecked(false);
+    }
+    ui->lineEdit_busname->clear();
+    ui->lineEdit_capacity->clear();
+    ui->lineEdit_price->clear();
+    ui->lineEdit_stopname->clear();
+
+    ClearScrollWidget(ui->scrollArea_buses->layout());
+
+    QVBoxLayout* layout = new QVBoxLayout();
+    for (auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
+        DrawBus(const_cast<Bus*>(bus_ptr), ui->show_colors->isChecked() ? true : false, layout);
+    }
+    ui->scrollArea_buses->setLayout(layout);
+}
 
 void MainWindow::on_button_buses_clicked()
 {
     if (db_manager_.Open()) {
         ui->stackedWidget->setCurrentWidget(ui->buses);
-
-        ClearScrollWidget(ui->scrollArea_buses->layout());
-
-        QVBoxLayout* layout = new QVBoxLayout();
-        layout->setAlignment(Qt::AlignTop);
-        for (auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
-            DrawBus(const_cast<Bus*>(bus_ptr), ui->show_colors->isChecked() ? true : false, layout);
-        }
-        ui->scrollArea_buses->setLayout(layout);
+        DrawRelevantBuses();
     }
     else { 
-        QMessageBox::critical(this, "Р”Р°РЅРЅС‹Рµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹", "Р’С‹РїРѕР»РЅРёС‚Рµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ РѕС‚РѕР±СЂР°Р·РёС‚СЊ РґР°РЅРЅС‹Рµ.");
+        QMessageBox::critical(this, "Data not loaded", "Connect to the database to display data.");
     }
 }
 
@@ -236,7 +264,7 @@ void MainWindow::on_button_map_clicked()
         DisplayMapOnLabel("");
     }
     else {
-        QMessageBox::critical(this, "Р”Р°РЅРЅС‹Рµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹", "Р’С‹РїРѕР»РЅРёС‚Рµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ РѕС‚РѕР±СЂР°Р·РёС‚СЊ РґР°РЅРЅС‹Рµ.");
+        QMessageBox::critical(this, "Data not loaded", "Connect to the database to display data.");
     }
 }
 
@@ -258,7 +286,7 @@ void MainWindow::on_button_stops_clicked()
         ui->scrollArea_stops->setLayout(layout);
     }
     else {
-        QMessageBox::critical(this, "Р”Р°РЅРЅС‹Рµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹", "Р’С‹РїРѕР»РЅРёС‚Рµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ РѕС‚РѕР±СЂР°Р·РёС‚СЊ РґР°РЅРЅС‹Рµ.");
+        QMessageBox::critical(this, "Data not loaded", "Connect to the database to display data.");
     }
 }
 
@@ -274,7 +302,7 @@ void MainWindow::on_button_distances_clicked()
         LoadDistances();
     }
     else {
-        QMessageBox::critical(this, "Р”Р°РЅРЅС‹Рµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅС‹", "Р’С‹РїРѕР»РЅРёС‚Рµ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…, С‡С‚РѕР±С‹ РѕС‚РѕР±СЂР°Р·РёС‚СЊ РґР°РЅРЅС‹Рµ.");
+        QMessageBox::critical(this, "Data not loaded", "Connect to the database to display data.");
     }
 }
 
@@ -301,61 +329,35 @@ void MainWindow::SetLabelSettings(){
 }
 
 void MainWindow::on_reset_all_filters_clicked() {
-    for(auto button_ : { ui->is_available, ui->is_unavailable }){
-        button_->setAutoExclusive(false);
-        button_->setChecked(false);
-        button_->setAutoExclusive(true);
-    }
-    for (auto button_ : {
-        ui->is_undefined,
-        ui->is_autobus, 
-        ui->is_trolleybus, 
-        ui->is_electrobus, 
-        ui->has_wifi, 
-        ui->is_no_wifi,
-        ui->has_sockets, 
-        ui->is_no_sockets, 
-        ui->is_night_route, 
-        ui->is_day_route, 
-        ui->is_roundtrip,
-        ui->is_non_roundtrip,
-        ui->sort_by_color_index
-        })
-    {
-        button_->setChecked(false);
-    }
-    ui->lineEdit_busname->clear();
-    ui->lineEdit_capacity->clear();
-    ui->lineEdit_price->clear();
-    ui->lineEdit_stopname->clear();
-    
-    ClearScrollWidget(ui->scrollArea_buses->layout());
-
-    QVBoxLayout* layout = new QVBoxLayout();
-    for (auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
-        DrawBus(const_cast<Bus*>(bus_ptr), ui->show_colors->isChecked() ? true : false, layout);
-    }
-    ui->scrollArea_buses->setLayout(layout);
+    ClearSearchFiltres();
 }
 
-void MainWindow::on_search_bus_clicked() {
-    std::optional<std::set<BusType>> selected_bus_types;
+void MainWindow::on_search_bus_clicked() {    
+    DrawRelevantBuses();
+}
+
+void MainWindow::DrawRelevantBuses() {
+    ClearScrollWidget(ui->scrollArea_buses->layout());
+    QVBoxLayout* layout = new QVBoxLayout(ui->scrollArea_buses);
+    layout->setAlignment(Qt::AlignTop);
+
+    std::optional<std::set<BusType>> bus_types;
     if (ui->is_undefined->isChecked()) {
-        selected_bus_types.value().insert(BusType::autobus);
-        selected_bus_types.value().insert(BusType::electrobus);
-        selected_bus_types.value().insert(BusType::trolleybus);
+        bus_types.value().insert(BusType::autobus);
+        bus_types.value().insert(BusType::electrobus);
+        bus_types.value().insert(BusType::trolleybus);
     }
     else if (ui->is_autobus->isChecked()) {
-        selected_bus_types.value().insert(BusType::autobus);
+        bus_types.value().insert(BusType::autobus);
     }
     else if (ui->is_electrobus->isChecked()) {
-        selected_bus_types.value().insert(BusType::electrobus);
+        bus_types.value().insert(BusType::electrobus);
     }
     else if (ui->is_trolleybus->isChecked()) {
-        selected_bus_types.value().insert(BusType::trolleybus);
+        bus_types.value().insert(BusType::trolleybus);
     }
     else{
-        selected_bus_types = std::nullopt;
+        bus_types = std::nullopt;
     }
 
     std::optional<bool> is_roundtrip;
@@ -391,22 +393,6 @@ void MainWindow::on_search_bus_clicked() {
         has_sockets = std::nullopt;
     }
 
-    std::optional<bool> is_night;
-    if (ui->is_night_route->isChecked()) {
-        is_night = true;
-    }
-    else {
-        is_night = std::nullopt;
-    }
-    
-    std::optional<bool> is_day;
-    if (ui->is_day_route->isChecked()) {
-        is_day = true;
-    }
-    else {
-        is_day = std::nullopt;
-    }
-
     std::optional<bool> is_available;
     if (ui->is_available->isChecked()) {
         is_available = true;
@@ -417,41 +403,14 @@ void MainWindow::on_search_bus_clicked() {
     else {
         is_available = std::nullopt;
     }
-    
-    DrawRelevantBuses(
-        ui->lineEdit_busname->text().isEmpty() ? std::nullopt : std::optional<QStringView>{ui->lineEdit_busname->text()},
-        ui->lineEdit_stopname->text().isEmpty() ? std::nullopt : std::optional<QStringView>{ui->lineEdit_stopname->text()},
-        is_roundtrip,
-        selected_bus_types,
-        ui->lineEdit_capacity->text().isEmpty() ? std::nullopt : std::optional<int>{ui->lineEdit_capacity->text().toInt()},
-        has_wifi,
-        has_sockets,
-        is_night,
-        is_day,
-        is_available,
-        ui->lineEdit_price->text().isEmpty() ? std::nullopt : std::optional<int>{ui->lineEdit_price->text().toInt()},
-        ui->sort_by_color_index->isChecked() ? std::make_optional(true) : std::nullopt
-        );
-}
 
-void MainWindow::DrawRelevantBuses(
-    const std::optional<QStringView> name,
-    const std::optional<QStringView> desired_stop,
-    const std::optional<bool> is_roundtrip,
-    const std::optional<std::set<BusType>>& bus_types,
-    const std::optional<int> capacity,
-    const std::optional<bool> has_wifi,
-    const std::optional<bool> has_sockets,
-    const std::optional<bool> is_night,
-    const std::optional<bool> is_day,
-    const std::optional<bool> is_available,
-    const std::optional<int> price,
-    const std::optional<bool> sort_by_color_index) {
-
-    ClearScrollWidget(ui->scrollArea_buses->layout());
-
-    QVBoxLayout* layout = new QVBoxLayout(ui->scrollArea_buses);
-    layout->setAlignment(Qt::AlignTop);
+    std::optional<QString> name = ui->lineEdit_busname->text().isEmpty() ? std::nullopt : std::optional<QString>(ui->lineEdit_busname->text());
+    std::optional<QString> desired_stop = ui->lineEdit_stopname->text().isEmpty() ? std::nullopt : std::optional<QString>(ui->lineEdit_stopname->text());
+    std::optional<bool> is_day = ui->is_day_route->isChecked() ? std::optional<bool>(true) : std::nullopt;
+    std::optional<bool> is_night = ui->is_night_route->isChecked() ? std::optional<bool>(true) : std::nullopt;
+    std::optional<int> capacity = ui->lineEdit_capacity->text().isEmpty() ? std::nullopt : std::optional<int>(ui->lineEdit_capacity->text().toInt());
+    std::optional<int> price = ui->lineEdit_price->text().isEmpty() ? std::nullopt : std::optional<int>(ui->lineEdit_price->text().toInt());
+    std::optional<bool> sort_by_color_index = ui->sort_by_color_index->isChecked() ? std::optional<bool>(true) : std::nullopt;
 
     bool all_params_nullopt = !(
         name.has_value() || desired_stop.has_value() || is_roundtrip.has_value() ||
@@ -465,20 +424,25 @@ void MainWindow::DrawRelevantBuses(
             DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
         }
     }
-    else if (sort_by_color_index.value_or(false)) {
-        std::vector<const Bus*> buses_sorted_by_color;
-        for (const auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
-            buses_sorted_by_color.push_back(bus);
-        }
-        std::sort(buses_sorted_by_color.begin(), buses_sorted_by_color.end(), [](const Bus* a, const Bus* b) {
-            return a->color_index < b->color_index;
-        });
-        for (const Bus* bus : buses_sorted_by_color) {
-            DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
-        }
-    }
+    // if (sort_by_color_index.value_or(false)) {
+    //     std::vector<const Bus*> buses_sorted_by_color;
+    //     for (const auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
+    //         buses_sorted_by_color.push_back(bus);
+    //     }
+    //     std::sort(buses_sorted_by_color.begin(), buses_sorted_by_color.end(), [](const Bus* a, const Bus* b) {
+    //         return a->color_index < b->color_index;
+    //     });
+    //     for (const Bus* bus : buses_sorted_by_color) {
+    //         DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
+    //     }
+    // }
     else {
-        std::multimap<double, const Bus*, std::greater<double>> relevant_buses;
+        auto sortByColorIndex = [](const std::pair<double, const Bus*>& lhs, const std::pair<double, const Bus*>& rhs) {
+            // Сначала по tf_idf в порядке убывания, затем по color_index в порядке возрастания
+            return (lhs.first > rhs.first) || (lhs.first == rhs.first && lhs.second->color_index < rhs.second->color_index);
+        };
+
+        std::vector<std::pair<double, const Bus*>> relevant_buses;
         for (auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
             double tf_idf = transport_catalogue_.ComputeTfIdfForBus(
                 bus,
@@ -492,13 +456,19 @@ void MainWindow::DrawRelevantBuses(
                 is_night,
                 is_day,
                 is_available,
-                price,
-                sort_by_color_index
-                );
+                price
+            );
 
             if (tf_idf > renderer::EPSILON) {
-                relevant_buses.emplace(tf_idf, bus);
+                relevant_buses.emplace_back(tf_idf, bus);
             }
+            else if (ui->sort_by_color_index->isChecked()){
+                relevant_buses.emplace_back(tf_idf, bus);
+            }
+        }
+
+        if (sort_by_color_index.value_or(false)) {
+            std::sort(relevant_buses.begin(), relevant_buses.end(), sortByColorIndex);
         }
 
         for (auto& [tf_idf, bus] : relevant_buses) {
@@ -511,25 +481,25 @@ void MainWindow::DrawRelevantBuses(
 
 void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     QLabel* background = new QLabel(ui->scrollArea_buses);
-    background->setStyleSheet("background-color: #F8F8F8; border-radius: 10px;");
-    background->setFixedSize(631, 100);
+    background->setStyleSheet("background-color: #FFFFFF; border-radius: 10px;");
+    background->setFixedSize(499, 90);
 
     QString style_sheet_;
     if (show_color) {
         auto color = db_manager_.FindColor(bus->color_index);
         svg::Rgb rgbColor = std::get<svg::Rgb>(color.value());
-        style_sheet_ = "color: rgb(" + QString::number(rgbColor.red) + ", " + QString::number(rgbColor.green) + ", " + QString::number(rgbColor.blue) + "); font: 400 20pt 'JetBrains Mono'; ";
+        style_sheet_ = "color: rgb(" + QString::number(rgbColor.red) + ", " + QString::number(rgbColor.green) + ", " + QString::number(rgbColor.blue) + "); font: 400 20pt 'JetBrains Mono';";
     }
     else {
         // Если цвет не найден, задаём цвет по умолчанию
-        style_sheet_ = "color: #2E1C0C; font: 400 20pt 'JetBrains Mono';";
+        style_sheet_ = "color: #2E1C0C; font: 500 20pt 'JetBrains Mono';";
     }
 
     QLabel* bus_name = new QLabel(bus->name, background);
     bus_name->setStyleSheet(style_sheet_);
-    bus_name->setFixedSize(70, 31);
+    bus_name->setFixedSize(92, 32);
     bus_name->setAlignment(Qt::AlignLeft);
-    bus_name->move(39, 27);
+    bus_name->move(17, 17);
 
     QString bus_type;
     switch (bus->bus_type) {
@@ -550,7 +520,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     bus_type_Label->setStyleSheet(QString("color: #2E1C0C; font: 500 11pt 'JetBrains Mono';"));
     bus_type_Label->setFixedSize(92, 17);
     bus_type_Label->setAlignment(Qt::AlignLeft);
-    bus_type_Label->move(39, 57);
+    bus_type_Label->move(17, 47);
 
     QString infoText = (QString::number(bus->capacity) + " мест\n");
     QString quantitative;
@@ -573,7 +543,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     infoLabel->setStyleSheet("color: #2E1C0C; font: 500 11pt 'JetBrains Mono';");
     infoLabel->setFixedSize(138, 57);
     infoLabel->setAlignment(Qt::AlignLeft);
-    infoLabel->move(142, 22);
+    infoLabel->move(119, 17);
 
     // наличие wi-fi, розеток и ночной ли маршрут
     QString infoText3;
@@ -590,21 +560,21 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     infoLabel3->setStyleSheet("color: #2E1C0C; font: 500 11pt 'JetBrains Mono';");
     infoLabel3->setFixedSize(138, 57);
     infoLabel3->setAlignment(Qt::AlignLeft);
-    infoLabel3->move(290, 22);
+    infoLabel3->move(268, 17);
 
     // цена
     QLabel* priceLabel = new QLabel(QString::number(bus->price) + " руб.", background);
     priceLabel->setStyleSheet("color: #2E1C0C; font: 500 11pt 'JetBrains Mono';");
     priceLabel->setFixedSize(153, 17);
     priceLabel->setAlignment(Qt::AlignLeft);
-    priceLabel->move(439, 62);
+    priceLabel->move(417, 57);
 
     QPushButton* info_ = new QPushButton(background);
     info_->setIcon(QIcon(":/Information Circle Contained.svg"));
     info_->setStyleSheet("border-radius: 0px;");
     info_->setIconSize(QSize(17, 17));
     info_->setFixedSize(17, 17);
-    info_->move(560, 7);
+    info_->move(426, 10);
 
     connect(info_, &QPushButton::clicked, [this, bus]() {
         InfoBus(bus);
@@ -614,7 +584,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     select_->setIcon(QIcon(":/edit.svg"));
     select_->setIconSize(QSize(17, 17));
     select_->setFixedSize(17, 17);
-    select_->move(582, 7);
+    select_->move(449, 10);
     select_->setStyleSheet("border-radius: 0px;");
 
     connect(select_, &QPushButton::clicked, [this, bus]() {
@@ -625,7 +595,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     delete_->setIcon(QIcon(":/close.svg"));
     delete_->setIconSize(QSize(19, 19));
     delete_->setFixedSize(19, 19);
-    delete_->move(605, 6);
+    delete_->move(471, 9);
     delete_->setStyleSheet("border-radius: 0px;");
 
     connect(delete_, &QPushButton::clicked, [this, bus]() {
@@ -855,6 +825,83 @@ void MainWindow::LoadDistances() {
     ui->tableWidgetDistances->setColumnWidth(1, 280);
     ui->tableWidgetDistances->setColumnWidth(2, 280);
 }
+void MainWindow::DeleteDistance(){
+    DialogEditor dialog_editor(this);
+
+    QLineEdit* fromField = dialog_editor.addField("Откуда:");
+    QLineEdit* toField = dialog_editor.addField("Куда:");
+
+    connect(&dialog_editor, &DialogEditor::fieldsEntered, this, [&]() {
+        QString from = dialog_editor.getFieldText(fromField);
+        QString to = dialog_editor.getFieldText(toField);
+
+        if (transport_catalogue_.GetDistance(from, to)) {
+            if (db_manager_.StopIsExists(from)) {
+                if (db_manager_.StopIsExists(to)) {
+                    if (db_manager_.DeleteDistance(from, to)) {
+                        LoadDistances();
+                        QMessageBox::information(this, "", "Дистанция удалена.");
+                    } else {
+                        QMessageBox::critical(this, "Ошибка", "Произошла ошибка при удалении дистанции.");
+                    }
+                } else {
+                    QMessageBox::warning(this, "Ошибка", "Остановки " + to + " не существует.");
+                }
+            }
+            else {
+                QMessageBox::warning(this, "Ошибка", "Остановки " + from + " не существует.");
+            }
+        }
+        else{
+            QMessageBox::warning(this, "", "Дистанция не существует.");
+        }
+    });
+
+    dialog_editor.exec();
+}
+void MainWindow::AddDistance() {
+    DialogEditor stopEditor(this, "Добавление дистанции", "Добавить");
+
+    QLineEdit* fromField = stopEditor.addField("Откуда:");
+    QLineEdit* toField = stopEditor.addField("Куда:");
+    QLineEdit* distanceField = stopEditor.addField("Расстояние:");
+
+    connect(&stopEditor, &DialogEditor::fieldsEntered, this, [&]() {
+        bool ok;
+        int distance = stopEditor.getFieldText(distanceField).toInt(&ok);
+        if (!ok || distance < 0) {
+            QMessageBox::warning(&stopEditor, "Ошибка", "Введите корректное расстояние.");
+            return;
+        }
+
+        QString from = stopEditor.getFieldText(fromField);
+        QString to = stopEditor.getFieldText(toField);
+
+        if (!transport_catalogue_.GetDistance(from, to)) {
+            if (db_manager_.StopIsExists(from)) {
+                if (db_manager_.StopIsExists(to)) {
+                    transport_catalogue_.SetDistance(from, to, distance);
+                    if (db_manager_.AddDistance(from, to, distance)) {
+                        LoadDistances();
+                        QMessageBox::information(this, "", "Дистанция добавлена.");
+                    } else {
+                        QMessageBox::critical(this, "Ошибка", "Произошла ошибка при добавлении дистанции.");
+                    }
+                } else {
+                    QMessageBox::warning(this, "Ошибка", "Остановки " + to + " не существует.");
+                }
+            }
+            else {
+                QMessageBox::warning(this, "Ошибка", "Остановки " + from + " не существует.");
+            }
+        }
+        else{
+            QMessageBox::warning(this, "", "Дистанция уже существует.");
+        }
+    });
+
+    stopEditor.exec();
+}
 
 void MainWindow::on_stops_search_clicked() {
     QString term = ui->lineEdit_find_stopname->text();
@@ -949,81 +996,10 @@ void MainWindow::on_search_distance_clicked() {
     ui->tableWidgetDistances->setColumnWidth(2, 280);
 }
 void MainWindow::on_add_distance_clicked() {
-    DialogEditor stopEditor(this, "Добавление дистанции", "Добавить");
-
-    QLineEdit* fromField = stopEditor.addField("Откуда:");
-    QLineEdit* toField = stopEditor.addField("Куда:");
-    QLineEdit* distanceField = stopEditor.addField("Расстояние:");
-
-    connect(&stopEditor, &DialogEditor::fieldsEntered, this, [&]() {
-        bool ok;
-        int distance = stopEditor.getFieldText(distanceField).toInt(&ok);
-        if (!ok || distance < 0) {
-            QMessageBox::warning(&stopEditor, "Ошибка", "Введите корректное расстояние.");
-            return;
-        }
-
-        QString from = stopEditor.getFieldText(fromField);
-        QString to = stopEditor.getFieldText(toField);
-
-        if (!transport_catalogue_.GetDistance(from, to)) {
-            if (db_manager_.StopIsExists(from)) {
-                if (db_manager_.StopIsExists(to)) {
-                    transport_catalogue_.SetDistance(from, to, distance);
-                    if (db_manager_.AddDistance(from, to, distance)) {
-                        LoadDistances();
-                        QMessageBox::information(this, "", "Дистанция добавлена.");
-                    } else {
-                        QMessageBox::critical(this, "Ошибка", "Произошла ошибка при добавлении дистанции.");
-                    }
-                } else {
-                    QMessageBox::warning(this, "Ошибка", "Остановки " + to + " не существует.");
-                }
-            }
-            else {
-                QMessageBox::warning(this, "Ошибка", "Остановки " + from + " не существует.");
-            }
-        }
-        else{
-            QMessageBox::warning(this, "", "Дистанция уже существует.");
-        }
-    });
-
-    stopEditor.exec();
+    AddDistance();
 }
 void MainWindow::on_delete_distance_clicked() {
-    DialogEditor dialog_editor(this);
-
-    QLineEdit* fromField = dialog_editor.addField("Откуда:");
-    QLineEdit* toField = dialog_editor.addField("Куда:");
-
-    connect(&dialog_editor, &DialogEditor::fieldsEntered, this, [&]() {
-        QString from = dialog_editor.getFieldText(fromField);
-        QString to = dialog_editor.getFieldText(toField);
-
-        if (transport_catalogue_.GetDistance(from, to)) {
-            if (db_manager_.StopIsExists(from)) {
-                if (db_manager_.StopIsExists(to)) {
-                    if (db_manager_.DeleteDistance(from, to)) {
-                        LoadDistances();
-                        QMessageBox::information(this, "", "Дистанция удалена.");
-                    } else {
-                        QMessageBox::critical(this, "Ошибка", "Произошла ошибка при удалении дистанции.");
-                    }
-                } else {
-                    QMessageBox::warning(this, "Ошибка", "Остановки " + to + " не существует.");
-                }
-            }
-            else {
-                QMessageBox::warning(this, "Ошибка", "Остановки " + from + " не существует.");
-            }
-        }
-        else{
-            QMessageBox::warning(this, "", "Дистанция не существует.");
-        }
-    });
-
-    dialog_editor.exec();
+    DeleteDistance();
 }
 
 // Выполняет подключение к базе данных.
@@ -1068,7 +1044,7 @@ void MainWindow::EditBus(Bus* bus) {
         Q_UNUSED(result);
 
         ClearScrollWidget(ui->scrollArea_buses->layout());
-        on_search_bus_clicked();
+        DrawRelevantBuses();
         });
 
     bus_editor->show();

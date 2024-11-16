@@ -49,10 +49,6 @@ private slots:
     void on_connect_to_db_clicked();
     void on_connect_to_db_default_clicked();
 
-    void EditBus(Bus* bus);
-    void InfoBus(Bus* bus);
-    void DeleteBus(Bus* bus);
-
     void on_lineEdit_find_stopname_textEdited(const QString &arg1);
 
     void on_stops_clear_clicked();
@@ -61,7 +57,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
     DatabaseManager db_manager_;
     TransportCatalogue transport_catalogue_;
 
@@ -72,22 +67,13 @@ private:
     Value JsonToSVG(const QString& bus_name);
 
     void ClearScrollWidget(QLayout* layout);
+    void ClearSearchFiltres();
 
-    void DrawRelevantBuses(
-        const std::optional<QStringView> name = std::nullopt,
-        const std::optional<QStringView> stops = std::nullopt,
-        const std::optional<bool> is_roundtrip = std::nullopt,
-        const std::optional<std::set<BusType>>& bus_types = std::nullopt,
-        const std::optional<int> capacity = std::nullopt,
-        const std::optional<bool> = std::nullopt,
-        const std::optional<bool> = std::nullopt,
-        const std::optional<bool> = std::nullopt,
-        const std::optional<bool> = std::nullopt,
-        const std::optional<bool> = std::nullopt,
-        const std::optional<int> price = std::nullopt,
-        const std::optional<bool> sort_by_color_index = std::nullopt
-    );
+    void EditBus(Bus* bus);
+    void InfoBus(Bus* bus);
+    void DeleteBus(Bus* bus);
     void DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout);
+    void DrawRelevantBuses();
 
     void EditStop(Stop* stop);
     void InfoStop(Stop* stop);
@@ -96,6 +82,8 @@ private:
     void DrawRelevantStops();
 
     void LoadDistances();
+    void DeleteDistance();
+    void AddDistance();
 };
 
 #endif // MAINWINDOW_H

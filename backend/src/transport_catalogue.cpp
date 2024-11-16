@@ -273,8 +273,7 @@ double TransportCatalogue::ComputeTfIdfForBus(const Bus* bus,
                                                const std::optional<bool> is_night,
                                                const std::optional<bool> is_day,
                                                const std::optional<bool> is_available,
-                                               const std::optional<uint8_t> price,
-                                               const std::optional<bool> sort_by_color_index
+                                               const std::optional<uint8_t> price
                                                ){
     int count_term_in_bus = 0;
     int total_terms = 0;
@@ -344,7 +343,7 @@ double TransportCatalogue::ComputeTfIdfForBus(const Bus* bus,
     }
     if (bus_types.has_value()) {
         ++total_terms;
-        if (bus_types->find(bus->bus_type) != bus_types->end()) {
+        if (bus_types.value().find(bus->bus_type) != bus_types.value().end()) {
             ++count_term_in_bus;
         }
     }

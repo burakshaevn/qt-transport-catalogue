@@ -14,8 +14,8 @@
    <string>Транспортный справочник</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/resources/directions_bus.svg</normaloff>:/resources/directions_bus.svg</iconset>
+   <iconset resource="../resources/resources.qrc">
+    <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
@@ -28,7 +28,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="database">
      <widget class="QLabel" name="label_3">
@@ -751,8 +751,8 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>23</x>
-        <y>131</y>
+        <x>52</x>
+        <y>29</y>
         <width>572</width>
         <height>23</height>
        </rect>
@@ -773,8 +773,8 @@
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>173</y>
+        <x>49</x>
+        <y>71</y>
         <width>579</width>
         <height>124</height>
        </rect>
@@ -793,8 +793,8 @@
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>489</y>
+        <x>49</x>
+        <y>387</y>
         <width>579</width>
         <height>43</height>
        </rect>
@@ -813,9 +813,9 @@
      <widget class="QScrollArea" name="scrollArea">
       <property name="geometry">
        <rect>
-        <x>611</x>
+        <x>666</x>
         <y>9</y>
-        <width>671</width>
+        <width>570</width>
         <height>711</height>
        </rect>
       </property>
@@ -827,12 +827,15 @@
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
+      </property>
       <widget class="QWidget" name="scrollArea_buses">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>671</width>
+         <width>570</width>
          <height>711</height>
         </rect>
        </property>
@@ -841,8 +844,8 @@
      <widget class="QLineEdit" name="lineEdit_stopname">
       <property name="geometry">
        <rect>
-        <x>309</x>
-        <y>212</y>
+        <x>338</x>
+        <y>110</y>
         <width>266</width>
         <height>17</height>
        </rect>
@@ -858,8 +861,8 @@
      <widget class="QLineEdit" name="lineEdit_price">
       <property name="geometry">
        <rect>
-        <x>309</x>
-        <y>239</y>
+        <x>338</x>
+        <y>137</y>
         <width>158</width>
         <height>17</height>
        </rect>
@@ -875,8 +878,8 @@
      <widget class="QLineEdit" name="lineEdit_capacity">
       <property name="geometry">
        <rect>
-        <x>309</x>
-        <y>266</y>
+        <x>338</x>
+        <y>164</y>
         <width>158</width>
         <height>17</height>
        </rect>
@@ -892,8 +895,8 @@
      <widget class="QLabel" name="label_15">
       <property name="geometry">
        <rect>
-        <x>502</x>
-        <y>239</y>
+        <x>531</x>
+        <y>137</y>
         <width>40</width>
         <height>17</height>
        </rect>
@@ -911,8 +914,8 @@
      <widget class="QCheckBox" name="is_electrobus">
       <property name="geometry">
        <rect>
-        <x>76</x>
-        <y>409</y>
+        <x>105</x>
+        <y>307</y>
         <width>118</width>
         <height>17</height>
        </rect>
@@ -934,8 +937,8 @@
      <widget class="QCheckBox" name="is_autobus">
       <property name="geometry">
        <rect>
-        <x>76</x>
-        <y>355</y>
+        <x>105</x>
+        <y>253</y>
         <width>118</width>
         <height>17</height>
        </rect>
@@ -957,8 +960,8 @@
      <widget class="QCheckBox" name="is_trolleybus">
       <property name="geometry">
        <rect>
-        <x>76</x>
-        <y>382</y>
+        <x>105</x>
+        <y>280</y>
         <width>118</width>
         <height>17</height>
        </rect>
@@ -980,8 +983,8 @@
      <widget class="QCheckBox" name="has_wifi">
       <property name="geometry">
        <rect>
-        <x>222</x>
-        <y>327</y>
+        <x>251</x>
+        <y>225</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1003,8 +1006,8 @@
      <widget class="QCheckBox" name="has_sockets">
       <property name="geometry">
        <rect>
-        <x>222</x>
-        <y>355</y>
+        <x>251</x>
+        <y>253</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1026,8 +1029,8 @@
      <widget class="QCheckBox" name="is_night_route">
       <property name="geometry">
        <rect>
-        <x>222</x>
-        <y>382</y>
+        <x>251</x>
+        <y>280</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1049,8 +1052,8 @@
      <widget class="QPushButton" name="reset_all_filters">
       <property name="geometry">
        <rect>
-        <x>317</x>
-        <y>552</y>
+        <x>346</x>
+        <y>450</y>
         <width>145</width>
         <height>18</height>
        </rect>
@@ -1071,8 +1074,8 @@
      <widget class="QRadioButton" name="is_available">
       <property name="geometry">
        <rect>
-        <x>165</x>
-        <y>502</y>
+        <x>194</x>
+        <y>400</y>
         <width>118</width>
         <height>17</height>
        </rect>
@@ -1094,8 +1097,8 @@
      <widget class="QRadioButton" name="is_unavailable">
       <property name="geometry">
        <rect>
-        <x>325</x>
-        <y>502</y>
+        <x>354</x>
+        <y>400</y>
         <width>121</width>
         <height>17</height>
        </rect>
@@ -1117,8 +1120,8 @@
      <widget class="QPushButton" name="search_bus">
       <property name="geometry">
        <rect>
-        <x>156</x>
-        <y>552</y>
+        <x>185</x>
+        <y>450</y>
         <width>145</width>
         <height>18</height>
        </rect>
@@ -1138,8 +1141,8 @@
      <widget class="QLineEdit" name="lineEdit_busname">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>186</y>
+        <x>339</x>
+        <y>84</y>
         <width>266</width>
         <height>17</height>
        </rect>
@@ -1158,8 +1161,8 @@
      <widget class="QLabel" name="label_16">
       <property name="geometry">
        <rect>
-        <x>502</x>
-        <y>266</y>
+        <x>531</x>
+        <y>164</y>
         <width>40</width>
         <height>17</height>
        </rect>
@@ -1177,8 +1180,8 @@
      <widget class="QLabel" name="label_17">
       <property name="geometry">
        <rect>
-        <x>44</x>
-        <y>266</y>
+        <x>73</x>
+        <y>164</y>
         <width>261</width>
         <height>17</height>
        </rect>
@@ -1196,8 +1199,8 @@
      <widget class="QLabel" name="label_18">
       <property name="geometry">
        <rect>
-        <x>44</x>
-        <y>239</y>
+        <x>73</x>
+        <y>137</y>
         <width>261</width>
         <height>17</height>
        </rect>
@@ -1215,8 +1218,8 @@
      <widget class="QLabel" name="label_19">
       <property name="geometry">
        <rect>
-        <x>44</x>
-        <y>212</y>
+        <x>73</x>
+        <y>110</y>
         <width>261</width>
         <height>17</height>
        </rect>
@@ -1234,8 +1237,8 @@
      <widget class="QLabel" name="label_20">
       <property name="geometry">
        <rect>
-        <x>44</x>
-        <y>186</y>
+        <x>73</x>
+        <y>84</y>
         <width>261</width>
         <height>17</height>
        </rect>
@@ -1253,8 +1256,8 @@
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>315</y>
+        <x>49</x>
+        <y>213</y>
         <width>579</width>
         <height>152</height>
        </rect>
@@ -1273,8 +1276,8 @@
      <widget class="QCheckBox" name="is_undefined">
       <property name="geometry">
        <rect>
-        <x>76</x>
-        <y>327</y>
+        <x>105</x>
+        <y>225</y>
         <width>118</width>
         <height>17</height>
        </rect>
@@ -1296,8 +1299,8 @@
      <widget class="QCheckBox" name="is_no_sockets">
       <property name="geometry">
        <rect>
-        <x>396</x>
-        <y>355</y>
+        <x>425</x>
+        <y>253</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1319,8 +1322,8 @@
      <widget class="QCheckBox" name="is_day_route">
       <property name="geometry">
        <rect>
-        <x>396</x>
-        <y>382</y>
+        <x>425</x>
+        <y>280</y>
         <width>153</width>
         <height>17</height>
        </rect>
@@ -1342,8 +1345,8 @@
      <widget class="QCheckBox" name="is_no_wifi">
       <property name="geometry">
        <rect>
-        <x>396</x>
-        <y>327</y>
+        <x>425</x>
+        <y>225</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1365,8 +1368,8 @@
      <widget class="QCheckBox" name="is_roundtrip">
       <property name="geometry">
        <rect>
-        <x>222</x>
-        <y>409</y>
+        <x>251</x>
+        <y>307</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1388,8 +1391,8 @@
      <widget class="QCheckBox" name="is_non_roundtrip">
       <property name="geometry">
        <rect>
-        <x>396</x>
-        <y>409</y>
+        <x>425</x>
+        <y>307</y>
         <width>146</width>
         <height>17</height>
        </rect>
@@ -1411,8 +1414,8 @@
      <widget class="QCheckBox" name="sort_by_color_index">
       <property name="geometry">
        <rect>
-        <x>76</x>
-        <y>439</y>
+        <x>105</x>
+        <y>337</y>
         <width>201</width>
         <height>17</height>
        </rect>
@@ -1434,8 +1437,8 @@
      <widget class="QCheckBox" name="show_colors">
       <property name="geometry">
        <rect>
-        <x>305</x>
-        <y>439</y>
+        <x>334</x>
+        <y>337</y>
         <width>146</width>
         <height>17</height>
        </rect>
