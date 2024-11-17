@@ -75,7 +75,7 @@ void BusEditor::on_settings_save_clicked() {
 // Кнопка 'Добавить' на странице 'Редактировать'
 void BusEditor::on_edit_append_stop_clicked() {
 	QString stopname = ui.lineEdit_find_stopname->text();
-	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
+    if (auto stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
         cache_stops_.push_back(stop);
 		ui.lineEdit_find_stopname->clear();
         DisplayCurrentBusToEditPage(ui.listWidgetStops, cache_stops_);
@@ -90,7 +90,7 @@ void BusEditor::on_edit_append_stop_clicked() {
 void BusEditor::on_append_append_stop_clicked()
 {
 	QString stopname = ui.lineEdit_find_stopname_2->text();
-	if (const Stop* stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
+    if (auto stop = transport_catalogue->FindStop(stopname); stop != nullptr) {
         cache_new_bus_stops_.push_back(stop);
 		ui.lineEdit_find_stopname_2->clear();
         DisplayCurrentBusToEditPage(ui.listWidgetStops_2, cache_new_bus_stops_);
@@ -114,13 +114,13 @@ void BusEditor::UpdateStopOrder() {
 	cache_stops_.clear();
 	for (int i = 0; i < ui.listWidgetStops->count(); ++i) {
 		QListWidgetItem* item = ui.listWidgetStops->item(i);
-		const Stop* stop = item->data(Qt::UserRole).value<const Stop*>();
+        auto stop = item->data(Qt::UserRole).value<std::shared_ptr<const Stop>>();
 		cache_stops_.push_back(stop);
 	}
 }
 
 // Функция для создания виджета остановки с меткой и кнопкой удаления
-QWidget* BusEditor::CreateStopWidget(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+QWidget* BusEditor::CreateStopWidget(std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops) {
 	QWidget* widget = new QWidget();
 	QHBoxLayout* layout = new QHBoxLayout(widget);
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -164,7 +164,7 @@ QWidget* BusEditor::CreateStopWidget(const Stop* stop, std::vector<const Stop*>&
 }
 
 // Удаление остановки из `stops_` и интерфейса
-void BusEditor::on_edit_delete_stop_clicked(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+void BusEditor::on_edit_delete_stop_clicked(std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops) {
 	auto it = std::find(cache_array.begin(), cache_array.end(), stop);
 	if (it != cache_array.end()) {
 		cache_array.erase(it);
@@ -173,7 +173,7 @@ void BusEditor::on_edit_delete_stop_clicked(const Stop* stop, std::vector<const 
 }
 
 // Функция для обработки изменения позиции остановки
-void BusEditor::on_stop_position_changed(int new_position, const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops) {
+void BusEditor::on_stop_position_changed(int new_position, std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops) {
 	auto it = std::find(cache_array.begin(), cache_array.end(), stop);
 	if (it != cache_array.end()) {
 		cache_array.erase(it);
@@ -213,8 +213,8 @@ void BusEditor::on_append_append_bus_clicked() {
         if (!new_bus->stops.empty()) {
             QStringList missingDistances;
             for (size_t i = 0; i < cache_new_bus_stops_.size() - 1; ++i) {
-                const Stop* from_stop = cache_new_bus_stops_[i];
-                const Stop* to_stop = cache_new_bus_stops_[i + 1];
+                const Stop* from_stop = cache_new_bus_stops_[i].get();
+                const Stop* to_stop = cache_new_bus_stops_[i + 1].get();
 
                 int distance = db_manager->GetDistance(from_stop, to_stop);
                 if (distance == 0) {
@@ -231,7 +231,9 @@ void BusEditor::on_append_append_bus_clicked() {
         }
         new_bus->stops = cache_new_bus_stops_;
         db_manager->UpdateBus(new_bus.get());
-        transport_catalogue->UpdateBus(new_bus.get());
+		auto shared_bus = std::make_shared<Bus>(std::move(*new_bus));
+		transport_catalogue->UpdateBus(shared_bus);
+
         QMessageBox::information(this, "", "Новый маршрут успешно добавлен.");
     }
     else {
@@ -259,8 +261,8 @@ void BusEditor::on_edit_save_clicked() {
 		if (!cache_stops_.empty()) {
 			QStringList missingDistances;
 			for (size_t i = 0; i < cache_stops_.size() - 1; ++i) {
-				const Stop* from_stop = cache_stops_[i];
-				const Stop* to_stop = cache_stops_[i + 1];
+                const Stop* from_stop = cache_stops_[i].get();
+                const Stop* to_stop = cache_stops_[i + 1].get();
 
 				int distance = db_manager->GetDistance(from_stop, to_stop);
 				if (distance == 0) {
@@ -276,7 +278,8 @@ void BusEditor::on_edit_save_clicked() {
 			}
         }
         db_manager->UpdateBus(bus);
-		transport_catalogue->UpdateBus(bus);
+		auto shared_bus = std::make_shared<Bus>(std::move(*new_bus));
+		transport_catalogue->UpdateBus(shared_bus);
         //transport_catalogue->UpdateStopBuses();
 		QMessageBox::information(this, "", "Информация о маршруте обновлена.");
 	}
@@ -285,7 +288,7 @@ void BusEditor::on_edit_save_clicked() {
 	}
 }
 
-void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::vector<const Stop*>& collection_) {
+void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::vector<std::shared_ptr<const Stop>>& collection_) {
 	if (db_manager->Open()) {
 		QSqlQuery query = db_manager->ExecuteSelectQuery(
 			QString("SELECT * FROM buses WHERE name = '%1';").arg(current_bus->name)
@@ -317,7 +320,7 @@ void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::v
 			ui.lineEdit_price_2->setText(QString::number(price, 'f', 2)); 
 
 			listWidgetStops->clear();
-            for (const Stop* stop : collection_) {
+            for (auto stop : collection_) {
 				QListWidgetItem* item = new QListWidgetItem(listWidgetStops);
                 QWidget* stopWidget = CreateStopWidget(stop, collection_, listWidgetStops);
 				item->setSizeHint(stopWidget->sizeHint());

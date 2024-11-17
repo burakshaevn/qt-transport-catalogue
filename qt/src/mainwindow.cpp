@@ -241,7 +241,7 @@ void MainWindow::ClearSearchFiltres(){
 
     QVBoxLayout* layout = new QVBoxLayout();
     for (auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
-        DrawBus(const_cast<Bus*>(bus_ptr), ui->show_colors->isChecked() ? true : false, layout);
+        DrawBus(const_cast<Bus*>(bus_ptr.get()), ui->show_colors->isChecked() ? true : false, layout);
     }
     ui->scrollArea_buses->setLayout(layout);
 }
@@ -279,7 +279,7 @@ void MainWindow::on_button_stops_clicked()
         layout->setAlignment(Qt::AlignTop);
         size_t results_size{};
         for (auto& [stop_name, stop_ptr] : transport_catalogue_.GetSortedStops()) {
-            DrawStop(const_cast<Stop*>(stop_ptr), layout);
+            DrawStop(stop_ptr, layout);
             ++results_size;
         }
         ui->results_count->setText("Результатов: " + QString::number(results_size));
@@ -311,12 +311,12 @@ void MainWindow::SetLineEditSettings(){
         ui->lineEdit_busname,
         ui->lineEdit_capacity,
         ui->lineEdit_price,
-        ui->lineEdit_find_stopname
-        }
-        ) {
+        ui->lineEdit_stopname
+        })
+    {
         lineEdit->setAlignment(Qt::AlignCenter);
     }
-    ui->lineEdit_busname->setMaxLength(3);
+    ui->lineEdit_busname->setMaxLength(100);
     ui->lineEdit_stopname->setMaxLength(100);  
 
     auto database = ui->stackedWidget->widget(0); 
@@ -342,21 +342,29 @@ void MainWindow::DrawRelevantBuses() {
     layout->setAlignment(Qt::AlignTop);
 
     std::optional<std::set<BusType>> bus_types;
+
+    if (!bus_types.has_value()) {
+        bus_types = std::set<BusType>{};
+    }
     if (ui->is_undefined->isChecked()) {
-        bus_types.value().insert(BusType::autobus);
-        bus_types.value().insert(BusType::electrobus);
-        bus_types.value().insert(BusType::trolleybus);
+        bus_types->insert(BusType::autobus);
+        bus_types->insert(BusType::electrobus);
+        bus_types->insert(BusType::trolleybus);
     }
-    else if (ui->is_autobus->isChecked()) {
-        bus_types.value().insert(BusType::autobus);
+    if (ui->is_autobus->isChecked()) {
+        bus_types->insert(BusType::autobus);
     }
-    else if (ui->is_electrobus->isChecked()) {
-        bus_types.value().insert(BusType::electrobus);
+    if (ui->is_electrobus->isChecked()) {
+        bus_types->insert(BusType::electrobus);
     }
-    else if (ui->is_trolleybus->isChecked()) {
-        bus_types.value().insert(BusType::trolleybus);
+    if (ui->is_trolleybus->isChecked()) {
+        bus_types->insert(BusType::trolleybus);
     }
-    else{
+    if (!ui->is_autobus->isChecked() &&
+        !ui->is_electrobus->isChecked() &&
+        !ui->is_trolleybus->isChecked() &&
+        !ui->is_undefined->isChecked())
+    {
         bus_types = std::nullopt;
     }
 
@@ -421,21 +429,9 @@ void MainWindow::DrawRelevantBuses() {
 
     if (all_params_nullopt) {
         for (const auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
-            DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
+            DrawBus(const_cast<Bus*>(bus.get()), ui->show_colors->isChecked() ? true : false, layout);
         }
     }
-    // if (sort_by_color_index.value_or(false)) {
-    //     std::vector<const Bus*> buses_sorted_by_color;
-    //     for (const auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
-    //         buses_sorted_by_color.push_back(bus);
-    //     }
-    //     std::sort(buses_sorted_by_color.begin(), buses_sorted_by_color.end(), [](const Bus* a, const Bus* b) {
-    //         return a->color_index < b->color_index;
-    //     });
-    //     for (const Bus* bus : buses_sorted_by_color) {
-    //         DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
-    //     }
-    // }
     else {
         auto sortByColorIndex = [](const std::pair<double, const Bus*>& lhs, const std::pair<double, const Bus*>& rhs) {
             // Сначала по tf_idf в порядке убывания, затем по color_index в порядке возрастания
@@ -445,7 +441,7 @@ void MainWindow::DrawRelevantBuses() {
         std::vector<std::pair<double, const Bus*>> relevant_buses;
         for (auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
             double tf_idf = transport_catalogue_.ComputeTfIdfForBus(
-                bus,
+                bus.get(),
                 name,
                 desired_stop,
                 is_roundtrip,
@@ -460,10 +456,12 @@ void MainWindow::DrawRelevantBuses() {
             );
 
             if (tf_idf > renderer::EPSILON) {
-                relevant_buses.emplace_back(tf_idf, bus);
+                //relevant_buses.emplace_back(tf_idf, bus);
+                relevant_buses.emplace_back(tf_idf, bus.get());
             }
             else if (ui->sort_by_color_index->isChecked()){
-                relevant_buses.emplace_back(tf_idf, bus);
+                //relevant_buses.emplace_back(tf_idf, bus);
+                relevant_buses.emplace_back(tf_idf, bus.get());
             }
         }
 
@@ -549,13 +547,21 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     QString infoText3;
     infoText3 += (bus->has_wifi ? "Есть Wi-Fi\n" : "Нет Wi-Fi\n");
     infoText3 += (bus->has_sockets ? "Есть розетка\n" : "Нет розетки\n");
-    if (!bus->is_night) {
-        infoText3 += (bus->is_day ? "Дневной маршрут" : "Неопределён");
+    if (bus->is_night && bus->is_day){
+        infoText3 += "Комбинированный";
     }
-    else {
-        infoText3 += (bus->is_night ? "Ночной маршрут" : "Неопределён");
-    }
+    else{
+        if (bus->is_night) {
+            infoText3 += (bus->is_night ? "Ночной маршрут" : "Неопределён");
+        }
+        else if (bus->is_night){
+            infoText3 += (bus->is_day ? "Дневной маршрут" : "Неопределён");
+        }
+        else{
+            infoText3 += "Неопределён";
+        }
 
+    }
     QLabel* infoLabel3 = new QLabel(infoText3, background);
     infoLabel3->setStyleSheet("color: #2E1C0C; font: 500 11pt 'JetBrains Mono';");
     infoLabel3->setFixedSize(138, 57);
@@ -588,7 +594,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     select_->setStyleSheet("border-radius: 0px;");
 
     connect(select_, &QPushButton::clicked, [this, bus]() {
-        EditBus(const_cast<Bus*>(bus));
+        EditBus(bus);
     });
 
     QPushButton* delete_ = new QPushButton(background);
@@ -599,13 +605,14 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     delete_->setStyleSheet("border-radius: 0px;");
 
     connect(delete_, &QPushButton::clicked, [this, bus]() {
-        DeleteBus(const_cast<Bus*>(bus));
-    });
+        auto bus_shared = std::shared_ptr<Bus>(bus, [](Bus*) {});
+        DeleteBus(bus_shared);
+        });
 
     layout->addWidget(background);
 }
 
-void MainWindow::EditStop(Stop* stop){
+void MainWindow::EditStop(const std::shared_ptr<const Stop>& stop){
     DialogEditor dialog_editor(this, "Редактирование", "Сохранить");
 
     QLineEdit* stop_name_field = dialog_editor.addField("Ред. Название:");
@@ -653,7 +660,7 @@ void MainWindow::EditStop(Stop* stop){
     dialog_editor.exec();
 }
 
-void MainWindow::InfoStop(Stop* stop){
+void MainWindow::InfoStop(const std::shared_ptr<const Stop>& stop){
     DialogEditor dialog_editor(this, "Информация", "Закрыть");
 
     QLineEdit* stop_name_field = dialog_editor.addField("Название:");
@@ -674,7 +681,7 @@ void MainWindow::InfoStop(Stop* stop){
     dialog_editor.exec();
 }
 
-void MainWindow::DeleteStop(Stop* stop){
+void MainWindow::DeleteStop(const std::shared_ptr<const Stop>& stop){
     QMessageBox confirmBox;
     confirmBox.setWindowTitle("Подтверждение удаления");
     confirmBox.setText("Вы уверены, что хотите удалить остановку " + stop->name + "?");
@@ -683,14 +690,8 @@ void MainWindow::DeleteStop(Stop* stop){
 
     int result = confirmBox.exec();
     if (result == QMessageBox::Yes) {
-        if (db_manager_.DeleteStop(stop)) {
-            //transport_catalogue_.DeleteStop(stop);
-            transport_catalogue_.UpdateBuses();
-            transport_catalogue_.UpdateBusnameToBus();
-            transport_catalogue_.UpdateStops();
-            transport_catalogue_.UpdateStopnameToStop();
-            transport_catalogue_.UpdateStopBuses();
-            transport_catalogue_.UpdateDistances();
+        if (db_manager_.DeleteStop(stop.get())) {
+            transport_catalogue_.DeleteStop(stop); 
 
             ClearScrollWidget(ui->scrollArea_stops->layout());
 
@@ -699,7 +700,7 @@ void MainWindow::DeleteStop(Stop* stop){
 
             size_t results_size{};
             for(auto& stop : transport_catalogue_.GetSortedStops()){
-                DrawStop(const_cast<Stop*>(stop.second), layout);
+                DrawStop(stop.second, layout);
                 ++results_size;
             }
             ui->results_count->setText("Результатов: " + QString::number(results_size));
@@ -711,7 +712,7 @@ void MainWindow::DeleteStop(Stop* stop){
     }
 }
 
-void MainWindow::DrawStop(Stop* stop, QVBoxLayout* layout) {
+void MainWindow::DrawStop(const std::shared_ptr<const Stop>& stop, QVBoxLayout* layout) {
     if (!stop->name.isEmpty()) {
         QLabel* background = new QLabel(ui->scrollArea_stops);
         background->setStyleSheet("background-color: #F8F8F8; border-radius: 10px;");
@@ -782,15 +783,15 @@ void MainWindow::DrawRelevantStops(){
     size_t results_size{};
     if (found_stop.isEmpty()){
         for(auto& stop : transport_catalogue_.GetSortedStops()){
-            DrawStop(const_cast<Stop*>(stop.second), layout);
+            DrawStop(stop.second, layout);
             ++results_size;
         }
     }
     else{
-        for (const auto& stop : transport_catalogue_.ComputeTfIdfForStop(transport_catalogue_.GetSortedStops(), found_stop)) {
-            DrawStop(stop, layout);
-            ++results_size;
-        }
+        // for (auto stop : transport_catalogue_.ComputeTfIdfForStop(transport_catalogue_.GetSortedStops(), found_stop)) {
+        //     DrawStop(stop, layout);
+        //     ++results_size;
+        // }
     }
     ui->results_count->setText("Результатов: " + QString::number(results_size));
 }
@@ -1111,7 +1112,7 @@ void MainWindow::InfoBus(Bus* bus){
 
     dialog_editor.exec();
 }
-void MainWindow::DeleteBus(Bus* bus){
+void MainWindow::DeleteBus(std::shared_ptr<Bus>& bus){
     QMessageBox confirmBox;
     confirmBox.setWindowTitle("Подтверждение удаления");
     confirmBox.setText("Вы уверены, что хотите удалить маршрут " + bus->name + "?");
@@ -1120,7 +1121,7 @@ void MainWindow::DeleteBus(Bus* bus){
 
     int result = confirmBox.exec();
     if (result == QMessageBox::Yes) {
-        if (db_manager_.DeleteBus(static_cast<const Bus*>(bus))) {
+        if (db_manager_.DeleteBus(bus.get())) {
             transport_catalogue_.DeleteBus(bus);
             on_button_buses_clicked();
             QMessageBox::information(this, "Удаление", "Автобус успешно удалён.");

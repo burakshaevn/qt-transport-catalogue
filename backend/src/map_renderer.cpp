@@ -4,15 +4,15 @@
 
 #include "map_renderer.h"
 
-namespace renderer { 
-    std::vector<svg::Polyline> MapRenderer::GetRouteLines(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const {
+namespace renderer {
+    std::vector<svg::Polyline> MapRenderer::GetRouteLines(const std::map<QStringView, std::shared_ptr<const Bus>>& buses, const SphereProjector& sp) const {
         std::vector<svg::Polyline> result;
         //size_t color_num = 0;
         for (const auto& [bus_number, bus] : buses) {
             if (bus->stops.empty()) {
                 continue;
             }
-            std::vector<const Stop*> route_stops{ bus->stops.begin(), bus->stops.end() };
+            std::vector<std::shared_ptr<const Stop>> route_stops{ bus->stops.begin(), bus->stops.end() };
             if (bus->is_roundtrip == false) {
                 route_stops.insert(route_stops.end(), std::next(bus->stops.rbegin()), bus->stops.rend());
             }
@@ -38,7 +38,7 @@ namespace renderer {
         return result;
     }
 
-    std::vector<svg::Text> MapRenderer::GetBusLabel(const std::map<QStringView, const Bus*>& buses, const SphereProjector& sp) const {
+    std::vector<svg::Text> MapRenderer::GetBusLabel(const std::map<QStringView, std::shared_ptr<const Bus>>& buses, const SphereProjector& sp) const {
         std::vector<svg::Text> result;
         //size_t color_num = 0;
         for (const auto& [bus_number, bus] : buses) {
@@ -132,9 +132,9 @@ namespace renderer {
         }
 
         return result;
-    } 
+    }
 
-    svg::Document MapRenderer::GetSVG(const std::map<QStringView, const Bus*>& buses) const {
+    svg::Document MapRenderer::GetSVG(const std::map<QStringView, std::shared_ptr<const Bus>>& buses) const {
         svg::Document result;
         std::vector<detail::Coordinates> route_stops_coord;
         std::map<QStringView, const Stop*> all_stops;
@@ -151,7 +151,7 @@ namespace renderer {
             }
             for (const auto& stop : bus->stops) {
                 route_stops_coord.push_back(stop->coords);
-                all_stops[stop->name] = stop;
+                all_stops[stop->name] = stop.get();
             }
         }
 
@@ -166,12 +166,12 @@ namespace renderer {
         return result;
     }
 
-    void MapRenderer::DrawRouteLines(const std::map<QStringView, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawRouteLines(const std::map<QStringView, std::shared_ptr<const Bus>>& buses, SphereProjector& sp, svg::Document& result) const {
         for (const auto& line : GetRouteLines(buses, sp)) {
             result.Add(line);
         }
     }
-    void MapRenderer::DrawBusLabel(const std::map<QStringView, const Bus*>& buses, SphereProjector& sp, svg::Document& result) const {
+    void MapRenderer::DrawBusLabel(const std::map<QStringView, std::shared_ptr<const Bus>>& buses, SphereProjector& sp, svg::Document& result) const {
         for (const auto& text : GetBusLabel(buses, sp)) {
             result.Add(text);
         }

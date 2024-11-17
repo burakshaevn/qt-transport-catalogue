@@ -71,14 +71,14 @@ private:
 
     void EditBus(Bus* bus);
     void InfoBus(Bus* bus);
-    void DeleteBus(Bus* bus);
+    void DeleteBus(std::shared_ptr<Bus>& bus);
     void DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout);
     void DrawRelevantBuses();
 
-    void EditStop(Stop* stop);
-    void InfoStop(Stop* stop);
-    void DeleteStop(Stop* stop);
-    void DrawStop(Stop* stop, QVBoxLayout* layout);
+    void EditStop(const std::shared_ptr<const Stop>& stop);
+    void InfoStop(const std::shared_ptr<const Stop>& stop);
+    void DeleteStop(const std::shared_ptr<const Stop>& stop);
+    void DrawStop(const std::shared_ptr<const Stop>& stop, QVBoxLayout* layout);
     void DrawRelevantStops();
 
     void LoadDistances();

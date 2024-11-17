@@ -89,22 +89,7 @@ void JsonReader::ProcessBusRequests(const json::Array& arr, TransportCatalogue& 
         const auto& request_bus_map = request_bus.AsDict();
         const auto& type = request_bus_map.at("type").AsString();
         if (type == "Bus") {
-            Bus bus;
-            auto [name, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price] = PullBus(request_bus_map, catalogue);
-            bus.name = name.toString();
-            bus.stops = stops;
-            bus.is_roundtrip = circular_route;
-            bus.color_index = color_index;
-            bus.rgb = rgb;
-            bus.bus_type = bus_type;
-            bus.capacity = capacity;
-            bus.has_wifi = has_wifi;
-            bus.has_sockets = has_sockets;
-            bus.is_night = is_night;
-            bus.is_available = is_available;
-            bus.price = price;
-            //catalogue.AddBus(bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price);
-            catalogue.AddBus(bus);
+            catalogue.AddBus(PullBus(request_bus_map, catalogue));
         }
     }
 }
@@ -137,77 +122,24 @@ void JsonReader::PullStopDistances(TransportCatalogue& catalogue) const {
     }
 }
 
-// bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price
-std::tuple<QStringView, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
-    QStringView bus_number = request_map.at("name").AsString();
-    std::vector<const Stop*> stops;
+Bus JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {
+    Bus bus;
+    bus.name
+        = request_map.at("name").AsString();
     for (const auto& stop : request_map.at("stops").AsArray()) {
-        stops.push_back(catalogue.FindStop(stop.AsString()));
-        //stops.push_back(&(*catalogue.FindStop(QStringView(stop.AsString()))));
-        //auto stop_opt = catalogue.FindStop(QStringView(stop.AsString()));
-        //if (stop_opt.has_value()) {
-        //    stops.push_back(&(*stop_opt));  // Теперь можно безопасно взять адрес
-        //}
-        //else {
-        //    // Обработка случая, когда объект не найден
-        //    std::cerr << "Stop not found: " << stop.AsString() << std::endl;
-        //}
+        bus.stops.push_back(catalogue.FindStop(stop.AsString()));
     }
-    bool circular_route = request_map.at("is_roundtrip").AsBool();
-
-    size_t color_index = static_cast<size_t>(request_map.at("color_index").AsInt());
-    size_t capacity = static_cast<size_t>(request_map.at("capacity").AsInt());
-
-    std::array<uint8_t, 3> rgb = {0, 0, 0};
-
-    //auto StringToBusType = [](QStringView type_str) {
-        struct QStringViewHash {
-            std::size_t operator()(QStringView str) const noexcept {
-                return qHash(str);
-            }
-        };
-
-        struct QStringViewEqual {
-            bool operator()(QStringView lhs, QStringView rhs) const noexcept {
-                return lhs == rhs;
-            }
-        };
-
-        auto StringToBusType = [](QStringView type_str) {
-            // Use your custom hash and equality comparator
-            static const std::unordered_map<QStringView, BusType, QStringViewHash, QStringViewEqual> string_to_bus_type = {
-                {QString("autobus"), BusType::autobus},
-                {QString("electrobus"), BusType::electrobus},
-                {QString("trolleybus"), BusType::trolleybus}
-            };
-
-            auto it = string_to_bus_type.find(type_str);
-            if (it != string_to_bus_type.end()) {
-                return it->second;
-            }
-            else {
-                throw std::invalid_argument("Unknown bus type: " + type_str.toString().toStdString());
-            }
-            };
-
-    //    auto it = string_to_bus_type.find(type_str);
-    //    if (it != string_to_bus_type.end()) {
-    //        return it->second;
-    //    } else {
-    //        throw std::invalid_argument("Unknown bus type: " + type_str.toString().toStdString());
-    //    }
-    //};
-
-    BusType bus_type = StringToBusType(request_map.at("bus_type").AsString());
-
-    bool has_wifi = request_map.at("has_wifi").AsBool();
-    bool has_sockets = request_map.at("has_sockets").AsBool();
-    bool is_night = request_map.at("is_night").AsBool();
-
-    bool is_available = request_map.at("is_available").AsBool();
-    uint8_t price = static_cast<uint8_t>(request_map.at("price").AsInt());
-
-    return { bus_number, stops, circular_route, color_index, rgb, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price };
+    bus.is_roundtrip = request_map.at("is_roundtrip").AsBool();
+    bus.color_index = static_cast<size_t>(request_map.at("color_index").AsInt());
+    bus.capacity = static_cast<size_t>(request_map.at("capacity").AsInt());
+    bus.rgb = {0, 0, 0};
+    bus.bus_type = StringToBusType(request_map.at("bus_type").AsString());
+    bus.has_wifi = request_map.at("has_wifi").AsBool();
+    bus.has_sockets = request_map.at("has_sockets").AsBool();
+    bus.is_night = request_map.at("is_night").AsBool();
+    bus.is_available = request_map.at("is_available").AsBool();
+    bus.price = request_map.at("price").AsInt();
+    return bus;
 }
 
 // std::tuple<QStringView, std::vector<const Stop*>, bool, size_t> JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const {

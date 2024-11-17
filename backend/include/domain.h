@@ -11,7 +11,6 @@
 struct Stop { 
     QString name;
     detail::Coordinates coords; 
-     
 };
 
 enum class BusType {
@@ -32,10 +31,10 @@ struct Bus {
     Bus(const Bus&) = default;
     Bus& operator=(const Bus&) = default;
     Bus(Bus&&) = default;
-    Bus& operator=(Bus&&) = default;
+    Bus& operator=(Bus&&) = default; 
 
     QString name;
-    std::vector<const Stop*> stops;
+    std::vector<std::shared_ptr<const Stop>> stops;
     bool is_roundtrip;
     size_t color_index;
 

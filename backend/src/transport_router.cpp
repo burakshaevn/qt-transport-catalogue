@@ -32,13 +32,13 @@ void TransportRouter::AddBusesToGraph() {
     for (const auto& bus_item : catalogue_.GetSortedBuses()) {
         auto bus_info = bus_item.second;
         
-        const std::vector<const Stop*> stops = bus_info->stops;
+        const std::vector<std::shared_ptr<const Stop>> stops = bus_info->stops;
         size_t stops_count = stops.size();
 
         for (size_t i = 0; i < stops_count; ++i) {
             for (size_t j = i + 1; j < stops_count; ++j) {
-                const Stop* stop_from = stops[i];
-                const Stop* stop_to = stops[j];
+                const Stop* stop_from = stops[i].get();
+                const Stop* stop_to = stops[j].get();
                 int dist_sum = 0;
                 int dist_sum_inverse = 0;
 

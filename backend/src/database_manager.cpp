@@ -27,14 +27,14 @@ bool DatabaseManager::StopIsExists(const QString& name) {
         return query.value(0).toInt() > 0;
     }
     else{
-        qDebug() << Q_FUNC_INFO  << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO  << query.lastError().text();
     }
     return false;
 }
 bool DatabaseManager::AddStop(const QString& name, double latitude, double longitude)
 {
     if (StopIsExists(name)) {
-        qDebug() << Q_FUNC_INFO  << "Остановка уже существует:" << name;
+        // qDebug() << Q_FUNC_INFO  << "Остановка уже существует:" << name;
         return false;
     }
 
@@ -51,7 +51,7 @@ bool DatabaseManager::AddStop(const QString& name, double latitude, double longi
     else {
         QSqlQuery resetQuery;
         resetQuery.exec("SELECT setval('stops_id_seq', (SELECT COALESCE(MAX(id), 1) FROM stops), false)");
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 }
@@ -61,7 +61,7 @@ bool DatabaseManager::DeleteStop(const Stop* stop) {
     deleteStopQuery.bindValue(":name", stop->name);
 
     if (!deleteStopQuery.exec()) {
-        qDebug() << Q_FUNC_INFO << "Ошибка при удалении остановки:" << deleteStopQuery.lastError().text();
+        //qDebug() << Q_FUNC_INFO << "Ошибка при удалении остановки:" << deleteStopQuery.lastError().text();
         return false;
     }
 
@@ -142,7 +142,7 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
             return new_query.value("distance").toInt();
         }
         else{
-            qDebug() << Q_FUNC_INFO << query.lastError().text();
+            // qDebug() << Q_FUNC_INFO << query.lastError().text();
         }
     }
     return 0;
@@ -163,7 +163,7 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
 //    stop_query.prepare("SELECT id FROM stops");
 //
 //    if (!stop_query.exec()) {
-//        qDebug() << "Failed to execute stop query:" << stop_query.lastError();
+//        // qDebug() << "Failed to execute stop query:" << stop_query.lastError();
 //        return;
 //    }
 //
@@ -183,7 +183,7 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
 //            query.bindValue(":distance", distance);
 //
 //            if (!query.exec()) {
-//                qDebug() << "Insert distance failed:" << query.lastError();
+//                // qDebug() << "Insert distance failed:" << query.lastError();
 //            }
 //        }
 //    }
@@ -212,7 +212,7 @@ int DatabaseManager::GetDistance(const Stop* from, const Stop* to)
 
 bool DatabaseManager::AddDistance(const QString& from, const QString& to, int distance) {
     if (DistanceIsExists(from, to)) {
-        qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
+        // qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
         return false;
     }
 
@@ -221,7 +221,7 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     query.prepare("SELECT id FROM stops WHERE name = :from_name");
     query.bindValue(":from_name", from);
     if (!query.exec() || !query.next()) {
-        qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << from;
+        // qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << from;
         return false;
     }
     int from_stop_id = query.value(0).toInt();
@@ -229,7 +229,7 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     query.prepare("SELECT id FROM stops WHERE name = :to_name");
     query.bindValue(":to_name", to);
     if (!query.exec() || !query.next()) {
-        qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << to;
+        // qDebug() << Q_FUNC_INFO << "Не удалось получить ID для остановки:" << to;
         return false;
     }
     int to_stop_id = query.value(0).toInt();
@@ -242,14 +242,14 @@ bool DatabaseManager::AddDistance(const QString& from, const QString& to, int di
     if (query.exec()) {
         return true;
     } else {
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 }
 
 bool DatabaseManager::DeleteDistance(const QString& from, const QString& to){
     if (DistanceIsExists(from, to)) {
-        qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
+        // qDebug() << Q_FUNC_INFO << "Дистанция уже существует:" << from << "->" << to;
         return false;
     }
 
@@ -264,7 +264,7 @@ bool DatabaseManager::DeleteDistance(const QString& from, const QString& to){
     query.bindValue(":from_stop", from);
     query.bindValue(":to_stop", to);
     if (!query.exec() || !query.next()) {
-        qDebug() << Q_FUNC_INFO << "Не удалось выполнить удаление: " << from;
+        // qDebug() << Q_FUNC_INFO << "Не удалось выполнить удаление: " << from;
         return false;
     }
     return true;
@@ -284,7 +284,7 @@ bool DatabaseManager::BusExists(const QString& name) {
 bool DatabaseManager::AddBus(const Bus* bus)
 {
     if (BusExists(bus->name)) {
-        qDebug() << Q_FUNC_INFO << "Автобус уже существует: " << bus->name;
+        // qDebug() << Q_FUNC_INFO << "Автобус уже существует: " << bus->name;
         return false;
     }
 
@@ -305,7 +305,7 @@ bool DatabaseManager::AddBus(const Bus* bus)
     query.bindValue(":is_day", bus->is_day);
 
     if(!query.exec()){
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
         return false;
     }
 
@@ -324,7 +324,7 @@ bool DatabaseManager::AddBus(const Bus* bus)
 bool DatabaseManager::UpdateBus(const Bus* bus) {
     // Начало транзакции
     if (!QSqlDatabase::database().transaction()) {
-        qDebug() <<  Q_FUNC_INFO << "Не удалось начать транзакцию:" << QSqlDatabase::database().lastError().text();
+        // qDebug() <<  Q_FUNC_INFO << "Не удалось начать транзакцию:" << QSqlDatabase::database().lastError().text();
         return false;
     }
 
@@ -333,7 +333,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
     deleteQuery.prepare("DELETE FROM bus_stops WHERE bus_id = (SELECT id FROM buses WHERE name = :name)");
     deleteQuery.bindValue(":name", bus->name);
     if (!deleteQuery.exec()) {
-        qDebug() <<  Q_FUNC_INFO << "Ошибка удаления остановок:" << deleteQuery.lastError().text();
+        // qDebug() <<  Q_FUNC_INFO << "Ошибка удаления остановок:" << deleteQuery.lastError().text();
         QSqlDatabase::database().rollback();
         return false;
     }
@@ -354,7 +354,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
         updateQuery.bindValue(":is_available", bus->is_available);
         updateQuery.bindValue(":price", bus->price);
         if (!updateQuery.exec()) {
-            //qDebug() <<  Q_FUNC_INFO << "Ошибка обновления автобуса:" << updateQuery.lastError().text();
+            //// qDebug() <<  Q_FUNC_INFO << "Ошибка обновления автобуса:" << updateQuery.lastError().text();
             QSqlDatabase::database().rollback();
             return false;
         }
@@ -363,7 +363,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
         busIdQuery.prepare("SELECT id FROM buses WHERE name = :name");
         busIdQuery.bindValue(":name", bus->name);
         if (!busIdQuery.exec() || !busIdQuery.next()) {
-            qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
+            // qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID автобуса:" << busIdQuery.lastError().text();
             QSqlDatabase::database().rollback();
             return false;
         }
@@ -375,14 +375,14 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
             stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
             stopIdQuery.bindValue(":name", bus->stops[i]->name);
             if (!stopIdQuery.exec() || !stopIdQuery.next()) {
-                qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
+                // qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
                 QSqlDatabase::database().rollback();
                 return false;
             }
             int stop_id = stopIdQuery.value(0).toInt();
 
             if (!AddBusStop(bus_id, stop_id, i /*+ 1*/, bus->stops[i]->name)) {
-                qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
+                // qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
                 QSqlDatabase::database().rollback();
                 return false;
             }
@@ -398,7 +398,7 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
 
     // Завершение транзакции
     if (!QSqlDatabase::database().commit()) {
-        qDebug() <<  Q_FUNC_INFO << "Ошибка фиксации транзакции:" << QSqlDatabase::database().lastError().text();
+        // qDebug() <<  Q_FUNC_INFO << "Ошибка фиксации транзакции:" << QSqlDatabase::database().lastError().text();
         return false;
     }
 
@@ -452,7 +452,7 @@ bool DatabaseManager::DeleteBus(const Bus* bus) {
         return true;
     }
     else{
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return false;
 }
@@ -485,14 +485,14 @@ bool DatabaseManager::BusStopIsExists(int bus_id, const QString& stop_name) {
         return query.value(0).toInt() > 0;
     }
     else{
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return false;
 }
 
 bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name) {
     if (BusStopIsExists(bus_id, stop_name)) {
-        qDebug() << Q_FUNC_INFO << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
+        // qDebug() << Q_FUNC_INFO << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
         return true;
     }
 
@@ -500,7 +500,7 @@ bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name) {
     positionQuery.prepare("SELECT COALESCE(MAX(stop_position), 0) + 1 FROM bus_stops WHERE bus_id = :bus_id");
     positionQuery.bindValue(":bus_id", bus_id);
     if (!positionQuery.exec() || !positionQuery.next()) {
-        qDebug() << Q_FUNC_INFO << positionQuery.lastError().text();
+        // qDebug() << Q_FUNC_INFO << positionQuery.lastError().text();
         return false;
     }
     int stop_position = positionQuery.value(0).toInt();
@@ -515,7 +515,7 @@ bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name) {
     if (query.exec()) {
         return true;
     } else {
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return false;
 }
@@ -535,7 +535,7 @@ bool DatabaseManager::AddBusStop(int bus_id, int stop_id, int stop_position, con
         return true;
     }
     else{
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return false;
 }
@@ -553,7 +553,7 @@ bool DatabaseManager::UpdateRoutingSettings(const double bus_velocity, const int
                 return true;
             }
             else{
-                qDebug() << Q_FUNC_INFO << query.lastError().text();
+                // qDebug() << Q_FUNC_INFO << query.lastError().text();
             }
         }
     }
@@ -564,7 +564,7 @@ bool DatabaseManager::UpdateRoutingSettings(const double bus_velocity, const int
 void DatabaseManager::ExecuteQuery(const QString& queryStr) {
     QSqlQuery query;
     if (!query.exec(queryStr)) {
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
 }
 
@@ -572,7 +572,7 @@ void DatabaseManager::ExecuteQuery(const QString& queryStr) {
 QSqlQuery DatabaseManager::ExecuteSelectQuery(const QString& queryStr) {
     QSqlQuery query;
     if (!query.exec(queryStr)) {
-        qDebug() << Q_FUNC_INFO << query.lastError().text();
+        // qDebug() << Q_FUNC_INFO << query.lastError().text();
     }
     return query;
 }

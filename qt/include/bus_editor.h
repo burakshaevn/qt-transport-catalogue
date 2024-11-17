@@ -42,10 +42,10 @@ private:
 	// с кэшем и базой данных.
 	// Почему сразу не работать с current_bus->stops? Потому что пользователь может не прожать кнопку «Сохранить»,
 	// что говорит нам об отмене изменений.
-	std::vector<const Stop*> cache_stops_;
-	std::vector<const Stop*> cache_new_bus_stops_; 
+    std::vector<std::shared_ptr<const Stop>> cache_stops_;
+    std::vector<std::shared_ptr<const Stop>> cache_new_bus_stops_;
 
-    void DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::vector<const Stop*>& collection_);
+    void DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::vector<std::shared_ptr<const Stop>>& collection_);
 
     void FillComboBox();
 
@@ -55,11 +55,11 @@ private:
 	void UpdateStopOrder(); 
 
     // Функция для создания виджета остановки с меткой и кнопкой удаления
-	QWidget* CreateStopWidget(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops);
+    QWidget* CreateStopWidget(std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops);
 
     // Удаление остановки из `stops_` и интерфейса
-    void on_edit_delete_stop_clicked(const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops);
+    void on_edit_delete_stop_clicked(std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops);
 
     // Функция для обработки изменения позиции остановки
-    void on_stop_position_changed(int new_position, const Stop* stop, std::vector<const Stop*>& cache_array, QListWidget* listWidgetStops);
+    void on_stop_position_changed(int new_position, std::shared_ptr<const Stop> stop, std::vector<std::shared_ptr<const Stop>>& cache_array, QListWidget* listWidgetStops);
 };

@@ -62,5 +62,5 @@ private:
     
     void PullStopDistances(TransportCatalogue& catalogue) const;
     
-    std::tuple<QStringView, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t> PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const;
+    /*std::tuple<QStringView, std::vector<const Stop*>, bool, size_t, std::array<uint8_t, 3>, BusType, size_t, bool, bool, bool, bool, uint8_t>*/Bus PullBus(const json::Dict& request_map, TransportCatalogue& catalogue) const;
 };
