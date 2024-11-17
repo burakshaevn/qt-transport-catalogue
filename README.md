@@ -8,11 +8,43 @@
 ## Пример
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/2cce4cc0-4378-4ed5-9aa0-788565130f63" alt="Image 1"></td>
-    <td><img src="https://github.com/user-attachments/assets/b6df9822-4f91-4f41-a8a9-526bc4ce2d28" alt="Image 2"></td>
-    <td><img src="https://github.com/user-attachments/assets/82ac9366-a54e-4cf3-ac61-d241a67d0d5d" alt="Image 3"></td>
+    <td>
+      <figure>
+        <img src="https://github.com/user-attachments/assets/d9709280-7fe4-4b19-ac2a-4bb2bc221116" alt="Image 1">
+        <figcaption>Рис 1 — Отрисовка маршрутов в .SVG формат.</figcaption>
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="https://github.com/user-attachments/assets/00987145-1964-4267-b629-210ffad3178d" alt="Image 2">
+        <figcaption>Рис 2 — Подключение к базе данных.</figcaption>
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="https://github.com/user-attachments/assets/b3dc0c76-08b0-4c0f-baae-1d566c2d5fd9" alt="Image 3">
+        <figcaption>Рис 3 — Управление остановками.</figcaption>
+      </figure>
+    </td>
   </tr>
-</table> 
+</table>
+
+<table>
+  <tr>
+    <td>
+    <figure>
+      <img src="https://github.com/user-attachments/assets/6ced1353-d37d-4328-8002-ae607d199c7c" alt="Image 4"> 
+      <figcaption>Рис 4 — Управление маршрутами.</figcaption>
+    </figure>
+  </td>
+  <td>
+    <figure>
+      <img src="https://github.com/user-attachments/assets/f16a20ce-ebe3-4c49-aa57-3fb6b0c67be2" alt="Image 5">
+      <figcaption>Рис 5 — Управление дистанциями.</figcaption>
+    </figure>
+    </td>
+  </tr>
+</table>   
  
 ## Сборка и запуск
 Требования:
