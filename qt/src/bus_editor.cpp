@@ -244,19 +244,19 @@ void BusEditor::on_append_append_bus_clicked() {
 // Кнопка 'Сохранить' на странице 'Редактирование'
 void BusEditor::on_edit_save_clicked() {
 	if (db_manager->Open()) {
-		Bus* bus = new Bus();
-		bus->name = ui.lineEdit_busname_2->text();
-		bus->bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
-		bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
-		bus->is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
-		bus->color_index = ui.lineEdit_color_index_2->text().toInt();
-		bus->has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
-		bus->has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
-		bus->is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
-		bus->is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
-		bus->is_available = ui.comboBox_is_available_2->currentText() == "Да";
-        bus->price = ui.lineEdit_price_2->text().toDouble();
-        bus->stops = cache_stops_;
+        std::shared_ptr<Bus> shared_bus = std::make_shared<Bus>();
+        shared_bus->name = ui.lineEdit_busname_2->text();
+        shared_bus->bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
+        shared_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
+        shared_bus->is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
+        shared_bus->color_index = ui.lineEdit_color_index_2->text().toInt();
+        shared_bus->has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
+        shared_bus->has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
+        shared_bus->is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
+        shared_bus->is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
+        shared_bus->is_available = ui.comboBox_is_available_2->currentText() == "Да";
+        shared_bus->price = ui.lineEdit_price_2->text().toDouble();
+        shared_bus->stops = cache_stops_;
 
 		if (!cache_stops_.empty()) {
 			QStringList missingDistances;
@@ -277,11 +277,9 @@ void BusEditor::on_edit_save_clicked() {
 				return;
 			}
         }
-        db_manager->UpdateBus(bus);
-		auto shared_bus = std::make_shared<Bus>(std::move(*new_bus));
-		transport_catalogue->UpdateBus(shared_bus);
-        //transport_catalogue->UpdateStopBuses();
-		QMessageBox::information(this, "", "Информация о маршруте обновлена.");
+        db_manager->UpdateBus(shared_bus.get());
+        transport_catalogue->UpdateBus(shared_bus);
+        QMessageBox::information(this, "", "Информация о маршруте обновлена.");
 	}
 	else {
 		QMessageBox::critical(this, "Ошибка", "Выполните подключение к базе данных.");
