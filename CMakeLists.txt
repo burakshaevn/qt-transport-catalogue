@@ -38,6 +38,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qt-transport-catalogue
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
         # qt/include/dialog_editor.h qt/src/dialog_editor.cpp qt/ui/dialog_editor.ui
         # qt/include/stdafx.h
 

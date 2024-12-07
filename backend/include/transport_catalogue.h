@@ -33,20 +33,20 @@ public:
 	{}
 
     void AddBus(Bus bus);
-    void DeleteBus(std::shared_ptr<Bus> bus);
+    void DeleteBus(Bus* bus);
 
 	void AddStop(const QStringView name, const detail::Coordinates& coordinates);
     void AddStopForBus(const Stop* stop);
     void DeleteStop(const std::shared_ptr<const Stop>& stop);
     void UpdateStop(const QStringView old_name, const QStringView new_name, const double latitude, const double longitude);
 
-    std::shared_ptr<const Bus> FindBus(const QStringView name) const;
+    const Bus* FindBus(const QStringView name) const;
     std::shared_ptr<const Stop> FindStop(const QStringView name) const;
 
     const BusInfo GetBusInfo(const Bus* current_bus) const;
 
-    const std::set<std::shared_ptr<Bus>> GetBusesForStop(const QStringView name) const;
-    std::set<std::shared_ptr<Bus>> GetBusesForStop(const QStringView name);
+    const std::set<Bus*> GetBusesForStop(const QStringView name) const;
+    std::set<Bus*> GetBusesForStop(const QStringView name);
 
     const std::vector<std::shared_ptr<const Stop>> GetStopsForBus(const QStringView name) const;
     std::vector<std::shared_ptr<const Stop>> GetStopsForBus(const QStringView name);
@@ -54,8 +54,8 @@ public:
     void SetDistance(const QStringView from, const QStringView to, int distance);
     int GetDistance(const QStringView  from, const QStringView to) const;
 
-    const std::map<QStringView, std::shared_ptr<const Bus>> GetSortedBuses() const;
-    [[maybe_unused]] const std::map<QStringView, std::shared_ptr<const Bus>> GetSortedBuses(const QStringView bus_name) const;
+    std::map<QStringView, Bus*> GetSortedBuses() const; 
+    [[maybe_unused]] const std::map<QStringView, Bus*> GetSortedBuses(const QStringView bus_name) const;
 
     const std::map<QStringView, std::shared_ptr<const Stop>> GetSortedStops() const;
 
@@ -74,17 +74,17 @@ public:
                                );
 
     template <typename Documents>
-    std::vector<const Stop*> ComputeTfIdfForStop(const Documents& documents_, const QStringView term) {
-        std::map<const Stop*, double> tf_idfs;
+    std::vector<std::shared_ptr<const Stop>> ComputeTfIdfForStop(const Documents& documents_, const QStringView term) {
+        std::map<std::shared_ptr<const Stop>, double> tf_idfs;
         int term_occurrences = 0;
         QString termLower = term.toString().toLower();
 
-        std::vector<const Stop*> exact_match_stops;
+        std::vector<std::shared_ptr<const Stop>> exact_match_stops;
 
         for (const auto& [key, document] : documents_) {
             QString nameLower = document->name.toLower();
             if (nameLower.contains(termLower)) {
-                auto stop = FindStop(key).get();
+                auto stop = FindStop(key);
                 if (stop != nullptr) {
                     exact_match_stops.push_back(stop);
                     // Skip TF-IDF calculation for exact match
@@ -96,7 +96,7 @@ public:
             auto words = SplitIntoWords(nameLower);
 
             int count_term_in_document = std::count(words.begin(), words.end(), termLower);
-            auto stop = FindStop(key).get();
+            auto stop = FindStop(key);
             if (stop != nullptr) {
                 tf_idfs[stop] = static_cast<double>(count_term_in_document) / words.size();
                 if (count_term_in_document > 0) {
@@ -118,14 +118,14 @@ public:
             tf *= idf;
         }
 
-        std::vector<const Stop*> stops(exact_match_stops);
+        std::vector<std::shared_ptr<const Stop>> stops(exact_match_stops);
         for (const auto& [stop, tf] : tf_idfs) {
             if (tf != 0) {
                 stops.push_back(stop);
             }
         }
 
-        std::sort(stops.begin(), stops.end(), [&tf_idfs](const Stop* lhs, const Stop* rhs) {
+        std::sort(stops.begin(), stops.end(), [&tf_idfs](std::shared_ptr<const Stop> lhs, std::shared_ptr<const Stop> rhs) {
             double lhsScore = tf_idfs.count(lhs) ? tf_idfs.at(lhs) : std::numeric_limits<double>::max();
             double rhsScore = tf_idfs.count(rhs) ? tf_idfs.at(rhs) : std::numeric_limits<double>::max();
             return lhsScore > rhsScore;
@@ -133,11 +133,12 @@ public:
 
         return stops;
     }
-	 
+
+    void UpdateCatalogue();
 	void UpdateStops(); 
 	void UpdateStopnameToStop(); 
 	void UpdateBuses();
-    void UpdateBus(std::shared_ptr<Bus>& bus);
+    void UpdateBus(Bus* bus);
 	 
 	void UpdateBusnameToBus(); 
 	void UpdateStopBuses(); 
@@ -152,18 +153,20 @@ private:
 	
 	// дек остановок
 	std::deque<Stop> stops_;
+    //std::deque<std::shared_ptr<Stop>> stops_;
 
 	// хранит <название_остановки, указатель на остановку>
-    std::unordered_map<QString, std::shared_ptr<const Stop>> stopname_to_stop_;
+    std::unordered_map<QString, std::shared_ptr<Stop>> stopname_to_stop_;
 
 	// дек автобусов
 	std::deque<Bus> buses_;
 
 	// хранит <название_автобуса, указатель на автобус>
-    std::unordered_map<QString, std::shared_ptr<const Bus>> busname_to_bus_;
+    //std::unordered_map<QString, std::shared_ptr<Bus>> busname_to_bus_;
+    std::unordered_map<QString, Bus*> busname_to_bus_;
 
 	// хранит название остановки и автобусы, которые проходят эту остановку
-    std::unordered_map<QString, std::set<std::shared_ptr<Bus>>> stop_buses_;
+    std::unordered_map<QString, std::set<Bus*>> stop_buses_;
 
 	// расстояние между остановками { от, до }
     std::unordered_map<std::pair<const QString, const QString>, int, StopHasher> distances_;

@@ -7,8 +7,19 @@
 #include <vector> 
 #include "geo.h"
 #include <array>
+#include <QDebug>
 
 struct Stop { 
+    Stop() = default;
+    template<typename T, typename U>
+    Stop(const T&& name_, const U&& coords_)
+        : name(std::forward<T>(name_))
+        , coords(std::forward<U>(coords_))
+    {}
+    Stop(const QString& name_, const detail::Coordinates& coords_)
+        : name(name_)
+        , coords(coords_)
+    {}
     QString name;
     detail::Coordinates coords; 
 };

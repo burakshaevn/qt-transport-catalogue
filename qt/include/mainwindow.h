@@ -71,7 +71,7 @@ private:
 
     void EditBus(Bus* bus);
     void InfoBus(Bus* bus);
-    void DeleteBus(std::shared_ptr<Bus>& bus);
+    void DeleteBus(Bus* bus, QVBoxLayout* layout, QLabel* background);
     void DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout);
     void DrawRelevantBuses();
 

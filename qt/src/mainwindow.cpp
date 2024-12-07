@@ -43,7 +43,7 @@ void MainWindow::DisplayMapOnLabel(const QString& bus_name) {
         view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
         // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ РґР»СЏ QGraphicsView
-        view->setFixedSize(1280, 716); // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РЅСѓР¶РЅС‹Р№ СЂР°Р·РјРµСЂ
+        view->setFixedSize(1280, 716);  
         view->move(10, 8);
 
         // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚РёР»СЊ
@@ -241,7 +241,7 @@ void MainWindow::ClearSearchFiltres(){
 
     QVBoxLayout* layout = new QVBoxLayout();
     for (auto& [bus_name, bus_ptr] : transport_catalogue_.GetSortedBuses()) {
-        DrawBus(const_cast<Bus*>(bus_ptr.get()), ui->show_colors->isChecked() ? true : false, layout);
+        DrawBus(bus_ptr, ui->show_colors->isChecked() ? true : false, layout);
     }
     ui->scrollArea_buses->setLayout(layout);
 }
@@ -428,40 +428,25 @@ void MainWindow::DrawRelevantBuses() {
         );
 
     if (all_params_nullopt) {
-        for (const auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
-            DrawBus(const_cast<Bus*>(bus.get()), ui->show_colors->isChecked() ? true : false, layout);
+        for (auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
+            DrawBus(bus, ui->show_colors->isChecked() ? true : false, layout);
         }
     }
     else {
-        auto sortByColorIndex = [](const std::pair<double, const Bus*>& lhs, const std::pair<double, const Bus*>& rhs) {
+        auto sortByColorIndex = [](const std::pair<double, Bus*>& lhs, const std::pair<double, Bus*>& rhs) {
             // Сначала по tf_idf в порядке убывания, затем по color_index в порядке возрастания
             return (lhs.first > rhs.first) || (lhs.first == rhs.first && lhs.second->color_index < rhs.second->color_index);
         };
 
-        std::vector<std::pair<double, const Bus*>> relevant_buses;
+        std::vector<std::pair<double, Bus*>> relevant_buses; 
         for (auto& [bus_name, bus] : transport_catalogue_.GetSortedBuses()) {
             double tf_idf = transport_catalogue_.ComputeTfIdfForBus(
-                bus.get(),
-                name,
-                desired_stop,
-                is_roundtrip,
-                bus_types,
-                capacity,
-                has_wifi,
-                has_sockets,
-                is_night,
-                is_day,
-                is_available,
-                price
+                bus, name, desired_stop, is_roundtrip, bus_types, capacity,
+                has_wifi, has_sockets, is_night, is_day, is_available, price
             );
 
-            if (tf_idf > renderer::EPSILON) {
-                //relevant_buses.emplace_back(tf_idf, bus);
-                relevant_buses.emplace_back(tf_idf, bus.get());
-            }
-            else if (ui->sort_by_color_index->isChecked()){
-                //relevant_buses.emplace_back(tf_idf, bus);
-                relevant_buses.emplace_back(tf_idf, bus.get());
+            if (tf_idf > renderer::EPSILON || sort_by_color_index.value_or(false)) {
+                relevant_buses.emplace_back(tf_idf, bus);
             }
         }
 
@@ -470,7 +455,7 @@ void MainWindow::DrawRelevantBuses() {
         }
 
         for (auto& [tf_idf, bus] : relevant_buses) {
-            DrawBus(const_cast<Bus*>(bus), ui->show_colors->isChecked() ? true : false, layout);
+            DrawBus(bus, ui->show_colors->isChecked() ? true : false, layout);
         }
     }
 
@@ -582,7 +567,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     info_->setFixedSize(17, 17);
     info_->move(426, 10);
 
-    connect(info_, &QPushButton::clicked, [this, bus]() {
+    connect(info_, &QPushButton::clicked, [=]() {
         InfoBus(bus);
     });
 
@@ -593,7 +578,7 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     select_->move(449, 10);
     select_->setStyleSheet("border-radius: 0px;");
 
-    connect(select_, &QPushButton::clicked, [this, bus]() {
+    connect(select_, &QPushButton::clicked, [=]() {
         EditBus(bus);
     });
 
@@ -604,9 +589,13 @@ void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     delete_->move(471, 9);
     delete_->setStyleSheet("border-radius: 0px;");
 
-    connect(delete_, &QPushButton::clicked, [this, bus]() {
-        auto bus_shared = std::shared_ptr<Bus>(bus, [](Bus*) {});
-        DeleteBus(bus_shared);
+    connect(background, &QObject::destroyed, this, []() {
+        std::cout << "Background уничтожен";
+        int x = 5;
+        });
+
+    connect(delete_, &QPushButton::clicked, [=]() {  
+        DeleteBus(bus, layout, background); 
         });
 
     layout->addWidget(background);
@@ -644,11 +633,11 @@ void MainWindow::EditStop(const std::shared_ptr<const Stop>& stop){
         QString stop_name = dialog_editor.getFieldText(stop_name_field);
 
         if (db_manager_.UpdateStop(stop->name, stop_name, latitude, longitude)) {
-            transport_catalogue_.UpdateBuses();
-            transport_catalogue_.UpdateBusnameToBus();
             transport_catalogue_.UpdateStops();
-            transport_catalogue_.UpdateStopnameToStop();
-            transport_catalogue_.UpdateStopBuses();
+            transport_catalogue_.UpdateBuses();
+            // transport_catalogue_.UpdateBusnameToBus();
+            // transport_catalogue_.UpdateStopnameToStop();
+            // transport_catalogue_.UpdateStopBuses();
             transport_catalogue_.UpdateDistances();
             QMessageBox::information(this, "Успех", "Данные остановки обновлены.");
         }
@@ -788,10 +777,10 @@ void MainWindow::DrawRelevantStops(){
         }
     }
     else{
-        // for (auto stop : transport_catalogue_.ComputeTfIdfForStop(transport_catalogue_.GetSortedStops(), found_stop)) {
-        //     DrawStop(stop, layout);
-        //     ++results_size;
-        // }
+        for (auto& stop : transport_catalogue_.ComputeTfIdfForStop(transport_catalogue_.GetSortedStops(), found_stop)) {
+            DrawStop(stop, layout);
+            ++results_size;
+        }
     }
     ui->results_count->setText("Результатов: " + QString::number(results_size));
 }
@@ -827,7 +816,7 @@ void MainWindow::LoadDistances() {
     ui->tableWidgetDistances->setColumnWidth(2, 280);
 }
 void MainWindow::DeleteDistance(){
-    DialogEditor dialog_editor(this);
+    DialogEditor dialog_editor(this, "Удаление дистанции", "Удалить");
 
     QLineEdit* fromField = dialog_editor.addField("Откуда:");
     QLineEdit* toField = dialog_editor.addField("Куда:");
@@ -1006,26 +995,45 @@ void MainWindow::on_delete_distance_clicked() {
 // Выполняет подключение к базе данных.
 void MainWindow::on_connect_to_db_clicked() {
     auto list = ui->stackedWidget->widget(0);
-    QString hostname = list->findChild<QLineEdit*>("lineEdit_hostname")->text();
-    int port = list->findChild<QLineEdit*>("lineEdit_port")->text().toInt();
-    QString dbname = list->findChild<QLineEdit*>("lineEdit_dbname")->text();
-    QString username = list->findChild<QLineEdit*>("lineEdit_username")->text();
-    QString password = list->findChild<QLineEdit*>("lineEdit_password")->text();
 
-    db_manager_.UpdateConnection(hostname, port, dbname, username, password);
+    // Получение полей ввода
+    auto hostname_line_edit = list->findChild<QLineEdit*>("lineEdit_hostname");
+    auto port_line_edit = list->findChild<QLineEdit*>("lineEdit_port");
+    auto dbname_line_edit = list->findChild<QLineEdit*>("lineEdit_dbname");
+    auto username_line_edit = list->findChild<QLineEdit*>("lineEdit_username");
+    auto password_line_edit = list->findChild<QLineEdit*>("lineEdit_password");
 
-    if (!db_manager_.Open()) {
-        QMessageBox::critical(this, "Error", "Connect to the database.");
+    if (!hostname_line_edit || !port_line_edit || !dbname_line_edit ||
+        !username_line_edit || !password_line_edit) {
+        QMessageBox::critical(this, "Error", "One or more input fields are missing.");
         return;
     }
-    transport_catalogue_.UpdateBuses();
-    transport_catalogue_.UpdateBusnameToBus();
-    transport_catalogue_.UpdateStops();
-    transport_catalogue_.UpdateStopnameToStop();
-    transport_catalogue_.UpdateStopBuses();
-    transport_catalogue_.UpdateDistances();
 
-    QMessageBox::information(this, "Enabled", "The connection to the database is established.");
+    // Получение данных
+    QString hostname = hostname_line_edit->text();
+    int port = port_line_edit->text().toInt();
+    QString dbname = dbname_line_edit->text();
+    QString username = username_line_edit->text();
+    QString password = password_line_edit->text();
+
+    // Обновление соединения
+    db_manager_.UpdateConnection(hostname, port, dbname, username, password);
+
+    try {
+        if (!db_manager_.Open()) {
+            QMessageBox::critical(this, "Error", "Failed to connect to the database.");
+            return;
+        }
+
+        // Обновление каталога
+        transport_catalogue_.UpdateCatalogue();
+
+        QMessageBox::information(this, "Success", "The connection to the database is established.");
+    } catch (const std::exception& e) {
+        QMessageBox::critical(this, "Error", QString("An error occurred: %1").arg(e.what()));
+    } catch (...) {
+        QMessageBox::critical(this, "Error", "An unknown error occurred.");
+    }
 }
 // Устанавливает значения по умолчанию для подключения к базе данных.
 void MainWindow::on_connect_to_db_default_clicked()
@@ -1112,7 +1120,7 @@ void MainWindow::InfoBus(Bus* bus){
 
     dialog_editor.exec();
 }
-void MainWindow::DeleteBus(std::shared_ptr<Bus>& bus){
+void MainWindow::DeleteBus(Bus* bus, QVBoxLayout* layout, QLabel* background){
     QMessageBox confirmBox;
     confirmBox.setWindowTitle("Подтверждение удаления");
     confirmBox.setText("Вы уверены, что хотите удалить маршрут " + bus->name + "?");
@@ -1121,7 +1129,10 @@ void MainWindow::DeleteBus(std::shared_ptr<Bus>& bus){
 
     int result = confirmBox.exec();
     if (result == QMessageBox::Yes) {
-        if (db_manager_.DeleteBus(bus.get())) {
+        // Удаляем виджет из макета
+        layout->removeWidget(background); 
+        delete background;               
+        if (db_manager_.DeleteBus(bus)) {
             transport_catalogue_.DeleteBus(bus);
             on_button_buses_clicked();
             QMessageBox::information(this, "Удаление", "Автобус успешно удалён.");

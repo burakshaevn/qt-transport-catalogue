@@ -32,8 +32,7 @@ private:
 	Bus* current_bus;
 	// Указатель на новый маршрут, который будет добавляться через окно «Добавление».
 	// Изначально он будет nullptr. Как только открывается окно «Добавление», он
-	// инициализируется new Bus(), куда впоследствии будет занесена информация из лейблов QLabel и QComboBox.
-	std::unique_ptr<Bus> new_bus;
+	// инициализируется new Bus(), куда впоследствии будет занесена информация из лейблов QLabel и QComboBox.  
 	DatabaseManager* db_manager;
 	TransportCatalogue* transport_catalogue;
 

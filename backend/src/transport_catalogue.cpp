@@ -4,13 +4,14 @@
 // РґРѕР±Р°РІР»РµРЅРёРµ РјР°СЂС€СЂСѓС‚Р° РІ Р±Р°Р·Сѓ,
 void TransportCatalogue::AddBus(Bus bus) {
     buses_.push_back(std::move(bus));
-    busname_to_bus_[buses_.back().name] = std::make_shared<Bus>(buses_.back());
+    //busname_to_bus_[buses_.back().name] = std::make_shared<Bus>(buses_.back());
+    busname_to_bus_[buses_.back().name] = &buses_.back();
 	for (auto& stop : bus.stops) { 
 		stop_buses_[stop->name].emplace(&buses_.back());
 	} 
 }
 
-void TransportCatalogue::DeleteBus(std::shared_ptr<Bus> bus){
+void TransportCatalogue::DeleteBus(Bus* bus){
     if (!bus) {
         return;
     }
@@ -26,7 +27,8 @@ void TransportCatalogue::DeleteBus(std::shared_ptr<Bus> bus){
     }
     for (auto it = buses_.begin(); it != buses_.end();) {
         if (it->name == bus->name) {
-            it = buses_.erase(it);
+            it = buses_.erase(it); 
+            return;
         }
         else {
             ++it;
@@ -39,27 +41,33 @@ void TransportCatalogue::AddStop(const QStringView stopname, const detail::Coord
 	stops_.push_back({ stopname.toString(), coordinates});
     // stopname_to_stop_[stops_.back().name] = &stops_.back();
     stopname_to_stop_[stops_.back().name] = std::make_shared<Stop>(stops_.back());
-}
+} 
 
 void TransportCatalogue::AddStopForBus(const Stop* stop) {
     // stopname_to_stop_[stop->name] = stop;
     stopname_to_stop_[stop->name] = std::make_shared<Stop>(stops_.back());
-}
+} 
 
 void TransportCatalogue::DeleteStop(const std::shared_ptr<const Stop>& stop) {
     if (!stop) {
         return;
     }
 
-    auto stop_name = stop->name;
+    auto& stop_name = stop->name;
 
     // Удаляем остановку из всех автобусов, которые проходят через неё
-    if (stop_buses_.count(stop_name)) {
+    if (stop_buses_.count(stop_name)) { 
         for (auto& bus : stop_buses_[stop_name]) {
-            auto& stops = bus->stops;  // Получаем вектор остановок для конкретного автобуса
-            // Находим итератор на элементы, равные `stop`
-            stops.erase(std::remove(stops.begin(), stops.end(), stop), stops.end());
+            auto& stops = bus->stops;
+            stops.erase(std::remove_if(stops.begin(), stops.end(), [&](const std::shared_ptr<const Stop>& s) { 
+                return s.get() == stop.get(); 
+                }), stops.end());
+             
+            if (stops.empty()) {
+                busname_to_bus_.erase(bus->name);
+            }
         }
+
         // Удаляем записи об остановке из `stop_buses_`
         stop_buses_.erase(stop_name);
     }
@@ -77,7 +85,6 @@ void TransportCatalogue::DeleteStop(const std::shared_ptr<const Stop>& stop) {
     // Удаляем саму остановку из `stopname_to_stop_`
     stopname_to_stop_.erase(stop_name);
 
-    
     for (auto it = stops_.begin(); it != stops_.end();) {
         if (it->name == stop_name) {
             it = stops_.erase(it); // Возвращает итератор на следующий элемент
@@ -94,7 +101,7 @@ void TransportCatalogue::UpdateStop(const QStringView old_name, const QStringVie
 }
 
 // РїРѕРёСЃРє РјР°СЂС€СЂСѓС‚Р° РїРѕ РёРјРµРЅРё,
-std::shared_ptr<const Bus> TransportCatalogue::FindBus(const QStringView busname) const {
+const Bus* TransportCatalogue::FindBus(const QStringView busname) const {
     auto iter = busname_to_bus_.find(busname.toString());
 	if (iter != busname_to_bus_.end()) {
 		return iter->second;
@@ -157,15 +164,15 @@ const BusInfo TransportCatalogue::GetBusInfo(const Bus* current_bus) const {
 	return bus_info;
 }
 
-const std::set<std::shared_ptr<Bus>> TransportCatalogue::GetBusesForStop(const QStringView stopname) const {
+const std::set<Bus*> TransportCatalogue::GetBusesForStop(const QStringView stopname) const {
     return GetBusesForStop(stopname);
 }
-std::set<std::shared_ptr<Bus>> TransportCatalogue::GetBusesForStop(const QStringView stopname) {
+std::set<Bus*> TransportCatalogue::GetBusesForStop(const QStringView stopname) {
     auto it = stop_buses_.find(stopname.toString());
     if (it != stop_buses_.end()) {
         return it->second;
     }
-    return std::set<std::shared_ptr<Bus>>();
+    return std::set<Bus*>();
 }
 
 const std::vector<std::shared_ptr<const Stop>> TransportCatalogue::GetStopsForBus(const QStringView name) const{
@@ -200,22 +207,23 @@ size_t TransportCatalogue::ComputeUniqueStopsCount(QStringView bus_number) const
 	return unique_stops.size();
 }
 
-const std::map<QStringView, std::shared_ptr<const Bus>> TransportCatalogue::GetSortedBuses() const {
-    std::map<QStringView, std::shared_ptr<const Bus>> result;
+std::map<QStringView, Bus*> TransportCatalogue::GetSortedBuses() const {
+    std::map<QStringView, Bus*> result;
     for (const auto& bus : busname_to_bus_) {
         result.emplace(bus);
 	}
     return result;
-} 
+}  
 
-[[maybe_unused]] const std::map<QStringView, std::shared_ptr<const Bus>> TransportCatalogue::GetSortedBuses(const QStringView bus_name) const {
-    std::map<QStringView, std::shared_ptr<const Bus>> result;
+[[maybe_unused]] const std::map<QStringView, Bus*> TransportCatalogue::GetSortedBuses(const QStringView bus_name) const {
+    std::map<QStringView, Bus*> result;
 	for (auto& [bus_name, bus_ptr] : busname_to_bus_) {
 		if (bus_ptr->name == bus_name) {
 			result[bus_name] = bus_ptr;
 		}
 		else {
-            const_cast<Bus*>(bus_ptr.get())->color_index = 0;
+            const_cast<Bus*>(bus_ptr)->color_index = 0;
+            bus_ptr->color_index = 0;
 			result[bus_name] = bus_ptr;
 		}
 	}
@@ -322,22 +330,27 @@ double TransportCatalogue::ComputeTfIdfForBus(const Bus* bus,
 }
 
 // Signals
-
-void TransportCatalogue::UpdateStops() {
-    if (!stops_.empty()){
-        stops_.clear();
-    }
-    QSqlQuery query = db_manager_.ExecuteSelectQuery(
-		QString("SELECT * FROM stops;")
-	);
-	while (query.next()) {
-		Stop stop;
-		stop.name = query.value("name").toString();
-		stop.coords.lat = query.value("latitude").toDouble();
-		stop.coords.lng = query.value("longitude").toDouble();
-		stops_.push_back(stop);
-	}
+void TransportCatalogue::UpdateCatalogue(){
+    UpdateStops();
+    UpdateBuses();
+    UpdateDistances();
 }
+void TransportCatalogue::UpdateStops() {
+    stops_.clear();
+    stopname_to_stop_.clear();
+    QSqlQuery query = db_manager_.ExecuteSelectQuery(
+        QString("SELECT * FROM stops;")
+    );
+    while (query.next()) {
+        Stop stop;
+        stop.name = query.value("name").toString();
+        stop.coords.lat = query.value("latitude").toDouble();
+        stop.coords.lng = query.value("longitude").toDouble();
+        stops_.emplace_back(stop); 
+        stopname_to_stop_[stop.name] = std::make_shared<Stop>(stop);  // Добавляем в map
+    }
+}
+
 void TransportCatalogue::UpdateStopnameToStop() {
 	if (!stopname_to_stop_.empty()) {
 		stopname_to_stop_.clear();
@@ -347,53 +360,88 @@ void TransportCatalogue::UpdateStopnameToStop() {
 	}
 }
 void TransportCatalogue::UpdateBuses() {
-    if (!buses_.empty()){
-        buses_.clear();
-    }
-	QSqlQuery query = db_manager_.ExecuteSelectQuery(
-		QString("SELECT * FROM buses;")
-	);
-	while (query.next()) {
-		Bus bus;
-		bus.name = query.value("name").toString();
-		bus.is_roundtrip = query.value("is_roundtrip").toBool();
-		bus.color_index = query.value("color_index").toUInt();
-		bus.bus_type = StringToBusType(query.value("bus_type").toString());
-		bus.capacity = query.value("capacity").toUInt();
-		bus.has_wifi = query.value("has_wifi").toBool();
-		bus.has_sockets = query.value("has_sockets").toBool();
-		bus.is_night = query.value("is_night").toBool();
-		bus.is_day = query.value("is_day").toBool();
-		bus.is_available = query.value("is_available").toBool();
-		bus.price = query.value("price").toUInt();
-		QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
-			QString("SELECT s.name, s.latitude, s.longitude FROM bus_stops bs LEFT JOIN stops s ON bs.stop_id = s.id WHERE bs.bus_id = %1;").arg(query.value("id").toInt())
-		);
-		static std::vector<std::unique_ptr<Stop>> stops_storage;
-		while (stops_query.next()) {
-			auto stop_ptr = std::make_unique<Stop>();
-			stop_ptr->name = stops_query.value("name").toString();
-			stop_ptr->coords.lat = stops_query.value("latitude").toDouble();
-			stop_ptr->coords.lng = stops_query.value("longitude").toDouble();
+    buses_.clear();
+    busname_to_bus_.clear();
+    QSqlQuery query = db_manager_.ExecuteSelectQuery(
+        QString("SELECT * FROM buses;")
+    );
+    while (query.next()) {
+        Bus bus;
+        bus.name = query.value("name").toString();
+        bus.is_roundtrip = query.value("is_roundtrip").toBool();
+        bus.color_index = query.value("color_index").toUInt();
+        bus.bus_type = StringToBusType(query.value("bus_type").toString());
+        bus.capacity = query.value("capacity").toUInt();
+        bus.has_wifi = query.value("has_wifi").toBool();
+        bus.has_sockets = query.value("has_sockets").toBool();
+        bus.is_night = query.value("is_night").toBool();
+        bus.is_day = query.value("is_day").toBool();
+        bus.is_available = query.value("is_available").toBool();
+        bus.price = query.value("price").toUInt();
 
-			bus.stops.emplace_back(stop_ptr.get());
-			stops_storage.emplace_back(std::move(stop_ptr));
-		}
-		buses_.push_back(bus);
-	}
+        QSqlQuery stops_query = db_manager_.ExecuteSelectQuery(
+            QString("SELECT s.name, s.latitude, s.longitude FROM bus_stops bs "
+                "LEFT JOIN stops s ON bs.stop_id = s.id "
+                "WHERE bs.bus_id = %1;")
+            .arg(query.value("id").toInt())
+        );
+
+        while (stops_query.next()) {
+            QString stop_name = stops_query.value("name").toString();
+            detail::Coordinates coords{
+                stops_query.value("latitude").toDouble(),
+                stops_query.value("longitude").toDouble()
+            };
+
+            std::shared_ptr<Stop> stop_ptr;
+            auto it = stopname_to_stop_.find(stop_name);
+            if (it == stopname_to_stop_.end()) {
+                stop_ptr = std::make_shared<Stop>(stop_name, coords);
+                stopname_to_stop_[stop_name] = stop_ptr;
+                stops_.emplace_back(*stop_ptr);
+            }
+            else {
+                stop_ptr = it->second;
+            }
+
+            bus.stops.emplace_back(stop_ptr);
+        }
+
+        buses_.push_back(std::move(bus));
+        //busname_to_bus_[buses_.back().name] = std::make_shared<Bus>(buses_.back());
+        busname_to_bus_[buses_.back().name] = &buses_.back();
+
+        auto& stops = buses_.back().stops;
+        for (auto& stop : stops) {
+            stop_buses_[stop->name].emplace(&buses_.back());
+        }
+    }
 }
-void TransportCatalogue::UpdateBus(std::shared_ptr<Bus>& bus) {
+
+void TransportCatalogue::UpdateBus(Bus* bus) {
     auto it = busname_to_bus_.find(bus->name);
     if (it != busname_to_bus_.end()) {
         // Обновляем существующую запись
-        it->second = std::const_pointer_cast<const Bus>(bus); // Преобразование shared_ptr<Bus> -> shared_ptr<const Bus>
+        auto current_bus = it->second;
+        current_bus->name = bus->name;
+        current_bus->stops = bus->stops;
+        current_bus->is_roundtrip = bus->is_roundtrip;
+        current_bus->color_index = bus->color_index;
+        current_bus->bus_type = bus->bus_type;
+        current_bus->capacity = bus->capacity;
+        current_bus->has_wifi = bus->has_wifi;
+        current_bus->has_sockets = bus->has_sockets;
+        current_bus->is_night = bus->is_night;
+        current_bus->is_available = bus->is_available;
+        current_bus->price = bus->price;
+        current_bus->is_day = bus->is_day;
 
         // Обновляем информацию о остановках
-        for (const auto& stop : bus->stops) {
+        for (const auto& stop : current_bus->stops) {
             auto stop_it = stop_buses_.find(stop->name);
-            if (stop_it == stop_buses_.end()) {
-                stop_buses_[stop->name].insert(bus); // Добавляем shared_ptr<Bus> в set
-            }
+            //if (stop_it == stop_buses_.end()) {
+                stop_buses_[stop->name].insert(current_bus);
+            //}
         }
     }
     else {
@@ -402,13 +450,13 @@ void TransportCatalogue::UpdateBus(std::shared_ptr<Bus>& bus) {
     }
 }
 
-
 void TransportCatalogue::UpdateBusnameToBus() {
     if (!busname_to_bus_.empty()){
         busname_to_bus_.clear();
     }
-    for(const auto& bus : buses_){
-		busname_to_bus_[bus.name] = std::make_shared<Bus>(bus);
+    for(auto& bus : buses_){
+		//busname_to_bus_[bus.name] = std::make_shared<Bus>(&bus);
+		busname_to_bus_[bus.name] = &bus;
 	}
 }
 void TransportCatalogue::UpdateStopBuses() {
@@ -428,7 +476,8 @@ void TransportCatalogue::UpdateStopBuses() {
 			 
             auto bus_it = busname_to_bus_.find(bus_name);
             if (bus_it != busname_to_bus_.end()) {
-                stop_buses_[stop_name].insert(std::const_pointer_cast<Bus>(bus_it->second));
+                //stop_buses_[stop_name].insert(std::const_pointer_cast<Bus>(bus_it->second));
+                stop_buses_[stop_name].insert(bus_it->second);
             }
         }
 	}

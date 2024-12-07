@@ -185,32 +185,30 @@ void BusEditor::on_stop_position_changed(int new_position, std::shared_ptr<const
 // Добавление нового автобуса
 void BusEditor::on_append_append_bus_clicked() {
 	if (db_manager->Open()) {
-		new_bus = std::make_unique<Bus>();
-		
-        new_bus->name = ui.lineEdit_busname_3->text();
-        if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
-            QMessageBox::critical(this, "Ошибка", "Маршрут с именем " + new_bus->name + " уже существует.");
-            new_bus.reset();
+		//new_bus = std::make_unique<Bus>();
+		Bus new_bus;
+        new_bus.name = ui.lineEdit_busname_3->text();
+        if (transport_catalogue->FindBus(new_bus.name) != nullptr) {
+            QMessageBox::critical(this, "Ошибка", "Маршрут с именем " + new_bus.name + " уже существует.");
             return;
         }
-        new_bus->color_index = ui.lineEdit_color_index_3->text().toInt();
-        if (transport_catalogue->FindBus(new_bus->name) != nullptr) {
-            QMessageBox::critical(this, "Ошибка", "Маршрут с цветом " + QString::number(new_bus->color_index) + " уже существует.");
-            new_bus.reset();
+        new_bus.color_index = ui.lineEdit_color_index_3->text().toInt();
+        if (transport_catalogue->FindBus(new_bus.name) != nullptr) {
+            QMessageBox::critical(this, "Ошибка", "Маршрут с цветом " + QString::number(new_bus.color_index) + " уже существует.");
             return;
         }
 
-        new_bus->bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
-        new_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
-        new_bus->is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
-        new_bus->has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
-        new_bus->has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
-        new_bus->is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
-        new_bus->is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
-        new_bus->is_available = ui.comboBox_is_available_3->currentText() == "Да";
-        new_bus->price = ui.lineEdit_price_3->text().toDouble();
+        new_bus.bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
+        new_bus.capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
+        new_bus.is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
+        new_bus.has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
+        new_bus.has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
+        new_bus.is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
+        new_bus.is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
+        new_bus.is_available = ui.comboBox_is_available_3->currentText() == "Да";
+        new_bus.price = ui.lineEdit_price_3->text().toDouble();
 
-        if (!new_bus->stops.empty()) {
+        if (!new_bus.stops.empty()) {
             QStringList missingDistances;
             for (size_t i = 0; i < cache_new_bus_stops_.size() - 1; ++i) {
                 const Stop* from_stop = cache_new_bus_stops_[i].get();
@@ -229,10 +227,10 @@ void BusEditor::on_append_append_bus_clicked() {
                 return;
             }
         }
-        new_bus->stops = cache_new_bus_stops_;
-        db_manager->UpdateBus(new_bus.get());
-		auto shared_bus = std::make_shared<Bus>(std::move(*new_bus));
-		transport_catalogue->UpdateBus(shared_bus);
+        new_bus.stops = cache_new_bus_stops_;
+        db_manager->UpdateBus(&new_bus);
+		//auto shared_bus = std::make_shared<Bus>(std::move(*new_bus));
+		transport_catalogue->UpdateBus(&new_bus);
 
         QMessageBox::information(this, "", "Новый маршрут успешно добавлен.");
     }
@@ -244,19 +242,20 @@ void BusEditor::on_append_append_bus_clicked() {
 // Кнопка 'Сохранить' на странице 'Редактирование'
 void BusEditor::on_edit_save_clicked() {
 	if (db_manager->Open()) {
-        std::shared_ptr<Bus> shared_bus = std::make_shared<Bus>();
-        shared_bus->name = ui.lineEdit_busname_2->text();
-        shared_bus->bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
-        shared_bus->capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
-        shared_bus->is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
-        shared_bus->color_index = ui.lineEdit_color_index_2->text().toInt();
-        shared_bus->has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
-        shared_bus->has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
-        shared_bus->is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
-        shared_bus->is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
-        shared_bus->is_available = ui.comboBox_is_available_2->currentText() == "Да";
-        shared_bus->price = ui.lineEdit_price_2->text().toDouble();
-        shared_bus->stops = cache_stops_;
+        //std::shared_ptr<Bus> shared_bus = std::make_shared<Bus>();
+		Bus current_bus;
+        current_bus.name = ui.lineEdit_busname_2->text();
+        current_bus.bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
+        current_bus.capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
+        current_bus.is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
+        current_bus.color_index = ui.lineEdit_color_index_2->text().toInt();
+        current_bus.has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
+        current_bus.has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
+        current_bus.is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
+        current_bus.is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
+        current_bus.is_available = ui.comboBox_is_available_2->currentText() == "Да";
+        current_bus.price = ui.lineEdit_price_2->text().toDouble();
+        current_bus.stops = cache_stops_;
 
 		if (!cache_stops_.empty()) {
 			QStringList missingDistances;
@@ -277,8 +276,8 @@ void BusEditor::on_edit_save_clicked() {
 				return;
 			}
         }
-        db_manager->UpdateBus(shared_bus.get());
-        transport_catalogue->UpdateBus(shared_bus);
+        db_manager->UpdateBus(&current_bus);
+        transport_catalogue->UpdateBus(&current_bus);
         QMessageBox::information(this, "", "Информация о маршруте обновлена.");
 	}
 	else {
@@ -318,7 +317,7 @@ void BusEditor::DisplayCurrentBusToEditPage(QListWidget* listWidgetStops, std::v
 			ui.lineEdit_price_2->setText(QString::number(price, 'f', 2)); 
 
 			listWidgetStops->clear();
-            for (auto stop : collection_) {
+            for (auto& stop : collection_) {
 				QListWidgetItem* item = new QListWidgetItem(listWidgetStops);
                 QWidget* stopWidget = CreateStopWidget(stop, collection_, listWidgetStops);
 				item->setSizeHint(stopWidget->sizeHint());
