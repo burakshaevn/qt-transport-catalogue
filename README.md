@@ -6,14 +6,13 @@
 Проект  предоставляет средства для отображения маршрутов общественного транспорта на основе данных из базы данных PostgreSQL. Данные конвертируются в JSON-формат, после чего используется Qt и SVG для рендеринга карты с проекцией географических координат, маршрутами и остановками.
 
 ## Пример
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d9709280-7fe4-4b19-ac2a-4bb2bc221116" alt="image">
+  <p>Рис. 1 — Отрисовка маршрутов в .SVG формат.</p>
+</div> 
+
 <table>
   <tr>
-    <td>
-      <figure>
-        <img src="https://github.com/user-attachments/assets/d9709280-7fe4-4b19-ac2a-4bb2bc221116" alt="Image 1">
-        <figcaption>Рис. 1 — Отрисовка маршрутов в .SVG формат.</figcaption>
-      </figure>
-    </td>
     <td>
       <figure>
         <img src="https://github.com/user-attachments/assets/00987145-1964-4267-b629-210ffad3178d" alt="Image 2">
