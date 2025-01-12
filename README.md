@@ -7,7 +7,7 @@
 
 ## Пример
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/d9709280-7fe4-4b19-ac2a-4bb2bc221116" alt="image">
+  <img src="https://github.com/user-attachments/assets/cfc9dec3-d34c-4ed3-8cc2-4b89fe328437" alt="image">
   <p>Рис. 1 — Отрисовка маршрутов в .SVG формат.</p>
 </div> 
 
@@ -21,7 +21,7 @@
     </td>
     <td>
       <figure>
-        <img src="https://github.com/user-attachments/assets/b3dc0c76-08b0-4c0f-baae-1d566c2d5fd9" alt="Image 3">
+        <img src="https://github.com/user-attachments/assets/2b33e79f-89f4-4af8-8f72-271869b04f10" alt="Image 3">
         <figcaption>Рис. 3 — Управление остановками.</figcaption>
       </figure>
     </td>
