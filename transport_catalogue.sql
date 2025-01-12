@@ -5,7 +5,7 @@
 -- Dumped from database version 17.2
 -- Dumped by pg_dump version 17.2
 
--- Started on 2024-12-17 11:28:12
+-- Started on 2025-01-12 16:45:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,7 +20,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 229 (class 1255 OID 25229)
+-- TOC entry 229 (class 1255 OID 25707)
 -- Name: do_nothing_trigger_function(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -41,7 +41,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 221 (class 1259 OID 16459)
+-- TOC entry 217 (class 1259 OID 25708)
 -- Name: bus_stops; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -55,7 +55,7 @@ CREATE TABLE public.bus_stops (
 ALTER TABLE public.bus_stops OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 16404)
+-- TOC entry 218 (class 1259 OID 25711)
 -- Name: buses; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -78,7 +78,7 @@ CREATE TABLE public.buses (
 ALTER TABLE public.buses OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 16403)
+-- TOC entry 219 (class 1259 OID 25717)
 -- Name: buses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -103,7 +103,7 @@ ALTER SEQUENCE public.buses_id_seq OWNED BY public.buses.id;
 
 
 --
--- TOC entry 225 (class 1259 OID 16524)
+-- TOC entry 220 (class 1259 OID 25718)
 -- Name: color_palette; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -117,7 +117,7 @@ CREATE TABLE public.color_palette (
 ALTER TABLE public.color_palette OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 16523)
+-- TOC entry 221 (class 1259 OID 25723)
 -- Name: color_palette_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -134,7 +134,7 @@ ALTER SEQUENCE public.color_palette_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 4916 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 221
 -- Name: color_palette_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -142,7 +142,7 @@ ALTER SEQUENCE public.color_palette_id_seq OWNED BY public.color_palette.id;
 
 
 --
--- TOC entry 228 (class 1259 OID 16543)
+-- TOC entry 222 (class 1259 OID 25724)
 -- Name: distances; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -157,7 +157,7 @@ CREATE TABLE public.distances (
 ALTER TABLE public.distances OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 16542)
+-- TOC entry 223 (class 1259 OID 25727)
 -- Name: distances_new_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -174,7 +174,7 @@ ALTER SEQUENCE public.distances_new_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 4917 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 223
 -- Name: distances_new_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -182,7 +182,7 @@ ALTER SEQUENCE public.distances_new_id_seq OWNED BY public.distances.id;
 
 
 --
--- TOC entry 223 (class 1259 OID 16515)
+-- TOC entry 224 (class 1259 OID 25728)
 -- Name: render_settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -205,7 +205,7 @@ CREATE TABLE public.render_settings (
 ALTER TABLE public.render_settings OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 16514)
+-- TOC entry 225 (class 1259 OID 25733)
 -- Name: render_settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -222,7 +222,7 @@ ALTER SEQUENCE public.render_settings_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 4918 (class 0 OID 0)
--- Dependencies: 222
+-- Dependencies: 225
 -- Name: render_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -230,7 +230,7 @@ ALTER SEQUENCE public.render_settings_id_seq OWNED BY public.render_settings.id;
 
 
 --
--- TOC entry 226 (class 1259 OID 16537)
+-- TOC entry 226 (class 1259 OID 25734)
 -- Name: routing_settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -252,7 +252,7 @@ COMMENT ON TABLE public.routing_settings IS 'Содержит настройки
 
 
 --
--- TOC entry 218 (class 1259 OID 16393)
+-- TOC entry 227 (class 1259 OID 25739)
 -- Name: stops; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -267,7 +267,7 @@ CREATE TABLE public.stops (
 ALTER TABLE public.stops OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 16392)
+-- TOC entry 228 (class 1259 OID 25744)
 -- Name: stops_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -284,7 +284,7 @@ ALTER SEQUENCE public.stops_id_seq OWNER TO postgres;
 
 --
 -- TOC entry 4920 (class 0 OID 0)
--- Dependencies: 217
+-- Dependencies: 228
 -- Name: stops_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -292,7 +292,7 @@ ALTER SEQUENCE public.stops_id_seq OWNED BY public.stops.id;
 
 
 --
--- TOC entry 4725 (class 2604 OID 16407)
+-- TOC entry 4724 (class 2604 OID 25745)
 -- Name: buses id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -300,7 +300,7 @@ ALTER TABLE ONLY public.buses ALTER COLUMN id SET DEFAULT nextval('public.buses_
 
 
 --
--- TOC entry 4728 (class 2604 OID 16527)
+-- TOC entry 4726 (class 2604 OID 25746)
 -- Name: color_palette id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -308,7 +308,7 @@ ALTER TABLE ONLY public.color_palette ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 4731 (class 2604 OID 16546)
+-- TOC entry 4727 (class 2604 OID 25747)
 -- Name: distances id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -316,7 +316,7 @@ ALTER TABLE ONLY public.distances ALTER COLUMN id SET DEFAULT nextval('public.di
 
 
 --
--- TOC entry 4727 (class 2604 OID 16518)
+-- TOC entry 4728 (class 2604 OID 25748)
 -- Name: render_settings id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -324,7 +324,7 @@ ALTER TABLE ONLY public.render_settings ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4724 (class 2604 OID 16396)
+-- TOC entry 4731 (class 2604 OID 25749)
 -- Name: stops id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -332,8 +332,8 @@ ALTER TABLE ONLY public.stops ALTER COLUMN id SET DEFAULT nextval('public.stops_
 
 
 --
--- TOC entry 4902 (class 0 OID 16459)
--- Dependencies: 221
+-- TOC entry 4898 (class 0 OID 25708)
+-- Dependencies: 217
 -- Data for Name: bus_stops; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -358,10 +358,6 @@ INSERT INTO public.bus_stops VALUES (10, 20, 1);
 INSERT INTO public.bus_stops VALUES (10, 21, 2);
 INSERT INTO public.bus_stops VALUES (10, 22, 3);
 INSERT INTO public.bus_stops VALUES (10, 23, 4);
-INSERT INTO public.bus_stops VALUES (2, 2, 1);
-INSERT INTO public.bus_stops VALUES (2, 28, 2);
-INSERT INTO public.bus_stops VALUES (2, 3, 3);
-INSERT INTO public.bus_stops VALUES (2, 4, 4);
 INSERT INTO public.bus_stops VALUES (11, 16, 2);
 INSERT INTO public.bus_stops VALUES (11, 24, 3);
 INSERT INTO public.bus_stops VALUES (11, 19, 4);
@@ -388,11 +384,14 @@ INSERT INTO public.bus_stops VALUES (3, 28, 2);
 INSERT INTO public.bus_stops VALUES (3, 4, 3);
 INSERT INTO public.bus_stops VALUES (3, 6, 4);
 INSERT INTO public.bus_stops VALUES (3, 5, 5);
+INSERT INTO public.bus_stops VALUES (2, 2, 0);
+INSERT INTO public.bus_stops VALUES (2, 4, 1);
+INSERT INTO public.bus_stops VALUES (2, 28, 2);
 
 
 --
--- TOC entry 4901 (class 0 OID 16404)
--- Dependencies: 220
+-- TOC entry 4899 (class 0 OID 25711)
+-- Dependencies: 218
 -- Data for Name: buses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -411,22 +410,19 @@ INSERT INTO public.buses VALUES (1, '297', true, 1, 'autobus', 50, false, false,
 
 
 --
--- TOC entry 4906 (class 0 OID 16524)
--- Dependencies: 225
+-- TOC entry 4901 (class 0 OID 25718)
+-- Dependencies: 220
 -- Data for Name: color_palette; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO public.color_palette VALUES (1, 1, '{237,237,237}');
 INSERT INTO public.color_palette VALUES (2, 1, '{255,197,251}');
 INSERT INTO public.color_palette VALUES (3, 1, '{214,197,247}');
-INSERT INTO public.color_palette VALUES (4, 1, '{198,247,197}');
 INSERT INTO public.color_palette VALUES (5, 1, '{247,238,197}');
 INSERT INTO public.color_palette VALUES (6, 1, '{158,182,255}');
 INSERT INTO public.color_palette VALUES (7, 1, '{224,255,255}');
-INSERT INTO public.color_palette VALUES (8, 1, '{255,46,46}');
 INSERT INTO public.color_palette VALUES (9, 1, '{175,255,195}');
 INSERT INTO public.color_palette VALUES (10, 1, '{250,235,215}');
-INSERT INTO public.color_palette VALUES (11, 1, '{240,230,140}');
 INSERT INTO public.color_palette VALUES (12, 1, '{255,228,225}');
 INSERT INTO public.color_palette VALUES (13, 1, '{245,222,179}');
 INSERT INTO public.color_palette VALUES (14, 1, '{250,250,210}');
@@ -444,11 +440,14 @@ INSERT INTO public.color_palette VALUES (25, 1, '{245,245,245}');
 INSERT INTO public.color_palette VALUES (26, 1, '{255,248,220}');
 INSERT INTO public.color_palette VALUES (27, 1, '{248,248,255}');
 INSERT INTO public.color_palette VALUES (28, 1, '{255,228,196}');
+INSERT INTO public.color_palette VALUES (11, 1, '{230,230,250}');
+INSERT INTO public.color_palette VALUES (4, 1, '{255,230,255}');
+INSERT INTO public.color_palette VALUES (8, 1, '{221,160,221}');
 
 
 --
--- TOC entry 4909 (class 0 OID 16543)
--- Dependencies: 228
+-- TOC entry 4903 (class 0 OID 25724)
+-- Dependencies: 222
 -- Data for Name: distances; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -846,8 +845,8 @@ INSERT INTO public.distances VALUES (453, 5, 65, 554);
 
 
 --
--- TOC entry 4904 (class 0 OID 16515)
--- Dependencies: 223
+-- TOC entry 4905 (class 0 OID 25728)
+-- Dependencies: 224
 -- Data for Name: render_settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -855,7 +854,7 @@ INSERT INTO public.render_settings VALUES (1, 20, '{7,15}', 20, '{7,-3}', 5, '{2
 
 
 --
--- TOC entry 4907 (class 0 OID 16537)
+-- TOC entry 4907 (class 0 OID 25734)
 -- Dependencies: 226
 -- Data for Name: routing_settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -864,13 +863,12 @@ INSERT INTO public.routing_settings VALUES (40, 6);
 
 
 --
--- TOC entry 4899 (class 0 OID 16393)
--- Dependencies: 218
+-- TOC entry 4908 (class 0 OID 25739)
+-- Dependencies: 227
 -- Data for Name: stops; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO public.stops VALUES (2, 'Бирюлёво Товарная', 55.5825, 37.68);
-INSERT INTO public.stops VALUES (3, 'Универсам', 55.5845, 37.85);
 INSERT INTO public.stops VALUES (1, 'Бирюлёво Западное', 55.6, 37.6517);
 INSERT INTO public.stops VALUES (15, 'Рязанский Проспект', 55.83, 37.9);
 INSERT INTO public.stops VALUES (14, 'Садовод', 55.815, 37.9);
@@ -891,13 +889,14 @@ INSERT INTO public.stops VALUES (19, 'Горная Площадь', 55.8, 37.53)
 INSERT INTO public.stops VALUES (20, 'Парк Водопадов', 55.89, 37.5);
 INSERT INTO public.stops VALUES (18, 'Серебряный Парк', 55.87, 37.7);
 INSERT INTO public.stops VALUES (23, 'Кленовая Улица', 55.92, 37.5);
-INSERT INTO public.stops VALUES (22, 'Солнечный Холм', 55.95, 37.6);
 INSERT INTO public.stops VALUES (27, 'Центральный Парк', 55.96, 37.9);
 INSERT INTO public.stops VALUES (26, 'Деловой Центр', 55.95, 37.8);
 INSERT INTO public.stops VALUES (8, 'Парк Сакуры', 55.7533, 37.8);
-INSERT INTO public.stops VALUES (21, 'Западные Ворота', 55.9, 37.6);
 INSERT INTO public.stops VALUES (29, 'Монтажный Завод', 55.8, 37.7);
 INSERT INTO public.stops VALUES (66, 'Тест 5', 55.6, 37.8);
+INSERT INTO public.stops VALUES (22, 'Солнечный Холм', 55.95, 37.5);
+INSERT INTO public.stops VALUES (21, 'Западные Ворота', 56, 37.6);
+INSERT INTO public.stops VALUES (3, 'Универсам', 55.7, 37.85);
 
 
 --
@@ -911,7 +910,7 @@ SELECT pg_catalog.setval('public.buses_id_seq', 86, true);
 
 --
 -- TOC entry 4922 (class 0 OID 0)
--- Dependencies: 224
+-- Dependencies: 221
 -- Name: color_palette_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -920,7 +919,7 @@ SELECT pg_catalog.setval('public.color_palette_id_seq', 28, true);
 
 --
 -- TOC entry 4923 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 223
 -- Name: distances_new_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -929,7 +928,7 @@ SELECT pg_catalog.setval('public.distances_new_id_seq', 453, true);
 
 --
 -- TOC entry 4924 (class 0 OID 0)
--- Dependencies: 222
+-- Dependencies: 225
 -- Name: render_settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -938,7 +937,7 @@ SELECT pg_catalog.setval('public.render_settings_id_seq', 1, true);
 
 --
 -- TOC entry 4925 (class 0 OID 0)
--- Dependencies: 217
+-- Dependencies: 228
 -- Name: stops_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -946,7 +945,7 @@ SELECT pg_catalog.setval('public.stops_id_seq', 66, true);
 
 
 --
--- TOC entry 4741 (class 2606 OID 16463)
+-- TOC entry 4733 (class 2606 OID 25751)
 -- Name: bus_stops bus_stops_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -955,7 +954,7 @@ ALTER TABLE ONLY public.bus_stops
 
 
 --
--- TOC entry 4737 (class 2606 OID 16413)
+-- TOC entry 4735 (class 2606 OID 25753)
 -- Name: buses buses_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -964,7 +963,7 @@ ALTER TABLE ONLY public.buses
 
 
 --
--- TOC entry 4739 (class 2606 OID 16411)
+-- TOC entry 4737 (class 2606 OID 25755)
 -- Name: buses buses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -973,7 +972,7 @@ ALTER TABLE ONLY public.buses
 
 
 --
--- TOC entry 4745 (class 2606 OID 16531)
+-- TOC entry 4739 (class 2606 OID 25757)
 -- Name: color_palette color_palette_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -982,7 +981,7 @@ ALTER TABLE ONLY public.color_palette
 
 
 --
--- TOC entry 4747 (class 2606 OID 16548)
+-- TOC entry 4741 (class 2606 OID 25759)
 -- Name: distances distances_new_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -991,7 +990,7 @@ ALTER TABLE ONLY public.distances
 
 
 --
--- TOC entry 4743 (class 2606 OID 16522)
+-- TOC entry 4743 (class 2606 OID 25761)
 -- Name: render_settings render_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1000,7 +999,7 @@ ALTER TABLE ONLY public.render_settings
 
 
 --
--- TOC entry 4733 (class 2606 OID 16402)
+-- TOC entry 4745 (class 2606 OID 25763)
 -- Name: stops stops_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1009,7 +1008,7 @@ ALTER TABLE ONLY public.stops
 
 
 --
--- TOC entry 4735 (class 2606 OID 16400)
+-- TOC entry 4747 (class 2606 OID 25765)
 -- Name: stops stops_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1018,7 +1017,7 @@ ALTER TABLE ONLY public.stops
 
 
 --
--- TOC entry 4752 (class 2620 OID 25230)
+-- TOC entry 4752 (class 2620 OID 25766)
 -- Name: buses do_nothing_trigger; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1026,7 +1025,7 @@ CREATE TRIGGER do_nothing_trigger BEFORE INSERT OR DELETE OR UPDATE ON public.bu
 
 
 --
--- TOC entry 4748 (class 2606 OID 24749)
+-- TOC entry 4748 (class 2606 OID 25767)
 -- Name: bus_stops bus_stops_bus_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1035,7 +1034,7 @@ ALTER TABLE ONLY public.bus_stops
 
 
 --
--- TOC entry 4749 (class 2606 OID 24754)
+-- TOC entry 4749 (class 2606 OID 25772)
 -- Name: bus_stops bus_stops_stop_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1044,7 +1043,7 @@ ALTER TABLE ONLY public.bus_stops
 
 
 --
--- TOC entry 4750 (class 2606 OID 16532)
+-- TOC entry 4750 (class 2606 OID 25777)
 -- Name: color_palette color_palette_render_setting_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1053,7 +1052,7 @@ ALTER TABLE ONLY public.color_palette
 
 
 --
--- TOC entry 4751 (class 2606 OID 24739)
+-- TOC entry 4751 (class 2606 OID 25782)
 -- Name: distances distances_new_from_stop_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1061,7 +1060,7 @@ ALTER TABLE ONLY public.distances
     ADD CONSTRAINT distances_new_from_stop_id_fkey FOREIGN KEY (from_stop_id) REFERENCES public.stops(id) ON DELETE CASCADE;
 
 
--- Completed on 2024-12-17 11:28:12
+-- Completed on 2025-01-12 16:45:26
 
 --
 -- PostgreSQL database dump complete
