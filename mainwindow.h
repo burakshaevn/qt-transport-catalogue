@@ -60,7 +60,6 @@ private:
     DatabaseManager db_manager_;
     TransportCatalogue transport_catalogue_;
 
-    void SetLineEditSettings();
     void SetLabelSettings();
 
     void DisplayMapOnLabel(const QString& bus_name);

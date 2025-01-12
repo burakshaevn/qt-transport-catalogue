@@ -14,7 +14,7 @@
    <string>Транспортный справочник</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/resources.qrc">
+   <iconset resource="resources/resources.qrc">
     <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -28,7 +28,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="database">
      <widget class="QLabel" name="label_3">
@@ -366,7 +366,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="../resources/resources.qrc">
+       <iconset resource="resources/resources.qrc">
         <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
       </property>
       <property name="iconSize">
@@ -417,7 +417,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="../resources/resources.qrc">
+       <iconset resource="resources/resources.qrc">
         <normaloff>:/add.svg</normaloff>:/add.svg</iconset>
       </property>
       <property name="iconSize">
@@ -513,6 +513,7 @@
        <string notr="true">QLabel {
 	color: #363636;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
 }</string>
       </property>
       <property name="text">
@@ -578,7 +579,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="../resources/resources.qrc">
+       <iconset resource="resources/resources.qrc">
         <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
       </property>
       <property name="iconSize">
@@ -604,6 +605,7 @@
        <string notr="true">QLabel {
 	color: #363636;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
 }</string>
       </property>
       <property name="text">
@@ -643,6 +645,7 @@
        <string notr="true">QLabel {
 	color: #363636;
 	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
 }</string>
       </property>
       <property name="text">
@@ -857,6 +860,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_price">
       <property name="geometry">
@@ -874,6 +880,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_capacity">
       <property name="geometry">
@@ -890,6 +899,9 @@
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_15">
@@ -1156,6 +1168,9 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_16">
@@ -1501,6 +1516,12 @@
         <height>716</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QWidget {
+	background-color: #FFFFFF;
+	border-radius: 0px;
+}</string>
+      </property>
      </widget>
     </widget>
    </widget>
@@ -1516,12 +1537,14 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #363636;	 
 }
 
 QPushButton::pressed {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #CC8D23;
 }</string>
@@ -1530,7 +1553,7 @@ QPushButton::pressed {
      <string>Автобусы</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset resource="resources/resources.qrc">
       <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
     </property>
    </widget>
@@ -1564,12 +1587,14 @@ QPushButton::pressed {
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #363636;	 
 }
 
 QPushButton::pressed {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #CC8D23;
 }</string>
@@ -1578,7 +1603,7 @@ QPushButton::pressed {
      <string>Остановки</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset resource="resources/resources.qrc">
       <normaloff>:/marker.svg</normaloff>:/marker.svg</iconset>
     </property>
    </widget>
@@ -1594,12 +1619,14 @@ QPushButton::pressed {
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #363636;	 
 }
 
 QPushButton::pressed {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #CC8D23;
 }</string>
@@ -1608,7 +1635,7 @@ QPushButton::pressed {
      <string>База данных</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset resource="resources/resources.qrc">
       <normaloff>:/Database.svg</normaloff>:/Database.svg</iconset>
     </property>
    </widget>
@@ -1624,12 +1651,14 @@ QPushButton::pressed {
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #363636;	 
 }
 
 QPushButton::pressed {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #CC8D23;
 }</string>
@@ -1638,7 +1667,7 @@ QPushButton::pressed {
      <string>Карта</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset resource="resources/resources.qrc">
       <normaloff>:/Map 02.svg</normaloff>:/Map 02.svg</iconset>
     </property>
    </widget>
@@ -1654,12 +1683,14 @@ QPushButton::pressed {
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #363636;	 
 }
 
 QPushButton::pressed {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #CC8D23;
 }</string>
@@ -1668,7 +1699,7 @@ QPushButton::pressed {
      <string>Дистанции</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset resource="resources/resources.qrc">
       <normaloff>:/Arrow Roadmap.svg</normaloff>:/Arrow Roadmap.svg</iconset>
     </property>
     <property name="iconSize">
@@ -1688,7 +1719,7 @@ QPushButton::pressed {
   </widget>
  </widget>
  <resources>
-  <include location="../resources/resources.qrc"/>
+  <include location="resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

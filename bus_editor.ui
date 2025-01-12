@@ -34,6 +34,7 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #FFFFFF;	 
 } </string>
@@ -72,6 +73,7 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #FFFFFF;	 
 } </string>
@@ -92,6 +94,7 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	background-color: transparent;
+	border: 0px;
 	font: 500 11pt &quot;JetBrains Mono&quot;;
 	color: #FFFFFF;	 
 } </string>
@@ -186,6 +189,9 @@
   color: #363636;
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLabel" name="label_4">
       <property name="geometry">
@@ -278,6 +284,9 @@
   color: #363636;
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
@@ -369,6 +378,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
   color: #363636;
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -591,6 +603,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
   color: #363636;
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_13">
@@ -819,6 +834,9 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QListWidget" name="listWidgetStops">
@@ -1362,6 +1380,9 @@
   color: #363636;
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_busname_3">
       <property name="geometry">
@@ -1379,6 +1400,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
   color: #363636;
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox_is_available_3">
@@ -1433,6 +1457,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
   color: #363636;
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox_is_wifi_3">
@@ -1524,6 +1551,9 @@
       <property name="text">
        <string/>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QPushButton" name="append_append_stop">
       <property name="geometry">
@@ -1539,6 +1569,7 @@
 	font: 9pt &quot;JetBrains Mono&quot;; 
 	color: #FFFFFF;
 	background-color: #363636; 
+	border-radius: 0px;
 }</string>
       </property>
       <property name="text">
@@ -1579,6 +1610,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
   color: #363636;
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox_is_roundtrip_3">
@@ -1720,6 +1754,9 @@
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_bus_velocity">
       <property name="geometry">
@@ -1736,6 +1773,9 @@
   border-radius: 0px;       
   font: 11pt &quot;JetBrains Mono&quot;; 
 } </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_39">

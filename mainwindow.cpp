@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->stackedWidget->setCurrentWidget(ui->database);
 
-    SetLineEditSettings();
     SetLabelSettings();
 }
 
@@ -43,8 +42,8 @@ void MainWindow::DisplayMapOnLabel(const QString& bus_name) {
         view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
         // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ РґР»СЏ QGraphicsView
-        view->setFixedSize(1280, 716);  
-        view->move(10, 8);
+        view->setFixedSize(1280, 716);
+        // view->move(10, 8);
 
         // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚РёР»СЊ
         view->setStyleSheet("border: 0px solid;"); 
@@ -52,7 +51,6 @@ void MainWindow::DisplayMapOnLabel(const QString& bus_name) {
         // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
         qreal scaleFactor = 0.7;// 1.5;
         view->scale(scaleFactor, scaleFactor);
-        view->move(10, 8);
         // РћС‚РѕР±СЂР°Р¶Р°РµРј QGraphicsView РІРЅСѓС‚СЂРё QLabel
         ui->widget_2->setLayout(new QVBoxLayout);
         ui->widget_2->layout()->addWidget(view);
@@ -133,10 +131,12 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
         render_settings["width"] = json::Node(query_render.value("width").toInt());
 
         // Р?Р·РІР»РµС‡РµРЅРёРµ С†РІРµС‚РѕРІРѕР№ РїР°Р»РёС‚СЂС‹ РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+        // QSqlQuery query_palette = db_manager_.ExecuteSelectQuery(
+        //     QString("SELECT color FROM color_palette WHERE render_setting_id = %1;")
+        //     .arg(query_render.value("id").toInt())
+        // );
         QSqlQuery query_palette = db_manager_.ExecuteSelectQuery(
-            QString("SELECT color FROM color_palette WHERE render_setting_id = %1;")
-            .arg(query_render.value("id").toInt())
-        );
+            QString("SELECT * FROM public.color_palette ORDER BY id ASC "));
 
         json::Array color_palette;
         
@@ -306,23 +306,6 @@ void MainWindow::on_button_distances_clicked()
     }
 }
 
-void MainWindow::SetLineEditSettings(){
-    for (auto lineEdit : {
-        ui->lineEdit_busname,
-        ui->lineEdit_capacity,
-        ui->lineEdit_price,
-        ui->lineEdit_stopname
-        })
-    {
-        lineEdit->setAlignment(Qt::AlignCenter);
-    }
-    ui->lineEdit_busname->setMaxLength(100);
-    ui->lineEdit_stopname->setMaxLength(100);  
-
-    auto database = ui->stackedWidget->widget(0); 
-    database->findChild<QLineEdit*>("lineEdit_password")->setEchoMode(QLineEdit::Password);
-}
-
 void MainWindow::SetLabelSettings(){
     auto page_database = ui->stackedWidget->widget(0);
     page_database->findChild<QLineEdit*>("lineEdit_password")->setEchoMode(QLineEdit::Password);
@@ -464,13 +447,14 @@ void MainWindow::DrawRelevantBuses() {
 
 void MainWindow::DrawBus(Bus* bus, const bool show_color, QVBoxLayout* layout) {
     QLabel* background = new QLabel(ui->scrollArea_buses);
-    background->setStyleSheet("background-color: #FFFFFF; border-radius: 10px;");
+    background->setStyleSheet("background-color: #FFFFFF; border-radius: 22px;");
     background->setFixedSize(499, 90);
 
     QString style_sheet_;
     if (show_color) {
         auto color = db_manager_.FindColor(bus->color_index);
         svg::Rgb rgbColor = std::get<svg::Rgb>(color.value());
+        qDebug() << QString::number(rgbColor.red) + ", " + QString::number(rgbColor.green) + ", " + QString::number(rgbColor.blue);
         style_sheet_ = "color: rgb(" + QString::number(rgbColor.red) + ", " + QString::number(rgbColor.green) + ", " + QString::number(rgbColor.blue) + "); font: 400 20pt 'JetBrains Mono';";
     }
     else {
@@ -704,7 +688,7 @@ void MainWindow::DeleteStop(const std::shared_ptr<const Stop>& stop){
 void MainWindow::DrawStop(const std::shared_ptr<const Stop>& stop, QVBoxLayout* layout) {
     if (!stop->name.isEmpty()) {
         QLabel* background = new QLabel(ui->scrollArea_stops);
-        background->setStyleSheet("background-color: #F8F8F8; border-radius: 10px;");
+        background->setStyleSheet("background-color: #FFFFFF; border-radius: 10px;");
         background->setFixedSize(589, 88);
         background->setAlignment(Qt::AlignCenter);
 
