@@ -12,20 +12,41 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg SvgWidgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg SvgWidgets)
 
-set(PROJECT_SOURCES
-    bus_editor.ui
-
-    mainwindow.ui
-    resources/resources.qrc
-    bus_editor.cpp
-    dialog_editor.cpp
-    main.cpp
-    mainwindow.cpp
-    bus_editor.h
-    dialog_editor.h
-    mainwindow.h
-    stdafx.h
+qt_wrap_ui(PROJECT_UI_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/view/bus_editor.ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/view/mainwindow.ui
 )
+
+file(GLOB PROJECT_SOURCES
+    "*.cpp"
+    "*.h"
+    "*.ui"
+    "*.qrc"
+    "controller/*.cpp"
+    "controller/*.h"
+    "view/*.ui"
+    "images/*.qrc"
+)
+
+set(PROJECT_SOURCES
+    ${PROJECT_SOURCES}
+    ${PROJECT_UI_FILES}
+)
+
+# set(PROJECT_SOURCES
+#     bus_editor.ui
+
+#     view/mainwindow.ui
+#     images/resources.qrc
+#     controller/bus_editor.cpp
+#     controller/dialog_editor.cpp
+#     main.cpp
+#     controller/mainwindow.cpp
+#     controller/bus_editor.h
+#     controller/dialog_editor.h
+#     controller/mainwindow.h
+#     controller/stdafx.h
+# )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qt-transport-catalogue
@@ -50,8 +71,8 @@ else()
     endif()
 endif()
 
-target_link_libraries(qt-transport-catalogue PRIVATE Qt${QT_VERSION_MAJOR}::Widgets backend  Qt6::Svg Qt6::SvgWidgets)
-target_include_directories(qt-transport-catalogue PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/backend)
+target_link_libraries(qt-transport-catalogue PRIVATE Qt${QT_VERSION_MAJOR}::Widgets model  Qt6::Svg Qt6::SvgWidgets)
+target_include_directories(qt-transport-catalogue PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/model)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -77,4 +98,4 @@ install(TARGETS qt-transport-catalogue
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(qt-transport-catalogue)
 endif()
-add_subdirectory(backend)
+add_subdirectory(model)

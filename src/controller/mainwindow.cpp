@@ -688,7 +688,7 @@ void MainWindow::DeleteStop(const std::shared_ptr<const Stop>& stop){
 void MainWindow::DrawStop(const std::shared_ptr<const Stop>& stop, QVBoxLayout* layout) {
     if (!stop->name.isEmpty()) {
         QLabel* background = new QLabel(ui->scrollArea_stops);
-        background->setStyleSheet("background-color: #FFFFFF; border-radius: 10px;");
+        background->setStyleSheet("background-color: #FFFFFF; border-radius: 22px;");
         background->setFixedSize(589, 88);
         background->setAlignment(Qt::AlignCenter);
 
