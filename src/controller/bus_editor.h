@@ -3,7 +3,7 @@
 #include <QMainWindow>
 #include "ui_bus_editor.h"
 #include "database_manager.h"
-#include "mainwindow.h"
+#include "stdafx.h"
 #include <QListWidget>
 
 class BusEditor : public QDialog

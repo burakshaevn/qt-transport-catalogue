@@ -79,4 +79,10 @@ CMakeLists.txt.user*
 .pch/
 .rcc/
 .uic/
+
+# Build directories
 /build*/
+*/build*/
+*.build/
+build/
+!build.py

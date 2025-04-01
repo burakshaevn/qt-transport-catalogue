@@ -19,9 +19,9 @@ public:
         setWindowTitle(title_);
 
         layout_ = new QVBoxLayout(this);
-        layout_->setSizeConstraint(QLayout::SetFixedSize);  // Устанавливаем автоматическую подстройку размера
+        layout_->setSizeConstraint(QLayout::SetFixedSize);  // автоматическая подстройка размера
 
-        // Кнопка "Добавить" всегда будет внизу.
+        // Кнопка "Добавить" всегда будет внизу
         buttonAdd_ = new QPushButton(button_title_, this);
         layout_->addWidget(buttonAdd_);
 
@@ -33,7 +33,7 @@ public:
         QLabel* label = new QLabel(labelText, this);
         QLineEdit* lineEdit = new QLineEdit(this);
 
-        layout_->insertWidget(layout_->count() - 1, label);  // Вставляем перед кнопкой
+        layout_->insertWidget(layout_->count() - 1, label);
         layout_->insertWidget(layout_->count() - 1, lineEdit);
 
         fields_.push_back(lineEdit);
@@ -54,12 +54,12 @@ private slots:
             }
         }
 
-        emit fieldsEntered();  // Сигнал о завершении ввода
+        emit fieldsEntered();  // сигнал о завершении ввода
         accept();
     }
 
 signals:
-    void fieldsEntered();  // Сигнал для передачи данных
+    void fieldsEntered();  // сигнал для передачи данных
 
 private:
     QVBoxLayout* layout_;

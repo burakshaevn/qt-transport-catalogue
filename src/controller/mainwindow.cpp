@@ -10,9 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setFixedSize(1300, 760);
 
-    ui->stackedWidget->setCurrentWidget(ui->database);
-
-    SetLabelSettings();
+    ui->stackedWidget->setCurrentWidget(ui->login);
 }
 
 MainWindow::~MainWindow() = default;   
@@ -41,36 +39,24 @@ void MainWindow::DisplayMapOnLabel(const QString& bus_name) {
         view->setDragMode(QGraphicsView::ScrollHandDrag);
         view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
-        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ РґР»СЏ QGraphicsView
         view->setFixedSize(1280, 716);
-        // view->move(10, 8);
 
-        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚РёР»СЊ
         view->setStyleSheet("border: 0px solid;"); 
 
-        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
         qreal scaleFactor = 0.7;// 1.5;
         view->scale(scaleFactor, scaleFactor);
-        // РћС‚РѕР±СЂР°Р¶Р°РµРј QGraphicsView РІРЅСѓС‚СЂРё QLabel
         ui->widget_2->setLayout(new QVBoxLayout);
         ui->widget_2->layout()->addWidget(view);
     }
-    else if (std::holds_alternative<std::runtime_error>(feedback)) {
-        qDebug() << "РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё.";
-    }
 }
 
-// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїР°СЂСЃРёРЅРіР° СЃС‚СЂРѕРєРё Рё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РµС‘ РІ QVariantList
 QVariantList ParseArrayString(const QString& array_str) {
     QVariantList result;
 
-    // РЈР±РёСЂР°РµРј С„РёРіСѓСЂРЅС‹Рµ СЃРєРѕР±РєРё
-    QString clean_str = array_str.mid(1, array_str.size() - 2); // РЈР±РёСЂР°РµРј РїРµСЂРІС‹Рµ Рё РїРѕСЃР»РµРґРЅРёРµ СЃРєРѕР±РєРё
+    QString clean_str = array_str.mid(1, array_str.size() - 2);
 
-    // Р?СЃРїРѕР»СЊР·СѓРµРј СЂРµРіСѓР»СЏСЂРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ РґР»СЏ СЂР°Р·РґРµР»РµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ
     QStringList elements = clean_str.split(QRegularExpression(QString("\\s*,\\s*")));
 
-    // РџСЂРµРѕР±СЂР°Р·СѓРµРј СЌР»РµРјРµРЅС‚С‹ РІ С‡РёСЃР»Р° Рё РґРѕР±Р°РІР»СЏРµРј РІ СЂРµР·СѓР»СЊС‚Р°С‚
     for (const QString& element : elements) {
         result.push_back(element.toDouble());
     }
@@ -88,10 +74,8 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
     );
 
     if (query_render.next()) {
-        // Р?Р·РІР»РµС‡РµРЅРёРµ РѕР±С‹С‡РЅС‹С… Р·РЅР°С‡РµРЅРёР№
         render_settings["bus_label_font_size"] = json::Node(query_render.value("bus_label_font_size").toInt());
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ РјР°СЃСЃРёРІР° bus_label_offset С‡РµСЂРµР· СЃС‚СЂРѕРєСѓ Рё РїР°СЂСЃРёРЅРі
         QString bus_label_offset_str = query_render.value("bus_label_offset").toString();
         QVariantList bus_label_offset_list = ParseArrayString(bus_label_offset_str);
         json::Array bus_label_offset;
@@ -99,10 +83,8 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
         bus_label_offset.push_back(json::Node(bus_label_offset_list[1].toDouble()));
         render_settings["bus_label_offset"] = bus_label_offset;
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ stop_label_font_size
         render_settings["stop_label_font_size"] = json::Node(query_render.value("stop_label_font_size").toInt());
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ РјР°СЃСЃРёРІР° stop_label_offset С‡РµСЂРµР· СЃС‚СЂРѕРєСѓ Рё РїР°СЂСЃРёРЅРі
         QString stop_label_offset_str = query_render.value("stop_label_offset").toString();
         QVariantList stop_label_offset_list = ParseArrayString(stop_label_offset_str);
         json::Array stop_label_offset;
@@ -110,10 +92,8 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
         stop_label_offset.push_back(json::Node(stop_label_offset_list[1].toDouble()));
         render_settings["stop_label_offset"] = stop_label_offset;
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ stop_radius
         render_settings["stop_radius"] = json::Node(query_render.value("stop_radius").toInt());
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ РјР°СЃСЃРёРІР° underlayer_color С‡РµСЂРµР· СЃС‚СЂРѕРєСѓ Рё РїР°СЂСЃРёРЅРі
         QString underlayer_color_str = query_render.value("underlayer_color").toString();
         QVariantList underlayer_color_list = ParseArrayString(underlayer_color_str);
         json::Array underlayer_color;
@@ -123,24 +103,17 @@ MainWindow::Value MainWindow::JsonToSVG(const QString& bus_name) {
         underlayer_color.push_back(json::Node(underlayer_color_list[3].toDouble()));
         render_settings["underlayer_color"] = underlayer_color;
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ РѕСЃС‚Р°Р»СЊРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ
         render_settings["underlayer_width"] = json::Node(query_render.value("underlayer_width").toDouble());
         render_settings["line_width"] = json::Node(query_render.value("line_width").toDouble());
         render_settings["padding"] = json::Node(query_render.value("padding").toInt());
         render_settings["height"] = json::Node(query_render.value("height").toInt());
         render_settings["width"] = json::Node(query_render.value("width").toInt());
 
-        // Р?Р·РІР»РµС‡РµРЅРёРµ С†РІРµС‚РѕРІРѕР№ РїР°Р»РёС‚СЂС‹ РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…
-        // QSqlQuery query_palette = db_manager_.ExecuteSelectQuery(
-        //     QString("SELECT color FROM color_palette WHERE render_setting_id = %1;")
-        //     .arg(query_render.value("id").toInt())
-        // );
         QSqlQuery query_palette = db_manager_.ExecuteSelectQuery(
             QString("SELECT * FROM public.color_palette ORDER BY id ASC "));
 
         json::Array color_palette;
-        
-        // Р”РѕР±Р°РІР»СЏРµРј РїРµСЂРІС‹Р№ С†РІРµС‚ РєР°Рє В«С‚РµС…РЅРёС‡РµСЃРєРёР№В» вЂ” С‡С‘СЂРЅС‹Р№
+
         json::Array color;
         color.push_back(json::Node(0));
         color.push_back(json::Node(0));
@@ -271,7 +244,7 @@ void MainWindow::on_button_map_clicked()
 void MainWindow::on_button_stops_clicked()
 {
     if (db_manager_.Open()) {
-        ui->stackedWidget->setCurrentWidget(ui->stops);
+        ui->stackedWidget->setCurrentWidget(ui->login);
 
         ClearScrollWidget(ui->scrollArea_stops->layout());
 
@@ -306,10 +279,10 @@ void MainWindow::on_button_distances_clicked()
     }
 }
 
-void MainWindow::SetLabelSettings(){
-    auto page_database = ui->stackedWidget->widget(0);
-    page_database->findChild<QLineEdit*>("lineEdit_password")->setEchoMode(QLineEdit::Password);
-}
+// void MainWindow::SetLabelSettings(){
+//     auto page_database = ui->stackedWidget->widget(0);
+//     page_database->findChild<QLineEdit*>("lineEdit_password")->setEchoMode(QLineEdit::Password);
+// }
 
 void MainWindow::on_reset_all_filters_clicked() {
     ClearSearchFiltres();
@@ -619,9 +592,6 @@ void MainWindow::EditStop(const std::shared_ptr<const Stop>& stop){
         if (db_manager_.UpdateStop(stop->name, stop_name, latitude, longitude)) {
             transport_catalogue_.UpdateStops();
             transport_catalogue_.UpdateBuses();
-            // transport_catalogue_.UpdateBusnameToBus();
-            // transport_catalogue_.UpdateStopnameToStop();
-            // transport_catalogue_.UpdateStopBuses();
             transport_catalogue_.UpdateDistances();
             QMessageBox::information(this, "Успех", "Данные остановки обновлены.");
         }
@@ -1142,5 +1112,80 @@ void MainWindow::on_stops_clear_clicked()
 void MainWindow::on_show_colors_clicked()
 {
 
+}
+
+void MainWindow::on_pushButton_login_clicked()
+{
+    auto queryResult = db_manager_.ExecuteSelectQuery(QString("SELECT * FROM public.admins WHERE username = '%1';").arg(ui->lineEdit_login->text()));
+
+    if (queryResult.canConvert<QSqlQuery>()) {
+        QSqlQuery query = queryResult.value<QSqlQuery>();
+        if (query.next()) {
+            UserInfo user;
+            user.id_ = query.value("id").toInt();
+            user.full_name_ = query.value("full_name").toString();
+            user.email_ = query.value("email").toString();
+            user.password_ = query.value("password").toString();
+            user.role_ = StringToRole(query.value("role").toString());
+            if (user.password_ == ui->lineEdit_password->text()) {
+                ui->lineEdit_login->clear();
+                ui->lineEdit_password->clear();
+                QMessageBox::information(this, "Авторизация", "Выполнена авторизация как администратор.");
+                UpdateUser(user, this);
+
+                table_ = std::make_unique<Table>(&db_manager_, user_.get(), nullptr);
+                table_->BuildAdminTables();
+
+                connect(table_.get(), &Table::Logout, this, &MainWindow::on_pushButton_logout_clicked);
+
+                ui->stackedWidget->addWidget(table_.get());
+                ui->stackedWidget->setCurrentWidget(table_.get());
+            }
+            else{
+                QMessageBox::critical(this, "Авторизация", "Неверный логин или пароль.");
+            }
+        }
+        else {
+            auto queryResult = db_manager_.ExecuteSelectQuery(QString("SELECT * FROM public.clients WHERE email = '%1';").arg(ui->lineEdit_login->text()));
+
+            if (queryResult.canConvert<QSqlQuery>()) {
+                QSqlQuery query = queryResult.value<QSqlQuery>();
+                if (query.next()) {
+                    UserInfo user;
+                    user.id_ = query.value("id").toInt();
+                    user.full_name_ = query.value("first_name").toString();
+                    user.full_name_ += " " + query.value("last_name").toString();
+                    user.email_ = query.value("email").toString();
+                    user.password_ = query.value("password").toString();
+                    user.role_ = Role::User;
+                    user.purchased_cars_ = GetCars(user.id_);
+
+                    if (user.password_ == ui->lineEdit_password->text()) {
+                        ui->lineEdit_login->clear();
+                        ui->lineEdit_password->clear();
+                        QMessageBox::information(this, "Авторизация", "Выполнена авторизация как пользователь.");
+
+                        UpdateUser(user, this);
+                        ui->stackedWidget->setCurrentWidget(ui->main);
+
+                        SetupFloatingMenu();
+                        SetupSideMenu();
+                    }
+                    else{
+                        QMessageBox::critical(this, "Авторизация", "Неверный логин или пароль.");
+                    }
+                }
+                else {
+                    QMessageBox::critical(this, "Ошибка", "Пользователя с таким логином не существует.");
+                }
+            }
+            else {
+                QMessageBox::critical(this, "Ошибка в базе данных", queryResult.toString());
+            }
+        }
+    }
+    else {
+        QMessageBox::critical(this, "Ошибка в базе данных", queryResult.toString());
+    }
 }
 

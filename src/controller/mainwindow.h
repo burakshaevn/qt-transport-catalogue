@@ -7,11 +7,11 @@
 #include <QDialog>
 #include <QObject>
 
-#include "stdafx.h"
 #include "database_manager.h"
 #include "bus_editor.h"
 #include "dialog_editor.h"
 #include <algorithm>
+#include "stdafx.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -55,12 +55,14 @@ private slots:
 
     void on_show_colors_clicked();
 
+    void on_pushButton_login_clicked();
+
 private:
     Ui::MainWindow *ui;
     DatabaseManager db_manager_;
     TransportCatalogue transport_catalogue_;
 
-    void SetLabelSettings();
+    QString role_;
 
     void DisplayMapOnLabel(const QString& bus_name);
     Value JsonToSVG(const QString& bus_name);

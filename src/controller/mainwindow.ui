@@ -1,0 +1,1848 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1300</width>
+    <height>760</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Транспортный справочник</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../images/resources.qrc">
+    <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1300</width>
+      <height>761</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="login">
+     <widget class="QPushButton" name="pushButton_login">
+      <property name="geometry">
+       <rect>
+        <x>593</x>
+        <y>412</y>
+        <width>116</width>
+        <height>49</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: #fafafa;
+	border-radius: 20px;
+	font: 18pt &quot;Segoe UI&quot;;
+	color: #140f10;
+}</string>
+      </property>
+      <property name="text">
+       <string>Вход</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>386</x>
+        <y>298</y>
+        <width>528</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"> QLineEdit {
+        background-color: #fafafa;
+        border-radius: 20px;
+        font: 18pt &quot;Segoe UI&quot;;
+        color: #1d1b20; 
+        padding: 5px;
+    }
+    QLineEdit:focus {
+        border: 2px solid #1d1b20;
+        outline: none;
+    }</string>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::InputMethodHint::ImhEmailCharactersOnly</set>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="maxLength">
+       <number>39</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_2">
+      <property name="geometry">
+       <rect>
+        <x>386</x>
+        <y>355</y>
+        <width>528</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"> QLineEdit {
+        background-color: #fafafa;
+        border-radius: 20px;
+        font: 18pt &quot;Segoe UI&quot;;
+        color: #1d1b20; 
+        padding: 5px;
+    }
+    QLineEdit:focus {
+        border: 2px solid #1d1b20;
+        outline: none;
+    }</string>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::InputMethodHint::ImhHiddenText|Qt::InputMethodHint::ImhNoAutoUppercase|Qt::InputMethodHint::ImhNoPredictiveText|Qt::InputMethodHint::ImhSensitiveData</set>
+      </property>
+      <property name="maxLength">
+       <number>39</number>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::EchoMode::Password</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="admin">
+     <widget class="QPushButton" name="button_stops">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>-3</y>
+        <width>201</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}
+
+QPushButton::pressed {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #CC8D23;
+}</string>
+      </property>
+      <property name="text">
+       <string>Остановки</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/marker.svg</normaloff>:/marker.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="button_db">
+      <property name="geometry">
+       <rect>
+        <x>1051</x>
+        <y>-3</y>
+        <width>201</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}
+
+QPushButton::pressed {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #CC8D23;
+}</string>
+      </property>
+      <property name="text">
+       <string>База данных</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/Database.svg</normaloff>:/Database.svg</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="button_buses">
+      <property name="geometry">
+       <rect>
+        <x>549</x>
+        <y>-3</y>
+        <width>201</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}
+
+QPushButton::pressed {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #CC8D23;
+}</string>
+      </property>
+      <property name="text">
+       <string>Автобусы</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/directions_bus.svg</normaloff>:/directions_bus.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>18</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="button_distances">
+      <property name="geometry">
+       <rect>
+        <x>298</x>
+        <y>-3</y>
+        <width>201</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}
+
+QPushButton::pressed {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #CC8D23;
+}</string>
+      </property>
+      <property name="text">
+       <string>Дистанции</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/Arrow Roadmap.svg</normaloff>:/Arrow Roadmap.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>12</width>
+        <height>12</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="button_map">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>-3</y>
+        <width>201</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}
+
+QPushButton::pressed {
+	background-color: transparent;
+	border: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #CC8D23;
+}</string>
+      </property>
+      <property name="text">
+       <string>Карта</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../images/resources.qrc">
+        <normaloff>:/Map.svg</normaloff>:/Map.svg</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>14</width>
+        <height>14</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1300</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255); 
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QStackedWidget" name="stackedWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>24</y>
+        <width>1300</width>
+        <height>736</height>
+       </rect>
+      </property>
+      <widget class="QWidget" name="buses">
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>53</x>
+          <y>72</y>
+          <width>579</width>
+          <height>124</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255); 
+	border-radius: 10px;
+	border: 1px solid #000000;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="reset_all_filters">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>451</y>
+          <width>145</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #363636;
+	/*background-color: #363636; */
+	border-radius: 5px;
+	border: 1px solid #363636;
+}</string>
+        </property>
+        <property name="text">
+         <string>Сброс фильтров</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_night_route">
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>281</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Ночной маршрут</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="search_bus">
+        <property name="geometry">
+         <rect>
+          <x>189</x>
+          <y>451</y>
+          <width>145</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #FFFFFF;
+	background-color: #363636; 
+	border-radius: 5px;
+}</string>
+        </property>
+        <property name="text">
+         <string>Поиск</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_26">
+        <property name="geometry">
+         <rect>
+          <x>535</x>
+          <y>165</y>
+          <width>40</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>чел.</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_electrobus">
+        <property name="geometry">
+         <rect>
+          <x>109</x>
+          <y>308</y>
+          <width>118</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Электробус</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="sort_by_color_index">
+        <property name="geometry">
+         <rect>
+          <x>109</x>
+          <y>338</y>
+          <width>201</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Сортировка по цветам</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_undefined">
+        <property name="geometry">
+         <rect>
+          <x>109</x>
+          <y>226</y>
+          <width>118</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Все типы</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="is_unavailable">
+        <property name="geometry">
+         <rect>
+          <x>358</x>
+          <y>401</y>
+          <width>121</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Недоступен</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_roundtrip">
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>308</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Кольцевой</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_price">
+        <property name="geometry">
+         <rect>
+          <x>342</x>
+          <y>138</y>
+          <width>158</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;       
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_busname">
+        <property name="geometry">
+         <rect>
+          <x>343</x>
+          <y>85</y>
+          <width>266</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;   
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QScrollArea" name="scrollArea_3">
+        <property name="geometry">
+         <rect>
+          <x>670</x>
+          <y>10</y>
+          <width>570</width>
+          <height>711</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QScrollArea {
+	  border-radius: 1px;  
+}</string>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
+        </property>
+        <widget class="QWidget" name="scrollArea_buses">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>570</width>
+           <height>711</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_stopname">
+        <property name="geometry">
+         <rect>
+          <x>342</x>
+          <y>111</y>
+          <width>266</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;       
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_autobus">
+        <property name="geometry">
+         <rect>
+          <x>109</x>
+          <y>254</y>
+          <width>118</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Автобус</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_no_sockets">
+        <property name="geometry">
+         <rect>
+          <x>429</x>
+          <y>254</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Нет розеток</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_27">
+        <property name="geometry">
+         <rect>
+          <x>535</x>
+          <y>138</y>
+          <width>40</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>руб.</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="show_colors">
+        <property name="geometry">
+         <rect>
+          <x>338</x>
+          <y>338</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Показать цвета</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_capacity">
+        <property name="geometry">
+         <rect>
+          <x>342</x>
+          <y>165</y>
+          <width>158</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;       
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="has_sockets">
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>254</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Есть розетки</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="is_available">
+        <property name="geometry">
+         <rect>
+          <x>198</x>
+          <y>401</y>
+          <width>118</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QRadioButton {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Доступен</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_trolleybus">
+        <property name="geometry">
+         <rect>
+          <x>109</x>
+          <y>281</y>
+          <width>118</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Троллейбус</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_28">
+        <property name="geometry">
+         <rect>
+          <x>77</x>
+          <y>165</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Вместимость</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_no_wifi">
+        <property name="geometry">
+         <rect>
+          <x>429</x>
+          <y>226</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Нет Wi-Fi</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_29">
+        <property name="geometry">
+         <rect>
+          <x>77</x>
+          <y>138</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Стоимость проезда</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>53</x>
+          <y>388</y>
+          <width>579</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255); 
+	border-radius: 10px;
+	border: 1px solid #000000;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>56</x>
+          <y>30</y>
+          <width>572</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;  
+	font: 700 15pt &quot;JetBrains Mono&quot;;
+}</string>
+        </property>
+        <property name="text">
+         <string>Поиск маршрута</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_day_route">
+        <property name="geometry">
+         <rect>
+          <x>429</x>
+          <y>281</y>
+          <width>153</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Дневной маршрут</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="is_non_roundtrip">
+        <property name="geometry">
+         <rect>
+          <x>429</x>
+          <y>308</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Некольцевой</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="has_wifi">
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>226</y>
+          <width>146</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QCheckBox {
+    padding-left: 10px; /* Отступ слева от текста */
+    spacing: 8px;       /* Расстояние между индикатором и текстом */
+    color: #2E1C0C;     /* Цвет текста */
+    font: 10pt &quot;JetBrains Mono&quot;; /* Шрифт и размер текста */
+}
+ 
+</string>
+        </property>
+        <property name="text">
+         <string>Есть Wi-Fi</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_30">
+        <property name="geometry">
+         <rect>
+          <x>77</x>
+          <y>85</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Название маршрута</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_31">
+        <property name="geometry">
+         <rect>
+          <x>77</x>
+          <y>111</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Проходит остановку</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>53</x>
+          <y>214</y>
+          <width>579</width>
+          <height>152</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255); 
+	border-radius: 10px;
+	border: 1px solid #000000;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <zorder>label_11</zorder>
+       <zorder>label_12</zorder>
+       <zorder>label_13</zorder>
+       <zorder>reset_all_filters</zorder>
+       <zorder>is_night_route</zorder>
+       <zorder>search_bus</zorder>
+       <zorder>label_26</zorder>
+       <zorder>is_electrobus</zorder>
+       <zorder>sort_by_color_index</zorder>
+       <zorder>is_undefined</zorder>
+       <zorder>is_unavailable</zorder>
+       <zorder>is_roundtrip</zorder>
+       <zorder>lineEdit_price</zorder>
+       <zorder>lineEdit_busname</zorder>
+       <zorder>scrollArea_3</zorder>
+       <zorder>lineEdit_stopname</zorder>
+       <zorder>is_autobus</zorder>
+       <zorder>is_no_sockets</zorder>
+       <zorder>label_27</zorder>
+       <zorder>show_colors</zorder>
+       <zorder>lineEdit_capacity</zorder>
+       <zorder>has_sockets</zorder>
+       <zorder>is_available</zorder>
+       <zorder>is_trolleybus</zorder>
+       <zorder>label_28</zorder>
+       <zorder>is_no_wifi</zorder>
+       <zorder>label_29</zorder>
+       <zorder>label_5</zorder>
+       <zorder>is_day_route</zorder>
+       <zorder>is_non_roundtrip</zorder>
+       <zorder>has_wifi</zorder>
+       <zorder>label_30</zorder>
+       <zorder>label_31</zorder>
+      </widget>
+      <widget class="QWidget" name="stops">
+       <widget class="QPushButton" name="stops_append">
+        <property name="geometry">
+         <rect>
+          <x>923</x>
+          <y>75</y>
+          <width>43</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+    background-color: #ffffff; 
+    border-radius: 10px;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/resources.qrc">
+          <normaloff>:/add.svg</normaloff>:/add.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="stops_search">
+        <property name="geometry">
+         <rect>
+          <x>866</x>
+          <y>75</y>
+          <width>43</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+    background-color: #ffffff; 
+    border-radius: 10px;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/resources.qrc">
+          <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_find_stopname">
+        <property name="geometry">
+         <rect>
+          <x>327</x>
+          <y>75</y>
+          <width>527</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #FFFFFF; 
+  border-radius: 10px;   
+  font: 11pt &quot;JetBrains Mono&quot;; 
+	border: 1px solid #000000;
+} </string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QScrollArea" name="scrollArea_2">
+        <property name="geometry">
+         <rect>
+          <x>326</x>
+          <y>180</y>
+          <width>639</width>
+          <height>528</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QScrollArea {
+	  border-radius: 1px;  
+}</string>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollArea_stops">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>639</width>
+           <height>528</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>30</y>
+          <width>572</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;  
+	font: 700 15pt &quot;JetBrains Mono&quot;;
+}</string>
+        </property>
+        <property name="text">
+         <string>Поиск</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="stops_clear">
+        <property name="geometry">
+         <rect>
+          <x>808</x>
+          <y>76</y>
+          <width>43</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+    background-color: #ffffff; 
+    border-radius: 10px;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLabel" name="results_count">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>140</y>
+          <width>412</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="database">
+       <widget class="QLabel" name="label_21">
+        <property name="geometry">
+         <rect>
+          <x>468</x>
+          <y>250</y>
+          <width>112</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Имя хоста</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_username">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>341</y>
+          <width>255</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-radius: 0px;
+	background-color: #F8F8F8;
+    font: 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="connect_to_db_default">
+        <property name="geometry">
+         <rect>
+          <x>626</x>
+          <y>407</y>
+          <width>178</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+	font: 9pt &quot;JetBrains Mono&quot;; 
+	color: #363636; 
+	border-radius: 5px;
+	border: 1px solid #363636;
+}</string>
+        </property>
+        <property name="text">
+         <string>Данные по умолчанию</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_23">
+        <property name="geometry">
+         <rect>
+          <x>468</x>
+          <y>311</y>
+          <width>112</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Название БД</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_24">
+        <property name="geometry">
+         <rect>
+          <x>468</x>
+          <y>341</y>
+          <width>112</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Username</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_hostname">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>250</y>
+          <width>255</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-radius: 0px;
+	background-color: #F8F8F8;
+    font: 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_25">
+        <property name="geometry">
+         <rect>
+          <x>468</x>
+          <y>372</y>
+          <width>112</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Password</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>456</x>
+          <y>214</y>
+          <width>393</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000; 
+	text-align: center; 
+	font: 500 13pt &quot;JetBrains Mono&quot;;
+}</string>
+        </property>
+        <property name="text">
+         <string>Подключение к базе данных</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>456</x>
+          <y>200</y>
+          <width>393</width>
+          <height>238</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255);
+	border-radius: 10px;
+	border: 1px solid #000000;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_password">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>371</y>
+          <width>255</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-radius: 0px;
+	background-color: #F8F8F8;
+    font: 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="connect_to_db">
+        <property name="geometry">
+         <rect>
+          <x>507</x>
+          <y>407</y>
+          <width>108</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	background-color: #363636;
+	border-radius: 5px;
+	color: #FFFFFF;
+	font: 500 9pt &quot;JetBrains Mono&quot;;
+}</string>
+        </property>
+        <property name="text">
+         <string>Подключить</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_22">
+        <property name="geometry">
+         <rect>
+          <x>468</x>
+          <y>280</y>
+          <width>112</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #000000;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Порт</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_port">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>280</y>
+          <width>255</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-radius: 0px;
+	background-color: #F8F8F8;
+    font: 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_dbname">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>310</y>
+          <width>255</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-radius: 0px;
+	background-color: #F8F8F8;
+    font: 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+       </widget>
+       <zorder>label_3</zorder>
+       <zorder>label_21</zorder>
+       <zorder>lineEdit_username</zorder>
+       <zorder>connect_to_db_default</zorder>
+       <zorder>label_23</zorder>
+       <zorder>label_24</zorder>
+       <zorder>lineEdit_hostname</zorder>
+       <zorder>label_25</zorder>
+       <zorder>label_6</zorder>
+       <zorder>lineEdit_password</zorder>
+       <zorder>connect_to_db</zorder>
+       <zorder>label_22</zorder>
+       <zorder>lineEdit_port</zorder>
+       <zorder>lineEdit_dbname</zorder>
+      </widget>
+      <widget class="QWidget" name="distances">
+       <widget class="QLineEdit" name="lineEdit_from">
+        <property name="geometry">
+         <rect>
+          <x>275</x>
+          <y>50</y>
+          <width>220</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;   
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_distance">
+        <property name="geometry">
+         <rect>
+          <x>892</x>
+          <y>50</y>
+          <width>141</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;   
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_49">
+        <property name="geometry">
+         <rect>
+          <x>573</x>
+          <y>7</y>
+          <width>158</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Поиск</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_48">
+        <property name="geometry">
+         <rect>
+          <x>788</x>
+          <y>50</y>
+          <width>101</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
+}</string>
+        </property>
+        <property name="text">
+         <string>Расстояние</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_47">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>50</y>
+          <width>41</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
+}</string>
+        </property>
+        <property name="text">
+         <string>Куда</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="add_distance">
+        <property name="geometry">
+         <rect>
+          <x>512</x>
+          <y>115</y>
+          <width>123</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	background-color: #363636;
+	border-radius: 10px;
+	color: #FFFFFF;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+}</string>
+        </property>
+        <property name="text">
+         <string>Добавление</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_46">
+        <property name="geometry">
+         <rect>
+          <x>193</x>
+          <y>37</y>
+          <width>887</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	background-color: rgb(255, 255, 255); 
+	border-radius: 10px;
+	border: 1px solid #000000;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="search_distance">
+        <property name="geometry">
+         <rect>
+          <x>1043</x>
+          <y>44</y>
+          <width>30</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+    background-color: #ffffff; 
+    border-radius: 0px;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/resources.qrc">
+          <normaloff>:/search.svg</normaloff>:/search.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidgetDistances">
+        <property name="geometry">
+         <rect>
+          <x>193</x>
+          <y>175</y>
+          <width>887</width>
+          <height>531</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QTableWidget {
+	background-color: transparent;
+	border-radius: 0px;
+	font: 500 11pt &quot;JetBrains Mono&quot;;
+	color: #363636;	 
+}</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_45">
+        <property name="geometry">
+         <rect>
+          <x>206</x>
+          <y>50</y>
+          <width>68</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	color: #363636;
+	font: 500 11pt &quot;JetBrains Mono&quot;; 
+	background-color: transparent;
+}</string>
+        </property>
+        <property name="text">
+         <string>Откуда</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="delete_distance">
+        <property name="geometry">
+         <rect>
+          <x>668</x>
+          <y>115</y>
+          <width>123</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { 
+	font: 11pt &quot;JetBrains Mono&quot;; 
+	color: #363636;
+	/*background-color: #363636; */
+	border-radius: 10px;
+	border: 1px solid #363636;
+}</string>
+        </property>
+        <property name="text">
+         <string>Удаление</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_to">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>50</y>
+          <width>220</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit { 
+  background-color: #F8F8F8; 
+  border-radius: 0px;   
+  font: 11pt &quot;JetBrains Mono&quot;; 
+} </string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="map">
+       <widget class="QWidget" name="widget_2" native="true">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>1280</width>
+          <height>716</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QWidget {
+	background-color: #FFFFFF;
+	border-radius: 0px;
+}</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <zorder>label_2</zorder>
+     <zorder>button_stops</zorder>
+     <zorder>button_db</zorder>
+     <zorder>button_buses</zorder>
+     <zorder>button_distances</zorder>
+     <zorder>button_map</zorder>
+     <zorder>stackedWidget_2</zorder>
+    </widget>
+    <widget class="QWidget" name="user"/>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../images/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
