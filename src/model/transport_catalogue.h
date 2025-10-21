@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <vector>
 #include "geo.h"
+#include "domain.h"
 #include <optional>
 
 #include <QSqlDatabase>
@@ -61,14 +62,13 @@ public:
 
     double ComputeTfIdfForBus(const Bus* bus,
                                const std::optional<QStringView> name,
-                               const std::optional<QStringView> desired_stop,
-                               const std::optional<bool> is_roundtrip,
-                               const std::optional<std::set<BusType>>& bus_types,
+                               const std::optional<QStringView> stopname,
+                               const BusProperties::Direction direction,
+                               const BusProperties::Type bus_types,
                                const std::optional<uint8_t> capacity,
                                const std::optional<bool> has_wifi,
                                const std::optional<bool> has_sockets,
-                               const std::optional<bool> is_night,
-                               const std::optional<bool> is_day,
+                               const BusProperties::OperatingTime operating_time,
                                const std::optional<bool> is_available,
                                const std::optional<uint8_t> price
                                );

@@ -13,7 +13,7 @@ namespace renderer {
                 continue;
             }
             std::vector<std::shared_ptr<const Stop>> route_stops{ bus->stops.begin(), bus->stops.end() };
-            if (bus->is_roundtrip == false) {
+            if (bus->direction == BusProperties::Direction::non_circular) {
                 route_stops.insert(route_stops.end(), std::next(bus->stops.rbegin()), bus->stops.rend());
             }
             svg::Polyline line;
@@ -77,7 +77,7 @@ namespace renderer {
             result.push_back(underlayer);
             result.push_back(text);
 
-            if (bus->is_roundtrip == false && bus->stops[0] != bus->stops[bus->stops.size() - 1]) {
+            if (bus->direction == BusProperties::Direction::non_circular && bus->stops[0] != bus->stops[bus->stops.size() - 1]) {
                 svg::Text text2{ text };
                 svg::Text underlayer2{ underlayer };
                 text2.SetPosition(sp(bus->stops[bus->stops.size() - 1]->coords));

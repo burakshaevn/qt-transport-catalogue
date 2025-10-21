@@ -37,6 +37,8 @@ add_library(model
     svg.cpp
     transport_catalogue.cpp
     transport_router.cpp
+    bus_propetries.h
+    stop_properties.h
 )
 target_link_libraries(model Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql)
 

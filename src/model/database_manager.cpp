@@ -289,20 +289,19 @@ bool DatabaseManager::AddBus(const Bus* bus)
     }
 
     QSqlQuery query;
-    query.prepare("INSERT INTO buses (name, is_roundtrip, color_index, bus_type, capacity, has_wifi, has_sockets, is_night, is_available, price, is_day) "
-                  "VALUES (:name, :is_roundtrip, :color_index, :bus_type, :capacity, :has_wifi, :has_sockets, :is_night, :is_available, :price, :is_day) "
+    query.prepare("INSERT INTO buses (name, direction, color_index, bus_type, capacity, has_wifi, has_sockets, operating_time, is_available, price, is_day) "
+                  "VALUES (:name, :is_roundtrip, :color_index, :bus_type, :capacity, :has_wifi, :has_sockets, :operating_time, :is_available, :price, :is_day) "
                   "RETURNING id");
     query.bindValue(":name", bus->name);
-    query.bindValue(":is_roundtrip", bus->is_roundtrip);
+    query.bindValue(":direction", EnumToString<BusProperties::Direction>(bus->direction));
     query.bindValue(":color_index", bus->color_index);
-    query.bindValue(":bus_type", BusTypeToString(bus->bus_type));
+    query.bindValue(":bus_type", EnumToString<BusProperties::Type>(bus->type));
     query.bindValue(":capacity", bus->capacity);
     query.bindValue(":has_wifi", bus->has_wifi);
     query.bindValue(":has_sockets", bus->has_sockets);
-    query.bindValue(":is_night", bus->is_night);
+    query.bindValue(":operating_time", EnumToString<BusProperties::OperatingTime>(bus->operating_time));
     query.bindValue(":is_available", bus->is_available);
     query.bindValue(":price", bus->price);
-    query.bindValue(":is_day", bus->is_day);
 
     if(!query.exec()){
         // qDebug() << Q_FUNC_INFO << query.lastError().text();
@@ -343,14 +342,13 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
         QSqlQuery updateQuery;
         updateQuery.prepare("UPDATE buses SET is_roundtrip = :is_roundtrip, color_index = :color_index, bus_type = :bus_type, capacity = :capacity, has_wifi = :has_wifi, has_sockets = :has_sockets, is_night = :is_night, is_day = :is_day, is_available = :is_available, price = :price WHERE name = :name");
         updateQuery.bindValue(":name", bus->name);
-        updateQuery.bindValue(":is_roundtrip", bus->is_roundtrip);
+        updateQuery.bindValue(":direction", EnumToString<BusProperties::Direction>(bus->direction));
         updateQuery.bindValue(":color_index", bus->color_index);
-        updateQuery.bindValue(":bus_type", BusTypeToString(bus->bus_type));
+        updateQuery.bindValue(":bus_type", EnumToString<BusProperties::Type>(bus->type));
         updateQuery.bindValue(":capacity", bus->capacity);
         updateQuery.bindValue(":has_wifi", bus->has_wifi);
         updateQuery.bindValue(":has_sockets", bus->has_sockets);
-        updateQuery.bindValue(":is_night", bus->is_night);
-        updateQuery.bindValue(":is_day", bus->is_day);
+        updateQuery.bindValue(":operating_time", EnumToString<BusProperties::OperatingTime>(bus->operating_time));
         updateQuery.bindValue(":is_available", bus->is_available);
         updateQuery.bindValue(":price", bus->price);
         if (!updateQuery.exec()) {
@@ -375,14 +373,12 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
             stopIdQuery.prepare("SELECT id FROM stops WHERE name = :name");
             stopIdQuery.bindValue(":name", bus->stops[i]->name);
             if (!stopIdQuery.exec() || !stopIdQuery.next()) {
-                // qDebug() <<  Q_FUNC_INFO << "Ошибка получения ID остановки:" << stopIdQuery.lastError().text();
                 QSqlDatabase::database().rollback();
                 return false;
             }
             int stop_id = stopIdQuery.value(0).toInt();
 
             if (!AddBusStop(bus_id, stop_id, i /*+ 1*/, bus->stops[i]->name)) {
-                // qDebug() <<  Q_FUNC_INFO << "Ошибка добавления остановки:" << QSqlDatabase::database().lastError().text();
                 QSqlDatabase::database().rollback();
                 return false;
             }
@@ -398,7 +394,6 @@ bool DatabaseManager::UpdateBus(const Bus* bus) {
 
     // Завершение транзакции
     if (!QSqlDatabase::database().commit()) {
-        // qDebug() <<  Q_FUNC_INFO << "Ошибка фиксации транзакции:" << QSqlDatabase::database().lastError().text();
         return false;
     }
 
@@ -413,14 +408,13 @@ std::optional<Bus> DatabaseManager::FindBus(const QStringView name)
     if (query.next()) {
         Bus bus;
         bus.name = query.value("name").toString();
-        bus.is_roundtrip = query.value("is_roundtrip").toBool();
+        bus.direction = StringToEnum<BusProperties::Direction>(query.value("direction").toString());
         bus.color_index = query.value("color_index").toUInt();
-        bus.bus_type = StringToBusType(query.value("bus_type").toString());
+        bus.type = StringToEnum<BusProperties::Type>(query.value("bus_type").toString());
         bus.capacity = query.value("capacity").toUInt();
         bus.has_wifi = query.value("has_wifi").toBool();
         bus.has_sockets = query.value("has_sockets").toBool();
-        bus.is_night = query.value("is_night").toBool();
-        bus.is_day = query.value("is_day").toBool();
+        bus.operating_time = StringToEnum<BusProperties::OperatingTime>(query.value("operating_time").toString());
         bus.is_available = query.value("is_available").toBool();
         bus.price = query.value("price").toUInt();
 
@@ -462,16 +456,19 @@ std::optional<svg::Color> DatabaseManager::FindColor(const size_t color_index) {
         QString("SELECT unnest(color) AS color_value FROM color_palette WHERE id = %1;").arg(color_index)
     );
 
-    int rgbValues[3] = { 0 };
-    size_t index = 0;
+    int rgbValues[3] { 0 };
+    size_t index { 0 };
 
-    while (query.next() && index < 3) {
+    while (query.next() && index < 3)
+    {
         rgbValues[index++] = query.value(0).toInt();
     }
 
-    if (index == 3) {
+    if (index == 3)
+    {
         return svg::Color(svg::Rgb(rgbValues[0], rgbValues[1], rgbValues[2]));
     }
+
     return std::nullopt;
 }
 
@@ -481,80 +478,62 @@ bool DatabaseManager::BusStopIsExists(int bus_id, const QString& stop_name) {
     query.prepare("SELECT COUNT(*) FROM bus_stops WHERE bus_id = :bus_id AND stop_id = (SELECT id FROM stops WHERE name = ':stop_name'); ");
     query.bindValue(":bus_id", bus_id);
     query.bindValue(":stop_name", stop_name);
-    if (query.exec() && query.next()) {
-        return query.value(0).toInt() > 0;
-    }
-    else{
-        // qDebug() << Q_FUNC_INFO << query.lastError().text();
-    }
+
+    if (query.exec() && query.next()) return query.value(0).toInt() > 0;
+
     return false;
 }
 
-bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name) {
-    if (BusStopIsExists(bus_id, stop_name)) {
-        // qDebug() << Q_FUNC_INFO << "Связка bus_stop уже существует:" << bus_id << "->" << stop_name;
-        return true;
-    }
+bool DatabaseManager::AddBusStop(int bus_id, const QString& stop_name)
+{
+    if (BusStopIsExists(bus_id, stop_name)) return true;
 
     QSqlQuery positionQuery;
     positionQuery.prepare("SELECT COALESCE(MAX(stop_position), 0) + 1 FROM bus_stops WHERE bus_id = :bus_id");
     positionQuery.bindValue(":bus_id", bus_id);
-    if (!positionQuery.exec() || !positionQuery.next()) {
-        // qDebug() << Q_FUNC_INFO << positionQuery.lastError().text();
-        return false;
-    }
+    if (!positionQuery.exec() || !positionQuery.next()) return false;
+
     int stop_position = positionQuery.value(0).toInt();
 
     QSqlQuery query;
-    query.prepare("INSERT INTO bus_stops (bus_id, stop_id, stop_position) "
-                  "VALUES (:bus_id, (SELECT id FROM stops WHERE name = :stop_name), :stop_position)");
+    query.prepare("INSERT INTO bus_stops (bus_id, stop_id, stop_position) VALUES (:bus_id, (SELECT id FROM stops WHERE name = :stop_name), :stop_position)");
     query.bindValue(":bus_id", bus_id);
     query.bindValue(":stop_name", stop_name);
     query.bindValue(":stop_position", stop_position);
 
-    if (query.exec()) {
-        return true;
-    } else {
-        // qDebug() << Q_FUNC_INFO << query.lastError().text();
-    }
+    if (query.exec()) return true;
+
     return false;
 }
 
 bool DatabaseManager::AddBusStop(int bus_id, int stop_id, int stop_position, const QString& stop_name)
 {
-    if (BusStopIsExists(bus_id, stop_name)) {
-        return true;
-    }
+    if (BusStopIsExists(bus_id, stop_name)) return true;
 
     QSqlQuery query;
     query.prepare("INSERT INTO bus_stops VALUES (:bus_id, :stop_id, :stop_position)");
     query.bindValue(":bus_id", bus_id);
     query.bindValue(":stop_id", stop_id);
     query.bindValue(":stop_position", stop_position);
-    if (query.exec()) {
-        return true;
-    }
-    else{
-        // qDebug() << Q_FUNC_INFO << query.lastError().text();
-    }
+
+    if (query.exec())  return true;
+
     return false;
 }
 
 bool DatabaseManager::UpdateRoutingSettings(const double bus_velocity, const int bus_wait_time)
 {
     constexpr double epsilon = 1e-9;
-    if (bus_velocity > epsilon) {
-        if (bus_wait_time > epsilon) {
+    if (bus_velocity > epsilon)
+    {
+        if (bus_wait_time > epsilon)
+        {
             QSqlQuery query;
             query.prepare("UPDATE public.routing_settings SET bus_velocity = :bus_velocity, bus_wait_time = :bus_wait_time");
             query.bindValue(":bus_velocity", bus_velocity);
             query.bindValue(":bus_wait_time", bus_wait_time);
-            if (query.exec()) {
-                return true;
-            }
-            else{
-                // qDebug() << Q_FUNC_INFO << query.lastError().text();
-            }
+
+            if (query.exec()) return true;
         }
     }
     return false;

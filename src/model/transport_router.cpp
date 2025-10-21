@@ -56,7 +56,7 @@ void TransportRouter::AddBusesToGraph() {
                     weight
                     });
 
-                if (!bus_info->is_roundtrip) {
+                if (bus_info->direction != BusProperties::Direction::non_circular) {
                     const double& weight_inverse = static_cast<double>(dist_sum_inverse) / (bus_velocity_ * (100.0 / 6.0));
                     graph_.AddEdge({
                         bus_info->name,

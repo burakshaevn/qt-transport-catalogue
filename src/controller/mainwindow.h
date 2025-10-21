@@ -9,7 +9,6 @@
 
 #include "database_manager.h"
 #include "bus_editor.h"
-#include "dialog_editor.h"
 #include <algorithm>
 #include "stdafx.h"
 
@@ -30,11 +29,11 @@ public:
     using Value = std::variant<QString, std::runtime_error>;  
 
 private slots:
-    void on_button_buses_clicked();
-    void on_button_map_clicked();
-    void on_button_stops_clicked();
-    void on_button_db_clicked();
-    void on_button_distances_clicked();
+    // void on_button_buses_clicked();
+    // void on_button_map_clicked();
+    // void on_button_stops_clicked();
+    // void on_button_db_clicked();
+    // void on_button_distances_clicked();
 
     void on_search_bus_clicked();
     void on_reset_all_filters_clicked();
@@ -46,8 +45,8 @@ private slots:
     void on_add_distance_clicked();
     void on_delete_distance_clicked();
 
-    void on_connect_to_db_clicked();
-    void on_connect_to_db_default_clicked();
+    void on_btn_connect_clicked();
+    void on_btn_dataByDefault_clicked();
 
     void on_lineEdit_find_stopname_textEdited(const QString &arg1);
 
@@ -55,7 +54,9 @@ private slots:
 
     void on_show_colors_clicked();
 
-    void on_pushButton_login_clicked();
+    // void on_btn_sign_in_clicked();
+
+    void on_tabWidget_tabBarClicked(int index);
 
 private:
     Ui::MainWindow *ui;

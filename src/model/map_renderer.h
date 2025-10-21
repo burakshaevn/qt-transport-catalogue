@@ -12,6 +12,12 @@
 #include <algorithm>
 #include <QString>
 
+#include "bus_propetries.h"
+#include "stop_properties.h"
+
+using namespace BusProperties;
+using namespace StopProperties;
+
 namespace renderer {
 
     inline const double EPSILON = 1e-6; 

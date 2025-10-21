@@ -14,6 +14,12 @@
 #include "domain.h"
 #include "svg.h"
 
+#include "bus_propetries.h"
+#include "stop_properties.h"
+
+using namespace BusProperties;
+using namespace StopProperties;
+
 class DatabaseManager {
 public:
     DatabaseManager();

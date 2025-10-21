@@ -22,10 +22,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg SvgWidgets)
 set(PROJECT_SOURCES
     main.cpp
     controller/bus_editor.cpp
-    controller/dialog_editor.cpp
+
     controller/mainwindow.cpp
     controller/bus_editor.h
-    controller/dialog_editor.h
+
     controller/mainwindow.h
     controller/mainwindow.ui
     controller/stdafx.h

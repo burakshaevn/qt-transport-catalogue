@@ -12,7 +12,7 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const QStringView bus_number) 
 
     if (!bus) throw std::invalid_argument("bus not found");
 
-    bus_stat.count_stops = bus->is_roundtrip ? bus->stops.size() : bus->stops.size() * 2 - 1;
+    bus_stat.count_stops = bus->direction == BusProperties::Direction::circular ? bus->stops.size() : bus->stops.size() * 2 - 1;
 
     int route_length = 0;
     double geographic_length = 0.0;
@@ -24,7 +24,7 @@ std::optional<BusInfo> RequestHandler::GetBusStat(const QStringView bus_number) 
         route_length += catalogue_.GetDistance(from->name, to->name);
         geographic_length += detail::ComputeDistance(from->coords, to->coords);
 
-        if (!bus->is_roundtrip) {
+        if (bus->direction != BusProperties::Direction::circular) {
             route_length += catalogue_.GetDistance(to->name, from->name);
             geographic_length += detail::ComputeDistance(to->coords, from->coords);
         }

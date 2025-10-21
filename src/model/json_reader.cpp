@@ -129,14 +129,14 @@ Bus JsonReader::PullBus(const json::Dict& request_map, TransportCatalogue& catal
     for (const auto& stop : request_map.at("stops").AsArray()) {
         bus.stops.push_back(catalogue.FindStop(stop.AsString()));
     }
-    bus.is_roundtrip = request_map.at("is_roundtrip").AsBool();
+    bus.direction = StringToEnum<BusProperties::Direction>(request_map.at("direction").AsString());
     bus.color_index = static_cast<size_t>(request_map.at("color_index").AsInt());
     bus.capacity = static_cast<size_t>(request_map.at("capacity").AsInt());
     bus.rgb = {0, 0, 0};
-    bus.bus_type = StringToBusType(request_map.at("bus_type").AsString());
+    bus.type = StringToEnum<BusProperties::Type>(request_map.at("bus_type").AsString());
     bus.has_wifi = request_map.at("has_wifi").AsBool();
     bus.has_sockets = request_map.at("has_sockets").AsBool();
-    bus.is_night = request_map.at("is_night").AsBool();
+    bus.operating_time = StringToEnum<BusProperties::OperatingTime>(request_map.at("operating_time").AsString());
     bus.is_available = request_map.at("is_available").AsBool();
     bus.price = request_map.at("price").AsInt();
     return bus;

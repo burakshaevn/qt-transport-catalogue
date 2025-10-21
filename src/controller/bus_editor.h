@@ -6,6 +6,12 @@
 #include "stdafx.h"
 #include <QListWidget>
 
+#include "bus_propetries.h"
+#include "stop_properties.h"
+
+using namespace BusProperties;
+using namespace StopProperties;
+
 class BusEditor : public QDialog
 {
 	Q_OBJECT

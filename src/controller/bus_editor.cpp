@@ -197,14 +197,14 @@ void BusEditor::on_append_append_bus_clicked() {
             QMessageBox::critical(this, "Ошибка", "Маршрут с цветом " + QString::number(new_bus.color_index) + " уже существует.");
             return;
         }
-
-        new_bus.bus_type = StringToBusType(ui.comboBox_bustype_3->currentText());
+        // TODO
+        // new_bus.type = StringToBusType(ui.comboBox_bustype_3->currentText());
         new_bus.capacity = static_cast<size_t>(ui.lineEdit_capacity_3->text().toInt());
-        new_bus.is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
+        // new_bus.is_roundtrip = ui.comboBox_is_roundtrip_3->currentText() == "Да";
         new_bus.has_wifi = ui.comboBox_is_wifi_3->currentText() == "Да";
         new_bus.has_sockets = ui.comboBox_is_sockets_3->currentText() == "Да";
-        new_bus.is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
-        new_bus.is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
+        // new_bus.is_day = ui.comboBox_is_day_bus_3->currentText() == "Да";
+        // new_bus.is_night = ui.comboBox_is_night_bus_3->currentText() == "Да";
         new_bus.is_available = ui.comboBox_is_available_3->currentText() == "Да";
         new_bus.price = ui.lineEdit_price_3->text().toDouble();
 
@@ -245,14 +245,14 @@ void BusEditor::on_edit_save_clicked() {
         //std::shared_ptr<Bus> shared_bus = std::make_shared<Bus>();
 		Bus current_bus;
         current_bus.name = ui.lineEdit_busname_2->text();
-        current_bus.bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
+        // TODO current_bus.bus_type = StringToBusType(ui.comboBox_bustype_2->currentText());
         current_bus.capacity = static_cast<size_t>(ui.lineEdit_capacity_2->text().toInt());
-        current_bus.is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
+        // current_bus.is_roundtrip = ui.comboBox_is_roundtrip_2->currentText() == "Да";
         current_bus.color_index = ui.lineEdit_color_index_2->text().toInt();
         current_bus.has_wifi = ui.comboBox_is_wifi_2->currentText() == "Да";
         current_bus.has_sockets = ui.comboBox_is_sockets_2->currentText() == "Да";
-        current_bus.is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
-        current_bus.is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
+        // current_bus.is_day = ui.comboBox_is_day_bus_2->currentText() == "Да";
+        // current_bus.is_night = ui.comboBox_is_night_bus_2->currentText() == "Да";
         current_bus.is_available = ui.comboBox_is_available_2->currentText() == "Да";
         current_bus.price = ui.lineEdit_price_2->text().toDouble();
         current_bus.stops = cache_stops_;
